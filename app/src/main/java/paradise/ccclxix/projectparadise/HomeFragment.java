@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +20,26 @@ import java.util.List;
 public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
     private LoaderAdapter loaderAdapter;
+    private StringLoader stringLoader;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        loaderAdapter = new LoaderAdapter(getContext());
+        getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
+        stringLoader = new StringLoader(getContext());
+        super.onCreate(savedInstanceState);
+        System.out.println("CREATINGGGGGGGGGG");
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
-        loaderAdapter = new LoaderAdapter(view.getContext());
         ListView mainListView = (ListView)view.findViewById(R.id.list_comments);
         mainListView.setAdapter(loaderAdapter);
-        getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
+
+        Log.d("Home", "fragment");
 
         view.findViewById(R.id.forceload).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +54,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private LoaderManager.LoaderCallbacks<List<String>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<String>>() {
         @Override
         public Loader<List<String>> onCreateLoader(int id, Bundle args) {
-            return new StringLoader(getContext());
+            return stringLoader;
         }
 
         @Override

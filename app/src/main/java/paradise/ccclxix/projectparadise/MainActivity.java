@@ -33,23 +33,42 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+
         homeFragment =  new HomeFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
-        loadFragment(homeFragment);
+        loadAllFragments();
+        fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
     }
 
 
-    private boolean loadFragment(Fragment fragment){
-        if (fragment != null){
+
+
+
+    private void loadAllFragments(){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, homeFragment)
+                .add(R.id.fragment_container, musicFragment)
+                .add(R.id.fragment_container, sharesFragment)
+                .commit();
+    }
+
+    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2){
+        if (toShow != null & toHide != null & toHide2 != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, fragment).commit();
+                    .show(toShow)
+                    .hide(toHide)
+                    .hide(toHide2)
+                    .commit();
             return true;
+        }else{
+            return false;
         }
-        return false;
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -57,15 +76,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()){
             case R.id.navigation_home:
-                currentFragment = homeFragment;
-                break;
+                return fragmentToShow(homeFragment, musicFragment, sharesFragment);
             case R.id.navigation_music:
-                currentFragment = musicFragment;
-                break;
+                return fragmentToShow(musicFragment, sharesFragment, homeFragment);
             case R.id.navigation_shares:
-                currentFragment = sharesFragment;
-                break;
+                return fragmentToShow(sharesFragment, musicFragment, homeFragment);
         }
-        return loadFragment(currentFragment);
+        return false;
     }
 }

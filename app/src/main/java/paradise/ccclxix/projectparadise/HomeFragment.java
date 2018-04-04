@@ -29,14 +29,14 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
         stringLoader = new StringLoader(getContext());
         super.onCreate(savedInstanceState);
-        System.out.println("CREATINGGGGGGGGGG");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
-        ListView mainListView = (ListView)view.findViewById(R.id.list_comments);
+        /*ListView mainListView = (ListView)view.findViewById(R.id.list_comments);
+
         mainListView.setAdapter(loaderAdapter);
 
         Log.d("Home", "fragment");
@@ -48,6 +48,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
                 LocalBroadcastManager.getInstance(view.getContext()).sendBroadcast(intent);
             }
         });
+        */
         return view;
     }
 

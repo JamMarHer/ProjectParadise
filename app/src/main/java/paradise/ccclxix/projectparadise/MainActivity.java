@@ -5,15 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -41,9 +34,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
     }
-
-
-
 
 
     private void loadAllFragments(){

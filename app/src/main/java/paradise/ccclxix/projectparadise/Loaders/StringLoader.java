@@ -1,4 +1,4 @@
-package paradise.ccclxix.projectparadise;
+package paradise.ccclxix.projectparadise.Loaders;
 
 
 import android.content.BroadcastReceiver;

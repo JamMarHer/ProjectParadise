@@ -1,13 +1,17 @@
-package paradise.ccclxix.projectparadise;
+package paradise.ccclxix.projectparadise.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SharesFragment extends HolderFragment implements EnhancedFragment{
+import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.R;
+
+public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
     @Nullable
     @Override

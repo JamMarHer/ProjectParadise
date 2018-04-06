@@ -1,21 +1,21 @@
-package paradise.ccclxix.projectparadise;
+package paradise.ccclxix.projectparadise.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.Loaders.StringLoader;
 
 public class HomeFragment extends HolderFragment implements EnhancedFragment {
 

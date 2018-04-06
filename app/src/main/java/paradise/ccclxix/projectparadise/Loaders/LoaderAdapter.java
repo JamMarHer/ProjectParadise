@@ -1,4 +1,4 @@
-package paradise.ccclxix.projectparadise;
+package paradise.ccclxix.projectparadise.Loaders;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import paradise.ccclxix.projectparadise.R;
 
 public class LoaderAdapter extends BaseAdapter{
 

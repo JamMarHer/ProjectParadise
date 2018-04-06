@@ -8,6 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
+import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
+import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
+import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 

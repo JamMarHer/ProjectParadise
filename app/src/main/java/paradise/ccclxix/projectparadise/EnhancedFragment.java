@@ -1,6 +1,6 @@
 package paradise.ccclxix.projectparadise;
 
-import android.support.v4.app.Fragment;
+import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 
 public interface EnhancedFragment{
 

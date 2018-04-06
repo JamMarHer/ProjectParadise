@@ -6,4 +6,16 @@
     <string name="description_host">Start hosting an event with iDae, this will allow you to register, configure, and run your event!</string>
     <string name="description_join">Look for what events are in your location and join the community, vote for music, shares and much more!</string>
     <string name="description_relive">Look at previous events that you have attended and relive them by checking what music played and shares!</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_last_name">Last name</string>
+    <string name="prompt_password_re">Re-Password</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_create_account">Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <!-- Registration strings -->
+
+
 </resources>

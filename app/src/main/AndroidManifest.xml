@@ -12,6 +12,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
+        </activity>
+
+        <activity android:name=".Registration.RegistrationActivity" />
+
+        <activity android:name=".InitialAcitivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

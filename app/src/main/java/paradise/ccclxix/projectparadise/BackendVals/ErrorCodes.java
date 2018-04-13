@@ -13,7 +13,8 @@ public class ErrorCodes {
     public final static int EMAIL_NOT_AVAILABLE = 202;
 
     // Login related
-    public final static int INCORRECT_PASSWORD = 250;
+    public final static int INCORRECT_LOGIN = 250;
+    public final static int IMPOSIBLE_TOKEN_UPDATE = 251;
 
     public final static int PDO_EXCEPTION = 300; //General
 

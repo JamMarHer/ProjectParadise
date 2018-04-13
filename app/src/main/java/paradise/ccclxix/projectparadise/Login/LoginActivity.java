@@ -188,14 +188,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 System.out.println(response.raw());
-                if (response.body().getStatus() == ErrorCodes.INCORRECT_PASSWORD) {
-                    mPasswordView.setError(getString(R.string.error_invalid_password));
+                if (response.body().getStatus() == ErrorCodes.INCORRECT_LOGIN) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                 } else if (response.body().getStatus() == 100) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     credentialsManager.registrationSave(userToLogin.getUsername(),userToLogin.getEmail(),
                             response.body().getToken());
-                    intent.putExtra("source","registration");
+                    intent.putExtra("source","Login");
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     LoginActivity.this.startActivity(intent);
                 } else {

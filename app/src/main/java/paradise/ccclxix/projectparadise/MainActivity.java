@@ -1,5 +1,6 @@
 package paradise.ccclxix.projectparadise;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -7,11 +8,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -28,6 +31,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent  intent = getIntent();
+        String source = intent.getStringExtra("source");
+        if (source.equals("registration")){
+            Toast.makeText(MainActivity.this, "Welcome new user!", Toast.LENGTH_SHORT).show();
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

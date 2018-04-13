@@ -3,38 +3,30 @@ package paradise.ccclxix.projectparadise.Registration;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.LoaderManager;
-import android.content.Loader;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +34,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -53,6 +43,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private View mProgressView;
     private View mRegistrationFormView;
     private boolean running = false;
+    private User userToRegister;
+
 
     private EditText usernameView;
     private AutoCompleteTextView emailView;
@@ -154,15 +146,15 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            User userRegistrationForm = new User(username, email, password);
+            userToRegister = new User(username, email, password);
 
             showProgress(true);
-            addUserNetworkRequest(userRegistrationForm);
+            addUserNetworkRequest(userToRegister);
         }
 
     }
 
-    private void addUserNetworkRequest(User user){
+    private void addUserNetworkRequest(final User user){
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -185,6 +177,11 @@ public class RegistrationActivity extends AppCompatActivity {
                     usernameView.requestFocus();
                 } else if (response.body().getStatus() == 100) {
                     Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                    setupCredentials(response.body().getToken());
+                    intent.putExtra("source","registration");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    RegistrationActivity.this.startActivity(intent);
                 } else {
                     Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
 
@@ -201,6 +198,15 @@ public class RegistrationActivity extends AppCompatActivity {
                 showProgress(false);
             }
         });
+    }
+
+    // TODO check if commit did actually happen.
+    private void setupCredentials(String token){
+        SharedPreferences sharedPreferences = getSharedPreferences("iDaeCredentials", MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+        editor.putString("username", userToRegister.getUsername());
+        editor.putString("email", userToRegister.getEmail());
+        editor.apply();
     }
 
     /**

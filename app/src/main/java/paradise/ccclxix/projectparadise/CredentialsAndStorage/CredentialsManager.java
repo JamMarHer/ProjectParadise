@@ -3,6 +3,8 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import paradise.ccclxix.projectparadise.APIForms.User;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class CredentialsManager {
@@ -25,6 +27,19 @@ public class CredentialsManager {
 
     }
 
+    public User getUser(){
+        return new User(this.getUsername(), this.getToken());
+    }
+
+    public void clear(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public boolean checkLoggedIn(){
+        return !(this.getUsername()  == null || this.getEmail() == null || this.getToken() == null);
+    }
 
     public String getUsername(){
         return sharedPreferences.getString("username",null);

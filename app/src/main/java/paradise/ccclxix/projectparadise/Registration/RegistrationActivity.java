@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.Registration;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import retrofit2.Call;
@@ -45,7 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private boolean running = false;
     private User userToRegister;
 
-
+    private CredentialsManager credentialsManager;
     private EditText usernameView;
     private AutoCompleteTextView emailView;
     private EditText passwordView;
@@ -56,6 +58,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         super.onCreate(savedInstanceState);
 
+        credentialsManager = new CredentialsManager(this);
         usernameView = findViewById(R.id.registration_username);
         emailView = findViewById(R.id.registration_email);
         passwordView = findViewById(R.id.registration_password);
@@ -178,7 +181,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 } else if (response.body().getStatus() == 100) {
                     Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                    setupCredentials(response.body().getToken());
+                    credentialsManager.registrationSave(userToRegister.getUsername(),userToRegister.getEmail(),
+                            response.body().getToken());
                     intent.putExtra("source","registration");
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     RegistrationActivity.this.startActivity(intent);
@@ -198,15 +202,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 showProgress(false);
             }
         });
-    }
-
-    // TODO check if commit did actually happen.
-    private void setupCredentials(String token){
-        SharedPreferences sharedPreferences = getSharedPreferences("iDaeCredentials", MODE_PRIVATE);
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("username", userToRegister.getUsername());
-        editor.putString("email", userToRegister.getEmail());
-        editor.apply();
     }
 
     /**

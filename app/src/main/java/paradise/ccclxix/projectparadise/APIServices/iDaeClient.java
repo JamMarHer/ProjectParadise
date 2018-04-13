@@ -21,4 +21,7 @@ public interface iDaeClient {
     @POST("/iDae/public/api/user/login")
     Call<UserResponse> loginUser(@Body User user);
 
+    @POST("/iDae/public/api/user/check_token/")
+    Call<UserResponse> check_token(@Body User user);
+
 }

@@ -3,9 +3,7 @@ package paradise.ccclxix.projectparadise.Registration;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -53,6 +51,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passwordView;
     private EditText rePasswordView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_registration);
@@ -73,7 +72,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 return false;
             }
         });
-
 
         mRegistrationFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);

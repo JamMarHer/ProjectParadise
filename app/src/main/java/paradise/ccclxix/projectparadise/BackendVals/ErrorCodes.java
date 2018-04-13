@@ -15,6 +15,7 @@ public class ErrorCodes {
     // Login related
     public final static int INCORRECT_LOGIN = 250;
     public final static int IMPOSIBLE_TOKEN_UPDATE = 251;
+    public final static int INCORRECT_TOKEN = 252;
 
     public final static int PDO_EXCEPTION = 300; //General
 

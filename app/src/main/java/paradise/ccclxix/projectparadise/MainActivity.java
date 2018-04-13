@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
-            Toast.makeText(MainActivity.this, "Welcome new user!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+
         }
 
         BottomNavigationView navigation = findViewById(R.id.navigation);

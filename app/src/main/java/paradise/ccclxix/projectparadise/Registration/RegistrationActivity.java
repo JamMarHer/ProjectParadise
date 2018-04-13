@@ -7,7 +7,6 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -22,28 +21,38 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.APIForms.RegistrationResponseForm;
-import paradise.ccclxix.projectparadise.APIForms.UserRegistrationForm;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
+import paradise.ccclxix.projectparadise.APIForms.User;
+import paradise.ccclxix.projectparadise.APIForms.UserResponse;
+import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
+import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
+import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class RegistrationActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
-
+public class RegistrationActivity extends AppCompatActivity {
 
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    private RegistrationTask registrationTask = null;
 
     private View mProgressView;
     private View mRegistrationFormView;
+    private boolean running = false;
 
     private EditText usernameView;
     private AutoCompleteTextView emailView;
@@ -52,7 +61,9 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_registration);
         super.onCreate(savedInstanceState);
+
         usernameView = findViewById(R.id.registration_username);
         emailView = findViewById(R.id.registration_email);
         passwordView = findViewById(R.id.registration_password);
@@ -69,9 +80,9 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
         });
 
 
-        mRegistrationFormView = findViewById(R.id.login_form);
+        mRegistrationFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
-        setContentView(R.layout.activity_registration);
+
     }
 
 
@@ -80,7 +91,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
     }
 
     public void attemptRegistration(){
-        if (registrationTask != null){
+        if (running){
             return;
         }
 
@@ -110,6 +121,11 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
             focusView = emailView;
             cancel = true;
         }
+        if (!isEmailValid(email)){
+            emailView.setError(getString(R.string.error_invalid_email));
+            focusView = emailView;
+            cancel = true;
+        }
         if (TextUtils.isEmpty(password)){
             passwordView.setError(getString(R.string.error_field_required));
             focusView = passwordView;
@@ -120,7 +136,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
             focusView = rePasswordView;
             cancel = true;
         }
-        if (isPasswordValid(password)){
+        if (!isPasswordValid(password)){
             passwordView.setError(getString(R.string.error_invalid_password));
             focusView = passwordView;
             cancel = true;
@@ -138,17 +154,53 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            UserRegistrationForm  userRegistrationForm = new UserRegistrationForm(
-                                                        username,
-                                                        email,
-                                                        password
-            );
+            User userRegistrationForm = new User(username, email, password);
 
             showProgress(true);
-            registrationTask = new RegistrationTask(userRegistrationForm);
-            registrationTask.execute((Void) null);
+            addUserNetworkRequest(userRegistrationForm);
         }
 
+    }
+
+    private void addUserNetworkRequest(User user){
+        running = true;
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+
+        Call<UserResponse> call = iDaeClient.addUser(user);
+
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                System.out.println(response.raw());
+                if (response.body().getStatus() == ErrorCodes.EMAIL_NOT_AVAILABLE) {
+                    emailView.setError(getString(R.string.error_email_not_available));
+                    emailView.requestFocus();
+                } else if (response.body().getStatus() == ErrorCodes.USER_NOT_AVAILABLE) {
+                    usernameView.setError(getString(R.string.error_username_not_available));
+                    usernameView.requestFocus();
+                } else if (response.body().getStatus() == 100) {
+                    Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+
+                }
+                running = false;
+                showProgress(false);
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(RegistrationActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                running = false;
+                showProgress(false);
+            }
+        });
     }
 
     /**
@@ -187,87 +239,16 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
         }
     }
 
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(RegistrationActivity.ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(RegistrationActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        emailView.setAdapter(adapter);
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+                //populateAutoComplete();
             }
         }
     }
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
 
-        getLoaderManager().initLoader(0, null, this);
-    }
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(emailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
 
     private boolean passwordsMatch(String password, String passwordRe) {
         return password.equals(passwordRe);
@@ -284,61 +265,5 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderMan
         return email.contains("@");
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class RegistrationTask extends AsyncTask<Void, Void, RegistrationResponseForm> {
 
-        private final UserRegistrationForm userRegistrationForm;
-
-        RegistrationTask(UserRegistrationForm userRegistrationForm) {
-            this.userRegistrationForm = userRegistrationForm;
-        }
-
-        @Override
-        protected RegistrationResponseForm doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            // TODO: finish the registration response form. and its formating.
-            // TODO: implement the network exchange.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            registrationTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            registrationTask = null;
-            showProgress(false);
-        }
-    }
 }

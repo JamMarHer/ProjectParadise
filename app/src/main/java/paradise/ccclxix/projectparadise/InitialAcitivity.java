@@ -92,17 +92,41 @@ public class InitialAcitivity extends AppCompatActivity {
                         InitialAcitivity.this.startActivity(intent);
                     } else if(response.body().getStatus() == ErrorCodes.INCORRECT_TOKEN) {
                         credentialsManager.clear();
-                        Toast.makeText(InitialAcitivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLoginRegistrarionButtons();
+                            }
+                        });
                     }else {
                         credentialsManager.clear();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLoginRegistrarionButtons();
+                            }
+                        });
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserResponse> call, Throwable t) {
                     t.printStackTrace();
-                    credentialsManager.clear();
-                    Toast.makeText(InitialAcitivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                    if(credentialsManager.getToken() != null){
+                        Toast.makeText(InitialAcitivity.this, "There's no internet connection :/",
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
+                        intent.putExtra("source","logged_in_no_network");
+                        finish();
+                        InitialAcitivity.this.startActivity(intent);
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLoginRegistrarionButtons();
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -146,12 +170,6 @@ public class InitialAcitivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showLoginRegistrarionButtons();
-                        }
-                    });
                 }
             }
         };

@@ -1,14 +1,17 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
@@ -47,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         sharesFragment = new SharesFragment();
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
+
+        FrameLayout fragment_container = findViewById(R.id.fragment_container);
+        AnimationDrawable animationDrawable = (AnimationDrawable)fragment_container.getBackground();
+        animationDrawable.setEnterFadeDuration(4000);
+        animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.start();
 
     }
 

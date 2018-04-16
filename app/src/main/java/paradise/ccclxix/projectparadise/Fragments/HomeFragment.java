@@ -75,4 +75,9 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     public LoaderAdapter getLoaderAdapter() {
         return this.loaderAdapter;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

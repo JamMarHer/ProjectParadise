@@ -120,7 +120,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/lobster_regular"
                         android:text="Host"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
@@ -145,12 +147,18 @@
 
                 <Button
                     android:id="@+id/hostcard_launch_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:text="Host" />
+                    android:background="@drawable/circle"
+                    android:fontFamily="@font/lobster_regular"
+                    android:onClick="createEvent"
+                    android:text="Host"
+                    android:textColor="@color/colorGray"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -174,7 +182,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/lobster_regular"
                         android:text="Join"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
@@ -200,12 +210,17 @@
 
                 <Button
                     android:id="@+id/joincard_launch_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:text="Join" />
+                    android:background="@drawable/circle"
+                    android:fontFamily="@font/lobster_regular"
+                    android:text="Join"
+                    android:textColor="@color/colorGray"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -229,7 +244,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/lobster_regular"
                         android:text="Relive"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
@@ -255,12 +272,17 @@
 
                 <Button
                     android:id="@+id/relivecard_launch_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:text="Relive" />
+                    android:background="@drawable/circle"
+                    android:fontFamily="@font/lobster_regular"
+                    android:text="Relive"
+                    android:textColor="@color/colorGray"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 

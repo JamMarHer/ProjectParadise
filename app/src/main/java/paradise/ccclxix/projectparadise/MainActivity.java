@@ -8,11 +8,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
+import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 
@@ -37,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Toast.makeText(MainActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
 
         }
-
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
@@ -47,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
+    }
+
+    public void createEvent(View view){
+        Intent intent = new Intent(MainActivity.this, HostingActivity.class);
+        MainActivity.this.startActivity(intent);
     }
 
 

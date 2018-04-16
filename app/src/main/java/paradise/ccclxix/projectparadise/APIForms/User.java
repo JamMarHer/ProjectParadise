@@ -3,10 +3,10 @@ package paradise.ccclxix.projectparadise.APIForms;
 
 public class User {
 
-    private String username;
-    private String email;
-    private String password;
-    private String token;
+    private String username = null;
+    private String email = null;
+    private String password = null;
+    private String token = null;
 
     public User (String username, String email, String password){
         this.username = username;

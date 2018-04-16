@@ -28,7 +28,7 @@ public class CredentialsManager {
     }
 
     public User getUser(){
-        return new User(this.getUsername(), this.getToken());
+        return new User(this.getEmail(), this.getToken());
     }
 
     public void clear(){

@@ -23,4 +23,9 @@ public class MusicFragment extends HolderFragment implements EnhancedFragment {
     public LoaderAdapter getLoaderAdapter() {
         return null;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

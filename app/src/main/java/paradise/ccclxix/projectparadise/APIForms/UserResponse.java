@@ -22,7 +22,7 @@ public class UserResponse {
         return token;
     }
 
-    public void setId(String token) {
+    public void setToken(String token){
         this.token = token;
     }
 }

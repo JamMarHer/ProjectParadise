@@ -7,4 +7,5 @@ public interface EnhancedFragment{
 
 
      LoaderAdapter getLoaderAdapter();
+     String getName();
 }

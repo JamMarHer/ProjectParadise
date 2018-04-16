@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     credentialsManager.registrationSave(userToLogin.getUsername(),userToLogin.getEmail(),
                             response.body().getToken());
-                    intent.putExtra("source","Login");
+                    intent.putExtra("source","login");
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     LoginActivity.this.startActivity(intent);
                 } else {

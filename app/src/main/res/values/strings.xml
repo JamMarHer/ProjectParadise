@@ -34,6 +34,8 @@
     <string name="create_event_set_name">Give a name to the event</string>
     <string name="create_event_privacy">Is this event private?</string>
     <string name="create_event_done">When you are done, press launch!</string>
+    <string name="notice_location_needed">Location is needed to make sure your event is legit</string>
+    <string name="settings">Settings</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
@@ -107,6 +109,7 @@
     <string name="title_activity_hosting">HostingActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_joining_event">JoiningEventActivity</string>
     <!-- Registration strings -->
 
 

@@ -15,12 +15,13 @@ public class EventManager {
 
 
     public Event getEvent(){
-        return new Event(this.getUsername(), this.getName(), this.getPrivacy());
+        return new Event(this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
     }
 
-
+    //TODO expand on reason to let the user know
     public boolean checkValidEvent(){
-        return !(this.getName()  == null || this.getUsername() == null || this.getPrivacy() == null);
+        return !(this.getName()  == null || this.getEmail() == null || this.getPrivacy() == null
+        || this.getLongitude() == null || this.getLatitude() == null);
     }
 
     public EventManager(Context context){
@@ -28,9 +29,22 @@ public class EventManager {
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
-    public void updateUsername(String username){
+
+    public void updateLatitude(String latitude){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("latitude", latitude);
+        editor.apply();
+    }
+
+    public void updateLongitude(String longitude){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("longitude", longitude);
+        editor.apply();
+    }
+
+    public void updateEmail(String email){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("username", username);
+        editor.putString("email", email);
         editor.apply();
     }
 
@@ -52,8 +66,8 @@ public class EventManager {
         editor.apply();
     }
 
-    public String getUsername(){
-        return sharedPreferences.getString("username", null);
+    public String getEmail(){
+        return sharedPreferences.getString("email", null);
     }
 
     public String getName(){
@@ -67,4 +81,9 @@ public class EventManager {
     public String getPrivacy(){
         return sharedPreferences.getString("privacy","true");
     }
+
+    public String getLatitude(){ return  sharedPreferences.getString("latitude", null);}
+
+    public String getLongitude(){ return  sharedPreferences.getString("longitude", null);}
+
 }

@@ -158,6 +158,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/circle"
                     android:fontFamily="@font/lobster_regular"
+                    android:onClick="joinEvent"
                     android:text="Join"
                     android:textColor="@color/colorGray"
                     android:textSize="24sp" />

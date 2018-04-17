@@ -170,6 +170,12 @@ public class InitialAcitivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showLoginRegistrarionButtons();
+                        }
+                    });
                 }
             }
         };

@@ -29,4 +29,7 @@ public interface iDaeClient {
     @POST("/iDae/public/api/events/add")
     Call<EventResponse> post_event(@Body Event event);
 
+    @GET("/iDae/public/api/events/near_me/{coor}")
+    Call<List<Event>> get_events_nearme(@Path("coor") String coor);
+
 }

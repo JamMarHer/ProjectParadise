@@ -52,8 +52,18 @@ public class LocationManager {
         editor.apply();
     }
 
+    public String getLastLatitude(Context context){
+        return this.getLastFormatedLocation(context).split("___")[0];
+    }
 
-    public String getLastFormatedLocation() {
+    public String getLastLongitude(Context context){
+        return this.getLastFormatedLocation(context).split("___")[1];
+    }
+
+
+
+    public String getLastFormatedLocation(Context context) {
+        this.context = context;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return null;
         }

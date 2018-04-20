@@ -6,6 +6,8 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import paradise.ccclxix.projectparadise.APIForms.APIResponse;
+import paradise.ccclxix.projectparadise.APIForms.Event;
+import paradise.ccclxix.projectparadise.APIForms.EventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
@@ -92,6 +94,38 @@ public class NetworkHandler {
             public void onFailure(Call<UserResponse> call, Throwable t) {
                 networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION, null);
                 running = false;
+            }
+        });
+    }
+
+
+    public void postEventNetworkRequest(final Event event) {
+        running =  true;
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+
+        Call<EventResponse> call = iDaeClient.post_event(event);
+
+        call.enqueue(new Callback<EventResponse>() {
+            @Override
+            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                System.out.println(response.raw());
+                if (response.body().getStatus() == 100) {
+                    networkResponse = new NetworkResponse(100, response.body());
+                } else {
+                    networkResponse = new NetworkResponse(ErrorCodes.INCORRECT_FORMAT, response.body());
+                }
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<EventResponse> call, Throwable t) {
+                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION, null);
+                running =  false;
             }
         });
     }

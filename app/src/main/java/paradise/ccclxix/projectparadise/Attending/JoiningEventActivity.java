@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise.Attending;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
@@ -45,6 +47,8 @@ public class JoiningEventActivity extends AppCompatActivity {
     private EventLoaderAdapter eventLoaderAdapter;
     private EventLoader eventLoader;
     protected Location mLastLocation;
+    private LocationManager locationManager;
+    private String lastLocationFormated;
     private static final String TAG = JoiningEventActivity.class.getSimpleName();
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -74,9 +78,8 @@ public class JoiningEventActivity extends AppCompatActivity {
             }
         });
 
-
         eventLoaderAdapter = new EventLoaderAdapter(this);
-
+        locationManager = new LocationManager(getApplicationContext());
 
         getSupportLoaderManager().initLoader(R.id.string_loader_id, null,  loaderCallbacks);
         eventLoader = new EventLoader(this);
@@ -101,7 +104,7 @@ public class JoiningEventActivity extends AppCompatActivity {
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            getLastLocation();
+            lastLocationFormated = locationManager.getLastFormatedLocation();
         }
     }
 
@@ -170,33 +173,5 @@ public class JoiningEventActivity extends AppCompatActivity {
             // previously and checked "Never ask again".
             startLocationPermissionRequest();
         }
-    }
-
-    private void getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-
-                            mLastLocation = task.getResult();
-                            LocationManager lm =  new LocationManager(getApplicationContext());
-                            lm.setLocation(Double.toString(mLastLocation.getLatitude()),Double.toString(mLastLocation.getLongitude()));
-                        } else {
-                            Log.w(TAG, "getLastLocation:exception", task.getException());
-
-                        }
-                    }
-                });
     }
 }

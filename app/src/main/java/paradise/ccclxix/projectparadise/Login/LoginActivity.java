@@ -41,7 +41,10 @@ import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
 import paradise.ccclxix.projectparadise.MainActivity;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 import retrofit2.Call;
@@ -75,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean running = false;
     private User userToLogin;
     private CredentialsManager credentialsManager;
+    private NetworkHandler networkHandler;
 
     // UI references.
     // TODO name of class variables don't exactly match resgistration class.
@@ -89,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        networkHandler = new NetworkHandler();
 
         credentialsManager = new CredentialsManager(this);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -169,10 +174,61 @@ public class LoginActivity extends AppCompatActivity {
 
             userToLogin = new User("by_email", email,password);
             showProgress(true);
-            loginNetworkRequest(userToLogin);
+            //loginNetworkRequest(userToLogin);
+
+            showProgress(true);
+            running = true;
+            networkHandler.loginNetworkRequest(userToLogin);
+            Thread loginUser = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        super.run();
+                        while (networkHandler.isRunning()) {
+                            sleep(100);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                                switch (networkResponse.getStatus()){
+
+                                    case 100:
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        credentialsManager.registrationSave(userToLogin.getUsername(),userToLogin.getEmail(),
+                                                networkResponse.getResponse().getToken());
+                                        intent.putExtra("source","login");
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        LoginActivity.this.startActivity(intent);
+                                        break;
+                                    case ErrorCodes.EMAIL_NOT_AVAILABLE:
+                                        setError(mPasswordView, getString(R.string.error_incorrect_password));
+                                        break;
+                                    case ErrorCodes.INCORRECT_FORMAT:
+                                        Toast.makeText(LoginActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                                        break;
+
+                                    case ErrorCodes.FAILED_CONNECTION:
+                                        Toast.makeText(LoginActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                                showProgress(false);
+                                running = false;
+                            }
+                        });
+                    }
+                }
+            };
+            loginUser.start();
         }
     }
-
+    private void setError(TextView textView, String error){
+        textView.setError(error);
+        textView.requestFocus();
+    }
     private void loginNetworkRequest(final User user){
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()

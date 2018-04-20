@@ -6,21 +6,38 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import paradise.ccclxix.projectparadise.APIForms.Event;
+import paradise.ccclxix.projectparadise.APIForms.EventResponse;
+import paradise.ccclxix.projectparadise.APIForms.User;
+import paradise.ccclxix.projectparadise.APIForms.UserResponse;
+import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
+import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
+import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
 import paradise.ccclxix.projectparadise.Fragments.HostingHomeFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -33,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment sharesFragment;
     private AppModeManager appModeManager;
 
+    private boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             loadExploreMode();
         }else if (source.equals("event_created")){
             appModeManager.setModeToHost();
+            invalidateOptionsMenu();
             loadHostMode();
         }else if (source.equals("joined_event")) {
             appModeManager.setModeToAttendant();
@@ -73,9 +92,41 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         FrameLayout fragment_container = findViewById(R.id.fragment_container);
         AnimationDrawable animationDrawable = (AnimationDrawable)fragment_container.getBackground();
-        animationDrawable.setEnterFadeDuration(4000);
-        animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.setEnterFadeDuration(3000);
+        animationDrawable.setExitFadeDuration(3000);
         animationDrawable.start();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.log_out_hosting:
+                appModeManager.setModeToExplore();
+
+                //TODO wrapup the event.
+                EventManager eventManager =  new EventManager(getApplicationContext());
+                Event currentEvent =  eventManager.getEvent();
+                invalidateEvent(currentEvent);
+
+
+                Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
+                finish();
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if (appModeManager.isHostingMode()){
+            inflater.inflate(R.menu.menu_hosting, menu);
+            return true;
+        }
+        return false;
     }
 
     public void loadExploreMode(){
@@ -144,5 +195,35 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return fragmentToShow(sharesFragment, musicFragment, homeFragment);
         }
         return false;
+    }
+
+    private void invalidateEvent(final Event event){
+        running = true;
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+
+        Call<EventResponse> call = iDaeClient.invalidate_event(event);
+
+        call.enqueue(new Callback<EventResponse>() {
+            @Override
+            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                System.out.println(response.body().getStatus());
+                System.out.println(response.raw());
+                if (response.body().getStatus() == 100){
+
+                }
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<EventResponse> call, Throwable t) {
+
+                running =  false;
+            }
+        });
     }
 }

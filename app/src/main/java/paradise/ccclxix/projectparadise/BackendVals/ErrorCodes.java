@@ -17,6 +17,10 @@ public class ErrorCodes {
     public final static int IMPOSIBLE_TOKEN_UPDATE = 251;
     public final static int INCORRECT_TOKEN = 252;
 
-    public final static int PDO_EXCEPTION = 300; //General
+    // General
+    public final static int PDO_EXCEPTION = 300;
+    public final static int INCORRECT_FORMAT = 301;
+    public final static int FAILED_CONNECTION = 302;
+
 
 }

@@ -27,6 +27,8 @@ import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,6 +52,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private AutoCompleteTextView emailView;
     private EditText passwordView;
     private EditText rePasswordView;
+    private NetworkHandler networkHandler;
 
 
     @Override
@@ -72,7 +75,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        networkHandler = new NetworkHandler();
         mRegistrationFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
 
@@ -150,58 +153,66 @@ public class RegistrationActivity extends AppCompatActivity {
             userToRegister = new User(username, email, password);
 
             showProgress(true);
-            addUserNetworkRequest(userToRegister);
+            running = true;
+            networkHandler.addUserNetworkRequest(userToRegister);
+            Thread addUser = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        super.run();
+                        while (networkHandler.isRunning()) {
+                            sleep(100);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                                switch (networkResponse.getStatus()){
+
+                                    case 100:   Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                        credentialsManager.registrationSave(userToRegister.getUsername(),userToRegister.getEmail(),
+                                                networkResponse.getResponse().getToken());
+                                        intent.putExtra("source","registration");
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        finish();
+                                        RegistrationActivity.this.startActivity(intent);
+                                        break;
+                                    case ErrorCodes.EMAIL_NOT_AVAILABLE:
+                                        setError(emailView, getString(R.string.error_email_not_available));
+                                        break;
+
+                                    case ErrorCodes.USER_NOT_AVAILABLE:
+                                        setError(usernameView, getString(R.string.error_username_not_available));
+                                        break;
+
+                                    case ErrorCodes.INCORRECT_FORMAT:
+                                        Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                                        break;
+
+                                    case ErrorCodes.FAILED_CONNECTION:
+                                        Toast.makeText(RegistrationActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                                showProgress(false);
+                                running = false;
+                            }
+                        });
+                    }
+                }
+            };
+            addUser.start();
         }
 
     }
 
-    private void addUserNetworkRequest(final User user){
-        running = true;
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-
-        Call<UserResponse> call = iDaeClient.addUser(user);
-
-        call.enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                System.out.println(response.raw());
-                if (response.body().getStatus() == ErrorCodes.EMAIL_NOT_AVAILABLE) {
-                    emailView.setError(getString(R.string.error_email_not_available));
-                    emailView.requestFocus();
-                } else if (response.body().getStatus() == ErrorCodes.USER_NOT_AVAILABLE) {
-                    usernameView.setError(getString(R.string.error_username_not_available));
-                    usernameView.requestFocus();
-                } else if (response.body().getStatus() == 100) {
-                    Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                    credentialsManager.registrationSave(userToRegister.getUsername(),userToRegister.getEmail(),
-                            response.body().getToken());
-                    intent.putExtra("source","registration");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    RegistrationActivity.this.startActivity(intent);
-                } else {
-                    Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
-
-                }
-                running = false;
-                showProgress(false);
-            }
-
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                t.printStackTrace();
-                Toast.makeText(RegistrationActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                running = false;
-                showProgress(false);
-            }
-        });
+    private void setError(TextView textView, String error){
+        textView.setError(error);
+        textView.requestFocus();
     }
-
     /**
      * Shows the progress UI and hides the login form.
      */

@@ -13,6 +13,7 @@
     <string name="prompt_password_re">Re-Password</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
+    <string name="action_logout_host">Stop hosting</string>
     <string name="action_create_account">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="title_activity_login">Sign in</string>

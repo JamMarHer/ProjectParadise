@@ -15,7 +15,7 @@ public class EventManager {
 
 
     public Event getEvent(){
-        return new Event(this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
+        return new Event(this.getID(),this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
     }
 
     //TODO expand on reason to let the user know

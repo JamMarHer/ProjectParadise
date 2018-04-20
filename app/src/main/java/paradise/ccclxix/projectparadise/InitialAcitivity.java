@@ -33,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class InitialAcitivity extends AppCompatActivity {
 
     CredentialsManager credentialsManager;
-    final int TIME_ANIMATION = 2000;
+    final int TIME_ANIMATION = 1;
     private boolean connectionDone = false;
 
     private ImageView logo_welcome;

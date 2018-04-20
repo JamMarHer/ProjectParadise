@@ -3,6 +3,8 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.nio.file.Path;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppModeManager {
@@ -36,5 +38,15 @@ public class AppModeManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("mode","attendant");
         editor.apply();
+    }
+
+    public boolean isHostingMode(){
+        return this.getMode().equals("host");
+    }
+    public boolean isExploreMode(){
+        return this.getMode().equals("explore");
+    }
+    public boolean isAttendantMode(){
+        return this.getMode().equals("attendant");
     }
 }

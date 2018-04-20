@@ -1,6 +1,6 @@
 package paradise.ccclxix.projectparadise.APIForms;
 
-public class EventResponse {
+public class EventResponse implements APIResponse {
 
     private int status;
     private String eventID;
@@ -12,6 +12,11 @@ public class EventResponse {
 
     public int getStatus() {
         return status;
+    }
+
+    @Override
+    public String getToken() {
+        return null;
     }
 
     public void setStatus(int status) {

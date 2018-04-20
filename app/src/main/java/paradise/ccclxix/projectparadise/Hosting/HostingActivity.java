@@ -228,6 +228,7 @@ public class HostingActivity extends AppCompatActivity {
                 public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
                     System.out.println(response.raw());
                     if (response.body().getStatus() == 100) {
+                        eventManager.updateID(response.body().getEventID());
                         Intent intent =  new Intent(getContext(), MainActivity.class);
                         intent.putExtra("source","event_created");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -1,6 +1,6 @@
 package paradise.ccclxix.projectparadise.APIForms;
 
-public class UserResponse {
+public class UserResponse implements APIResponse{
 
     private int status;
     private String token;

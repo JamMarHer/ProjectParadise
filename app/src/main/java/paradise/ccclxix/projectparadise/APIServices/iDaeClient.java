@@ -32,4 +32,7 @@ public interface iDaeClient {
     @GET("/iDae/public/api/events/near_me/{coor}")
     Call<List<Event>> get_events_nearme(@Path("coor") String coor);
 
+    @POST("/iDae/public/api/events/invalidate")
+    Call<EventResponse> invalidate_event(@Body Event event);
+
 }

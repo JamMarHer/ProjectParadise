@@ -3,27 +3,42 @@ package paradise.ccclxix.projectparadise.APIForms;
 
 import paradise.ccclxix.projectparadise.Loaders.EventLoader;
 
-public class Event {
+public class Event implements  APICall{
 
+    private String token = null;
     private String host = null;
     private String event_name = null;
-    private String id = null;
+    private String event_id = null;
     private String privacy = null;
     private String latitude = null;
     private String longitude = null;
 
-    public Event (String name){
+
+    public Event (String token, String name){
+        this.token = token;
         this.event_name = name;
     }
 
-    public Event (String host, String name, String id, String privacy){
+    public Event (String token, String host, String name, String id, String privacy){
+        this.token = token;
         this.host = host;
         this.event_name = name;
-        this.id = id;
+        this.event_id = id;
         this.privacy = privacy;
     }
 
-    public Event (String host, String name, String privacy, String latitude, String longitude){
+    public Event (String token,String host, String name, String privacy, String latitude, String longitude){
+        this.token = token;
+        this.host = host;
+        this.event_name = name;
+        this.privacy = privacy;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Event (String token, String event_id,String host, String name, String privacy, String latitude, String longitude){
+        this.token = token;
+        this.event_id = event_id;
         this.host = host;
         this.event_name = name;
         this.privacy = privacy;
@@ -44,12 +59,14 @@ public class Event {
     }
 
     public String getId() {
-        return id;
+        return event_id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.event_id = id;
     }
+
+
 
     public String getPrivacy() {
         return privacy;
@@ -73,5 +90,13 @@ public class Event {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

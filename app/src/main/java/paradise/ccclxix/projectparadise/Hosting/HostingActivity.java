@@ -60,6 +60,8 @@ import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -160,6 +162,7 @@ public class HostingActivity extends AppCompatActivity {
         ToggleButton privacy;
         Button launch;
         int fragment_n;
+        NetworkHandler networkHandler;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -173,6 +176,7 @@ public class HostingActivity extends AppCompatActivity {
             launch = rootView.findViewById(R.id.host_launch_button);
             eventManager = new EventManager(getContext());
             fragment_n = getArguments().getInt(ARG_SECTION_NUMBER);
+            networkHandler = new NetworkHandler();
 
 
             if (!(fragment_n == 2)) {
@@ -194,6 +198,7 @@ public class HostingActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     CredentialsManager cm = new CredentialsManager(getContext());
                     eventManager.updateEmail(cm.getEmail());
+                    eventManager.updateToken(cm.getToken());
                     if (eventManager.checkValidEvent()) {
                         launch.setText("lit");
                         ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
@@ -201,8 +206,42 @@ public class HostingActivity extends AppCompatActivity {
                         resizeAnimation.setRepeatMode(Animation.REVERSE);
                         resizeAnimation.setDuration(369);
                         view.startAnimation(resizeAnimation);
+                        networkHandler.postEventNetworkRequest(eventManager.getEvent());
 
-                        postNetworkRequest(eventManager.getEvent());
+                        Thread postEvent = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    super.run();
+                                    while (networkHandler.isRunning()) {
+                                        sleep(100);
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                                        switch (networkResponse.getStatus()){
+                                            case 100:
+                                                eventManager.updateID(networkResponse.getResponse().getEventID());
+                                                Intent intent =  new Intent(getContext(), MainActivity.class);
+                                                intent.putExtra("source","event_created");
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                                    break;
+                                                case ErrorCodes.INCORRECT_FORMAT:
+                                                    Toast.makeText(getContext(), "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                                                    break;
+
+                                                case ErrorCodes.FAILED_CONNECTION:
+                                                    Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                                                    break;
+                                            }
+                                    }
+                                }
+                            };
+
+                        postEvent.start();
+                        //postNetworkRequest(eventManager.getEvent());
                     } else {
                         Toast.makeText(getContext(), "Please fill everything.", Toast.LENGTH_SHORT).show();
                     }
@@ -212,52 +251,6 @@ public class HostingActivity extends AppCompatActivity {
 
             return rootView;
         }
-
-        private void postNetworkRequest(final Event event) {
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                    .addConverterFactory(GsonConverterFactory.create());
-            Retrofit retrofit = builder.build();
-
-            iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-
-            Call<EventResponse> call = iDaeClient.post_event(event);
-
-            call.enqueue(new Callback<EventResponse>() {
-                @Override
-                public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                    System.out.println(response.raw());
-                    if (response.body().getStatus() == 100) {
-                        eventManager.updateID(response.body().getEventID());
-                        Intent intent =  new Intent(getContext(), MainActivity.class);
-                        intent.putExtra("source","event_created");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-
-
-                    } else {
-                        Toast.makeText(getContext(), "Wrong formating :(", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<EventResponse> call, Throwable t) {
-                    Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        @Nullable
-        @Override
-        public View getView() {
-            if (fragment_n == 2) {
-                updateName();
-            } else if (fragment_n == 3) {
-                updatePrivacy();
-            }
-            return super.getView();
-        }
-
 
         public void updateName() {
             if (!eventName.getText().toString().equals("")) {
@@ -292,6 +285,7 @@ public class HostingActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            getLastLocation();
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position + 1 == 4) {

@@ -22,6 +22,11 @@ public class UserResponse implements APIResponse{
         return token;
     }
 
+    @Override
+    public String getEventID() {
+        return null;
+    }
+
     public void setToken(String token){
         this.token = token;
     }

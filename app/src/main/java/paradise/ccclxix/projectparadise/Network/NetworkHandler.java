@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.List;
 
+import paradise.ccclxix.projectparadise.APIForms.APICall;
 import paradise.ccclxix.projectparadise.APIForms.APIResponse;
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.APIForms.EventResponse;
@@ -56,7 +58,7 @@ public class NetworkHandler {
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION, null);
+                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION);
                 running = false;
             }
         });
@@ -92,7 +94,7 @@ public class NetworkHandler {
 
             @Override
             public void onFailure(Call<UserResponse> call, Throwable t) {
-                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION, null);
+                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION);
                 running = false;
             }
         });
@@ -124,8 +126,33 @@ public class NetworkHandler {
 
             @Override
             public void onFailure(Call<EventResponse> call, Throwable t) {
-                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION, null);
+                networkResponse = new NetworkResponse(ErrorCodes.FAILED_CONNECTION);
                 running =  false;
+            }
+        });
+    }
+
+    public void getEventsNearNetworkRequest(final String currentCoordinates) {
+        running = true;
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+        Call<List<Event>> call = iDaeClient.get_events_nearme(currentCoordinates);
+
+        call.enqueue(new Callback<List<Event>>() {
+            @Override
+            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
+                networkResponse = new NetworkResponse(100, response.body());
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<List<Event>> call, Throwable t) {
+                networkResponse =  new NetworkResponse(ErrorCodes.FAILED_CONNECTION);
+                running = false;
             }
         });
     }
@@ -133,6 +160,7 @@ public class NetworkHandler {
     public boolean isRunning(){
         return running;
     }
+
 
     public NetworkResponse getNetworkResponse(){
         return networkResponse;

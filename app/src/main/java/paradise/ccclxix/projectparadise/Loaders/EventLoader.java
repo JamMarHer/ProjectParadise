@@ -20,6 +20,8 @@ import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,9 +35,11 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     final private  List<Event> data = new ArrayList<>();
     public boolean runnig = false;
     public static final String ACTION = "com.loaders.FORCE";
+    private NetworkHandler networkHandler;
 
     public EventLoader(Context context) {
         super(context);
+        networkHandler = new NetworkHandler();
     }
 
     @Override
@@ -56,11 +60,37 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     public List<Event> loadInBackground() {
         Log.d("TE", "UPdated");
 
-        getData();
-        try {
-            Thread.sleep(1000);
-        }catch (Exception e){
+        networkHandler.getEventsNearNetworkRequest(getCurrentCoor());
+        Thread getEvents = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    super.run();
+                    while (networkHandler.isRunning()) {
+                        sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                    switch (networkResponse.getStatus()){
+                        case 100:
+                            data.addAll(networkResponse.getListEvents());
+                            break;
+                        case ErrorCodes.FAILED_CONNECTION:
+                            Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
 
+                }
+            }
+        };
+
+        getEvents.start();
+        try {
+            getEvents.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         return data;

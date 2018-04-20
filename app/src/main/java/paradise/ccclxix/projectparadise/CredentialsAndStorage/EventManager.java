@@ -15,7 +15,7 @@ public class EventManager {
 
 
     public Event getEvent(){
-        return new Event(this.getID(),this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
+        return new Event(this.getToken(),this.getID(),this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
     }
 
     //TODO expand on reason to let the user know
@@ -66,6 +66,12 @@ public class EventManager {
         editor.apply();
     }
 
+    public void updateToken(String token){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token", token);
+        editor.apply();
+    }
+
     public String getEmail(){
         return sharedPreferences.getString("email", null);
     }
@@ -85,5 +91,7 @@ public class EventManager {
     public String getLatitude(){ return  sharedPreferences.getString("latitude", null);}
 
     public String getLongitude(){ return  sharedPreferences.getString("longitude", null);}
+
+    public String getToken(){ return  sharedPreferences.getString("token", null);}
 
 }

@@ -4,4 +4,5 @@ public interface APIResponse {
 
     int getStatus();
     String getToken();
+    String getEventID();
 }

@@ -34,8 +34,9 @@
         android:layout_marginTop="120dp"
         android:ems="10"
         android:gravity="center"
+        android:hint="Some lit as party!"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/host_title" />

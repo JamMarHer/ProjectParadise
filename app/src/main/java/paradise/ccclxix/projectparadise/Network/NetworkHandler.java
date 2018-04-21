@@ -1,6 +1,10 @@
 package paradise.ccclxix.projectparadise.Network;
 
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.List;
 
 
@@ -188,6 +192,19 @@ public class NetworkHandler {
         return this.running;
     }
 
+    public boolean serverAlive(){
+        try {
+            SocketAddress sockaddr = new InetSocketAddress(ConnectionUtils.MAIN_SERVER, 80);
+            // Create an unbound socket
+            Socket sock = new Socket();
+
+            int timeoutMs = 2000;   // 2 seconds
+            sock.connect(sockaddr, timeoutMs);
+            return true;
+        } catch(IOException e) {
+            return false;
+        }
+    }
 
     public NetworkResponse getNetworkResponse(){
         return this.networkResponse;

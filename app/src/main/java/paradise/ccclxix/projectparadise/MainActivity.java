@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -74,6 +75,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
+        }else if (source.equals("logged_in_no_network")){
+            if (appModeManager.getMode().equals("host")){
+                loadHostMode();
+            }else if (appModeManager.getMode().equals("attendant")){
+                loadAttendantMode();
+            }else{
+                loadExploreMode();
+            }
+            showSnackbar("Working without internet.");
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -82,8 +92,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
+    }
 
 
+    private void showSnackbar(final String message) {
+        Snackbar.make(findViewById(android.R.id.content),message,
+                Snackbar.LENGTH_LONG).show();
     }
 
     @Override

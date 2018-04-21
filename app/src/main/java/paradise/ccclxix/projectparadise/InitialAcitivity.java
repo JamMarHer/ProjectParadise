@@ -1,6 +1,7 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
+import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
@@ -74,6 +76,7 @@ public class InitialAcitivity extends AppCompatActivity {
 
 
     private void showLoginRegistrarionButtons(){
+        logo_welcome.clearAnimation();
         idae_title.setVisibility(View.VISIBLE);
         loginRegisterLayout.setVisibility(View.VISIBLE);
     }
@@ -91,11 +94,15 @@ public class InitialAcitivity extends AppCompatActivity {
 
 
     private void startAlphaAnimation() throws InterruptedException {
+        ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 90,120);
+        resizeAnimation.setRepeatCount(Animation.INFINITE);
+        resizeAnimation.setRepeatMode(Animation.REVERSE);
+        resizeAnimation.setDuration(501);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
         idae_title.setVisibility(View.INVISIBLE);
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
         logo_welcome.clearAnimation();
-        logo_welcome.startAnimation(anim);
+        logo_welcome.startAnimation(resizeAnimation);
+
 
         networkHandler.checkLoggedInNetworkRequest(credentialsManager.getUser());
         Thread welcomeThread = new Thread() {
@@ -134,8 +141,6 @@ public class InitialAcitivity extends AppCompatActivity {
                                         showLoginRegistrarionButtons();
                                         break;
                                     case MessageCodes.FAILED_CONNECTION:
-                                        Toast.makeText(InitialAcitivity.this, "There has been a problem with the connection. :/",
-                                                Toast.LENGTH_SHORT).show();
                                         intent.putExtra("source", "logged_in_no_network");
                                         finish();
                                         InitialAcitivity.this.startActivity(intent);
@@ -148,6 +153,7 @@ public class InitialAcitivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 showLoginRegistrarionButtons();
+                                showSnackbar("Server didn't respond.");
                             }
                         });
 
@@ -162,4 +168,9 @@ public class InitialAcitivity extends AppCompatActivity {
         }
 
      }
+
+    private void showSnackbar(final String message) {
+        Snackbar.make(findViewById(android.R.id.content),message,
+                Snackbar.LENGTH_LONG).show();
+    }
 }

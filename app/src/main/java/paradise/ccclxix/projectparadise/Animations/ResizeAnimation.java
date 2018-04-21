@@ -1,8 +1,10 @@
 package paradise.ccclxix.projectparadise.Animations;
 
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.ImageView;
 
 public class ResizeAnimation extends Animation {
     final int startWidth;
@@ -12,7 +14,13 @@ public class ResizeAnimation extends Animation {
     public ResizeAnimation(View view, int targetWidth) {
         this.view = view;
         this.targetWidth = targetWidth;
-        startWidth = view.getWidth();
+        this.startWidth = view.getWidth();
+    }
+
+    public ResizeAnimation(View view, int initialWidth, int targetWidth) {
+        this.view = view;
+        this.targetWidth = targetWidth;
+        this.startWidth = initialWidth;
     }
 
     @Override

@@ -77,6 +77,8 @@ public class InitialAcitivity extends AppCompatActivity {
 
     private void showLoginRegistrarionButtons(){
         logo_welcome.clearAnimation();
+        logo_welcome.getLayoutParams().height = 120;
+        logo_welcome.getLayoutParams().width = 120;
         idae_title.setVisibility(View.VISIBLE);
         loginRegisterLayout.setVisibility(View.VISIBLE);
     }

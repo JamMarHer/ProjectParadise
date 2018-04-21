@@ -120,7 +120,6 @@ public class NetworkHandler {
         });
     }
 
-
     public void postEventNetworkRequest(final Event event) {
         if (!safeConnection()){
             running = false;
@@ -182,11 +181,44 @@ public class NetworkHandler {
         });
     }
 
+    public void invalidateEventNetworkRequest(final Event event){
+        if (!safeConnection()){
+            running = false;
+            return;
+        }
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+
+        Call<EventResponse> call = iDaeClient.invalidate_event(event);
+
+        call.enqueue(new Callback<EventResponse>() {
+            @Override
+            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                if(response.body().getStatus() == MessageCodes.OK){
+                    networkResponse = new NetworkResponse(MessageCodes.OK, response.body());
+                }else {
+                    networkResponse = new NetworkResponse(MessageCodes.INCORRECT_FORMAT, response.body());
+                }
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<EventResponse> call, Throwable t) {
+                networkResponse = new NetworkResponse(MessageCodes.FAILED_CONNECTION);
+                running =  false;
+            }
+        });
+    }
+
     public void checkLoggedInNetworkRequest(final User user) {
         if (!safeConnection()){
             running = false;
             return;
-        }else if(user.getUsername() == null){
+        }else if(user.getToken() == null){
             networkResponse = USER_NULL;
             running = false;
             return;
@@ -209,7 +241,7 @@ public class NetworkHandler {
                 if (response.body().getStatus() == 100) {
                     networkResponse = new NetworkResponse(100, response.body());
                 } else if (response.body().getStatus() == MessageCodes.INCORRECT_TOKEN) {
-                    networkResponse = new NetworkResponse(MessageCodes.INCORRECT_TOKEN, response.body());
+                    networkResponse = new NetworkResponse(MessageCodes.INCORRECT_TOKEN);
                 } else {
                     networkResponse = new NetworkResponse(MessageCodes.INCORRECT_FORMAT);
                 }

@@ -3,11 +3,11 @@ package paradise.ccclxix.projectparadise.APIForms;
 public class EventResponse implements APIResponse {
 
     private int status;
-    private String eventID;
+    private String event_id;
 
-    public EventResponse(int status, String eventID){
+    public EventResponse(int status, String event_id){
         this.status = status;
-        this.eventID = eventID;
+        this.event_id = event_id;
     }
 
     public int getStatus() {
@@ -23,14 +23,12 @@ public class EventResponse implements APIResponse {
         this.status = status;
     }
 
-    public String getEventID() {
-        return eventID;
+
+    public String getEvent_id() {
+        return event_id;
     }
 
-    public void setEventID(String eventID){
-        this.eventID = eventID;
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
     }
-
-
-
 }

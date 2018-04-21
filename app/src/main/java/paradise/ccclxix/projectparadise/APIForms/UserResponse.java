@@ -23,7 +23,7 @@ public class UserResponse implements APIResponse{
     }
 
     @Override
-    public String getEventID() {
+    public String getEvent_id() {
         return null;
     }
 

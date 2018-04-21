@@ -207,7 +207,7 @@ public class HostingActivity extends AppCompatActivity {
                                     NetworkResponse networkResponse = networkHandler.getNetworkResponse();
                                         switch (networkResponse.getStatus()){
                                             case MessageCodes.OK:
-                                                eventManager.updateID(networkResponse.getResponse().getEventID());
+                                                eventManager.updateID(networkResponse.getResponse().getEvent_id());
                                                 Intent intent =  new Intent(getContext(), MainActivity.class);
                                                 intent.putExtra("source","event_created");
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

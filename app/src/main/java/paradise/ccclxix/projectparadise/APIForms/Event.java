@@ -46,27 +46,39 @@ public class Event implements  APICall{
         this.longitude = longitude;
     }
 
-    public String getHost(){return host;}
 
-    public void setHost(String host){this.host = host;}
+    @Override
+    public String getToken() {
+        return token;
+    }
 
-    public String getName() {
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getEvent_name() {
         return event_name;
     }
 
-    public void setName(String name) {
-        this.event_name = name;
+    public void setEvent_name(String event_name) {
+        this.event_name = event_name;
     }
 
-    public String getId() {
+    public String getEvent_id() {
         return event_id;
     }
 
-    public void setId(String id) {
-        this.event_id = id;
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
     }
-
-
 
     public String getPrivacy() {
         return privacy;
@@ -90,13 +102,5 @@ public class Event implements  APICall{
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

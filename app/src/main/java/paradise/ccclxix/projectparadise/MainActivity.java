@@ -30,6 +30,7 @@ import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import retrofit2.Call;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment sharesFragment;
     private AppModeManager appModeManager;
     private NetworkHandler networkHandler;
+
+    private EventManager eventManager;
 
     private boolean running = false;
 
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-
+        eventManager = new EventManager(getApplicationContext());
 
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
@@ -129,15 +132,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 appModeManager.setModeToExplore();
 
                 //TODO wrapup the event.
-                EventManager eventManager =  new EventManager(getApplicationContext());
-                Event currentEvent =  eventManager.getEvent();
+                Event currentEvent = eventManager.getEvent();
                 invalidateEvent(currentEvent);
-                eventManager.clear();
-
-
-                Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-                finish();
-                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -223,32 +219,45 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void invalidateEvent(final Event event){
-        running = true;
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-
-        Call<EventResponse> call = iDaeClient.invalidate_event(event);
-
-        call.enqueue(new Callback<EventResponse>() {
+        Thread invalidateEvent = new Thread() {
             @Override
-            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                System.out.println(response.body().getStatus());
-                System.out.println(response.raw());
-                if (response.body().getStatus() == 100){
+            public void run() {
+                networkHandler.invalidateEventNetworkRequest(event);
+                try {
+                    super.run();
+                    while (networkHandler.isRunning()) {
+                        sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                            switch (networkResponse.getStatus()){
 
+                                case 100:
+                                    eventManager.clear();
+                                    Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
+                                    finish();
+                                    startActivity(intent);
+                                    break;
+                                case MessageCodes.INCORRECT_FORMAT:
+                                    showSnackbar("There has been a problem with the server response.");
+                                    break;
+                                case MessageCodes.FAILED_CONNECTION:
+                                    showSnackbar("Server didn't respond.");
+                                    break;
+                                case MessageCodes.NO_INTERNET_CONNECTION:
+                                    showSnackbar("No internet connection.");
+                                    break;
+                            }
+                        }
+                    });
                 }
-                running = false;
             }
-
-            @Override
-            public void onFailure(Call<EventResponse> call, Throwable t) {
-
-                running =  false;
-            }
-        });
+        };
+        invalidateEvent.start();
     }
 }

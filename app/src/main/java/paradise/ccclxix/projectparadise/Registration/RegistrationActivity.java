@@ -147,10 +147,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
             showProgress(true);
             running = true;
-            networkHandler.addUserNetworkRequest(userToRegister);
+
             Thread addUser = new Thread() {
                 @Override
                 public void run() {
+                    networkHandler.addUserNetworkRequest(userToRegister);
                     try {
                         super.run();
                         while (networkHandler.isRunning()) {

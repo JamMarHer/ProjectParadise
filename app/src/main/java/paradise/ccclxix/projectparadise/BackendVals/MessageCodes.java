@@ -22,6 +22,8 @@ public class MessageCodes {
     public final static int PDO_EXCEPTION = 300;
     public final static int INCORRECT_FORMAT = 301;
     public final static int FAILED_CONNECTION = 302;
+    public final static int SERVER_NOT_ALIVE = 303;
+    public final static int NO_INTERNET_CONNECTION = 304;
 
 
 }

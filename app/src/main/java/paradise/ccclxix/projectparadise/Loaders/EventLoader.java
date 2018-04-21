@@ -1,9 +1,11 @@
 package paradise.ccclxix.projectparadise.Loaders;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -26,11 +28,13 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     public static final String ACTION = "com.loaders.FORCE";
     private NetworkHandler networkHandler;
     private LocationManager locationManager;
+    private Activity activity;
 
-    public EventLoader(Context context) {
+    public EventLoader(Context context, Activity activity) {
         super(context);
-        networkHandler = new NetworkHandler();
-        locationManager = new LocationManager(context);
+        this.networkHandler = new NetworkHandler(context);
+        this.locationManager = new LocationManager(context);
+        this.activity = activity;
     }
 
     @Override
@@ -49,7 +53,6 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
 
     @Override
     public List<Event> loadInBackground() {
-        Log.d("TE", "UPdated");
 
         networkHandler.getEventsNearNetworkRequest(locationManager.getLastFormatedLocation(getContext()));
         Thread getEvents = new Thread() {
@@ -69,7 +72,10 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
                             data.addAll(networkResponse.getListEvents());
                             break;
                         case MessageCodes.FAILED_CONNECTION:
-                            Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                            showSnackbar("Server didn't respond.");
+                            break;
+                        case MessageCodes.NO_INTERNET_CONNECTION:
+                            showSnackbar("No internet connection.");
                             break;
                     }
 
@@ -85,6 +91,11 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
         }
 
         return data;
+    }
+
+    private void showSnackbar(final String message) {
+        Snackbar.make(this.activity.findViewById(android.R.id.content),message,
+                Snackbar.LENGTH_LONG).show();
     }
 
     @Override

@@ -53,7 +53,7 @@ public class InitialAcitivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 */
-        networkHandler = new NetworkHandler();
+        networkHandler = new NetworkHandler(getApplicationContext());
 
         //Hides The action bar from the users view
         ActionBar actionBar = getSupportActionBar();
@@ -131,17 +131,22 @@ public class InitialAcitivity extends AppCompatActivity {
                                         InitialAcitivity.this.startActivity(intent);
                                         break;
                                     case MessageCodes.INCORRECT_TOKEN:
+                                        showSnackbar("Logged in from another device, logging out.");
                                         credentialsManager.clear();
                                         showLoginRegistrarionButtons();
                                         break;
                                     case MessageCodes.INCORRECT_FORMAT:
-                                        Toast.makeText(InitialAcitivity.this, "There has been a problem with the server response. :/",
-                                                Toast.LENGTH_SHORT).show();
+                                        showSnackbar("There has been a problem with the server response.");
                                         credentialsManager.clear();
                                         showLoginRegistrarionButtons();
                                         break;
                                     case MessageCodes.FAILED_CONNECTION:
-                                        intent.putExtra("source", "logged_in_no_network");
+                                        intent.putExtra("source", "logged_in_server_problem");
+                                        finish();
+                                        InitialAcitivity.this.startActivity(intent);
+                                        break;
+                                    case MessageCodes.NO_INTERNET_CONNECTION:
+                                        intent.putExtra("source", "logged_in_no_internet");
                                         finish();
                                         InitialAcitivity.this.startActivity(intent);
                                         break;
@@ -153,7 +158,11 @@ public class InitialAcitivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 showLoginRegistrarionButtons();
-                                showSnackbar("Server didn't respond.");
+                                if (networkHandler.getNetworkResponse().getStatus() == MessageCodes.NO_INTERNET_CONNECTION){
+                                    showSnackbar("No internet connection.");
+                                }else if (networkHandler.getNetworkResponse().getStatus() == MessageCodes.FAILED_CONNECTION){
+                                    showSnackbar("Server didn't respond.");
+                                }
                             }
                         });
 
@@ -166,7 +175,6 @@ public class InitialAcitivity extends AppCompatActivity {
         }catch (Exception e){
             Log.d("INITIAL_A_ANIMATION", e.getMessage());
         }
-
      }
 
     private void showSnackbar(final String message) {

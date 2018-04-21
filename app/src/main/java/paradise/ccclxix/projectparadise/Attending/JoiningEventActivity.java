@@ -46,7 +46,6 @@ public class JoiningEventActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private EventLoaderAdapter eventLoaderAdapter;
     private EventLoader eventLoader;
-    protected Location mLastLocation;
     private LocationManager locationManager;
     private String lastLocationFormated;
     private static final String TAG = JoiningEventActivity.class.getSimpleName();
@@ -82,7 +81,7 @@ public class JoiningEventActivity extends AppCompatActivity {
         locationManager = new LocationManager(getApplicationContext());
 
         getSupportLoaderManager().initLoader(R.id.string_loader_id, null,  loaderCallbacks);
-        eventLoader = new EventLoader(this);
+        eventLoader = new EventLoader(getApplicationContext(), this);
 
         ListView events_list = findViewById(R.id.events_listview);
         events_list.setAdapter(eventLoaderAdapter);

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -67,7 +68,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 return false;
             }
         });
-        networkHandler = new NetworkHandler();
+        networkHandler = new NetworkHandler(getApplicationContext());
         mRegistrationFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
 
@@ -182,11 +183,14 @@ public class RegistrationActivity extends AppCompatActivity {
                                         break;
 
                                     case MessageCodes.INCORRECT_FORMAT:
-                                        Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                                        showSnackbar("There has been a problem with the server response.");
                                         break;
 
                                     case MessageCodes.FAILED_CONNECTION:
-                                        Toast.makeText(RegistrationActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                                        showSnackbar("Server didn't respond.");
+                                        break;
+                                    case MessageCodes.NO_INTERNET_CONNECTION:
+                                        showSnackbar("No internet connection.");
                                         break;
                                 }
                                 showProgress(false);
@@ -199,6 +203,10 @@ public class RegistrationActivity extends AppCompatActivity {
             addUser.start();
         }
 
+    }
+    private void showSnackbar(final String message) {
+        Snackbar.make(findViewById(android.R.id.content),message,
+                Snackbar.LENGTH_LONG).show();
     }
 
     private void setError(TextView textView, String error){

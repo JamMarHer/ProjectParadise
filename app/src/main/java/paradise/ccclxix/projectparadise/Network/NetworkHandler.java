@@ -1,6 +1,10 @@
 package paradise.ccclxix.projectparadise.Network;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -26,8 +30,23 @@ public class NetworkHandler {
 
     private NetworkResponse networkResponse;
     private boolean running = false;
+    private boolean serverAlive;
+    private final NetworkResponse NO_INTERNET = new NetworkResponse(MessageCodes.NO_INTERNET_CONNECTION);
+    private Context context;
+
+    public NetworkHandler(Context context){
+        this.context = context;
+    }
+
+    public boolean internetConnection(){
+        return isInternetAlive();
+    }
 
     public void loginNetworkRequest(final User user){
+        if (!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return;
+        }
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -63,6 +82,10 @@ public class NetworkHandler {
 
 
     public void addUserNetworkRequest(final User user){
+        if (!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return;
+        }
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -99,6 +122,10 @@ public class NetworkHandler {
 
 
     public void postEventNetworkRequest(final Event event) {
+        if (!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return;
+        }
         running =  true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -129,6 +156,10 @@ public class NetworkHandler {
     }
 
     public void getEventsNearNetworkRequest(final String currentCoordinates) {
+        if (!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return;
+        }
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -154,6 +185,10 @@ public class NetworkHandler {
     }
 
     public void checkLoggedInNetworkRequest(final User user) {
+        if (!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return;
+        }
         running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
@@ -192,18 +227,10 @@ public class NetworkHandler {
         return this.running;
     }
 
-    public boolean serverAlive(){
-        try {
-            SocketAddress sockaddr = new InetSocketAddress(ConnectionUtils.MAIN_SERVER, 80);
-            // Create an unbound socket
-            Socket sock = new Socket();
-
-            int timeoutMs = 2000;   // 2 seconds
-            sock.connect(sockaddr, timeoutMs);
-            return true;
-        } catch(IOException e) {
-            return false;
-        }
+    private boolean isInternetAlive(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
     }
 
     public NetworkResponse getNetworkResponse(){

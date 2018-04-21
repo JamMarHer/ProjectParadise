@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-        }else if (source.equals("logged_in_no_network")){
+        }else if (source.equals("logged_in_no_internet")){
+            // TODO constant check to get internet going.
             if (appModeManager.getMode().equals("host")){
                 loadHostMode();
             }else if (appModeManager.getMode().equals("attendant")){
@@ -84,6 +86,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 loadExploreMode();
             }
             showSnackbar("Working without internet.");
+        } else if (source.equals("logged_in_server_problem")){
+            // TODO constant check to get server going.
+            if (appModeManager.getMode().equals("host")){
+                loadHostMode();
+            }else if (appModeManager.getMode().equals("attendant")){
+                loadAttendantMode();
+            }else{
+                loadExploreMode();
+            }
+            showSnackbar("Trying to connect to server.");
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

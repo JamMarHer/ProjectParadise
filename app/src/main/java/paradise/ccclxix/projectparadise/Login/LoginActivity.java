@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        networkHandler = new NetworkHandler();
+        networkHandler = new NetworkHandler(getApplicationContext());
 
         credentialsManager = new CredentialsManager(this);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -188,11 +189,13 @@ public class LoginActivity extends AppCompatActivity {
                                         setError(mPasswordView, getString(R.string.error_incorrect_password));
                                         break;
                                     case MessageCodes.INCORRECT_FORMAT:
-                                        Toast.makeText(LoginActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
+                                        showSnackbar("There has been a problem with the server response.");
                                         break;
-
                                     case MessageCodes.FAILED_CONNECTION:
-                                        Toast.makeText(LoginActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                                        showSnackbar("Server didn't respond.");
+                                        break;
+                                    case MessageCodes.NO_INTERNET_CONNECTION:
+                                        showSnackbar("No internet connection.");
                                         break;
                                 }
                                 showProgress(false);
@@ -205,53 +208,16 @@ public class LoginActivity extends AppCompatActivity {
             loginUser.start();
         }
     }
+
+    private void showSnackbar(final String message) {
+        Snackbar.make(findViewById(android.R.id.content),message,
+                Snackbar.LENGTH_LONG).show();
+    }
+
     private void setError(TextView textView, String error){
         textView.setError(error);
         textView.requestFocus();
     }
-    private void loginNetworkRequest(final User user){
-        running = true;
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-
-        Call<UserResponse> call = iDaeClient.loginUser(user);
-
-        call.enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                System.out.println(response.raw());
-                if (response.body().getStatus() == MessageCodes.INCORRECT_LOGIN) {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
-                } else if (response.body().getStatus() == 100) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    credentialsManager.registrationSave(userToLogin.getUsername(),userToLogin.getEmail(),
-                            response.body().getToken());
-                    intent.putExtra("source","login");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    LoginActivity.this.startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
-
-                }
-                running = false;
-                showProgress(false);
-            }
-
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                t.printStackTrace();
-                Toast.makeText(LoginActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                running = false;
-                showProgress(false);
-            }
-        });
-    }
-
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic

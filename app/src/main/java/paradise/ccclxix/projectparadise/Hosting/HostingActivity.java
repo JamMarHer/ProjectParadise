@@ -83,7 +83,7 @@ public class HostingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hosting);
         locationManager = new LocationManager(getApplicationContext());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.hosting_toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -159,7 +159,7 @@ public class HostingActivity extends AppCompatActivity {
             eventManager = new EventManager(getContext());
 
             fragment_n = getArguments().getInt(ARG_SECTION_NUMBER);
-            networkHandler = new NetworkHandler();
+            networkHandler = new NetworkHandler(getContext());
 
 
             if (!(fragment_n == 2)) {
@@ -212,14 +212,16 @@ public class HostingActivity extends AppCompatActivity {
                                                 intent.putExtra("source","event_created");
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(intent);
-                                                    break;
-                                                case MessageCodes.INCORRECT_FORMAT:
-                                                    Toast.makeText(getContext(), "Incorrect formatting", Toast.LENGTH_SHORT).show();
-                                                    break;
-
-                                                case MessageCodes.FAILED_CONNECTION:
-                                                    Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                                                    break;
+                                                break;
+                                            case MessageCodes.INCORRECT_FORMAT:
+                                                showSnackbar("There has been a problem with the server response.");
+                                                break;
+                                            case MessageCodes.FAILED_CONNECTION:
+                                                showSnackbar("Server didn't respond.");
+                                                break;
+                                            case MessageCodes.NO_INTERNET_CONNECTION:
+                                                showSnackbar("No internet connection.");
+                                                break;
                                             }
                                     }
                                 }
@@ -235,6 +237,10 @@ public class HostingActivity extends AppCompatActivity {
 
 
             return rootView;
+        }
+        private void showSnackbar(final String message) {
+            Snackbar.make(this.getActivity().findViewById(android.R.id.content),message,
+                    Snackbar.LENGTH_LONG).show();
         }
 
         @Nullable

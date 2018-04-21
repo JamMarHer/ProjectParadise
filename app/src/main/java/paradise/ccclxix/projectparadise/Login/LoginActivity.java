@@ -159,10 +159,11 @@ public class LoginActivity extends AppCompatActivity {
 
             showProgress(true);
             running = true;
-            networkHandler.loginNetworkRequest(userToLogin);
+
             Thread loginUser = new Thread() {
                 @Override
                 public void run() {
+                    networkHandler.loginNetworkRequest(userToLogin);
                     try {
                         super.run();
                         while (networkHandler.isRunning()) {

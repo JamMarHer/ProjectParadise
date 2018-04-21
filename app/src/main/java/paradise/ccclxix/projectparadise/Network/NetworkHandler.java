@@ -35,24 +35,20 @@ public class NetworkHandler {
     private boolean serverAlive;
     private boolean internetAlive;
     private final NetworkResponse NO_INTERNET = new NetworkResponse(MessageCodes.NO_INTERNET_CONNECTION);
+    private final NetworkResponse NO_SERVER = new NetworkResponse(MessageCodes.FAILED_CONNECTION);
+    private final NetworkResponse USER_NULL = new NetworkResponse(MessageCodes.USER_NOT_AVAILABLE);
     private Context context;
 
     public NetworkHandler(Context context){
         this.context = context;
     }
 
-    public boolean internetConnection(){
-        return isInternetAlive();
-    }
-
-    public boolean serverConnection(){ return  isServerAlive();}
 
     public void loginNetworkRequest(final User user){
-        if (!isInternetAlive()){
-            networkResponse = NO_INTERNET;
+        if (!safeConnection()){
+            running = false;
             return;
         }
-        running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
                 .addConverterFactory(GsonConverterFactory.create());
@@ -87,11 +83,10 @@ public class NetworkHandler {
 
 
     public void addUserNetworkRequest(final User user){
-        if (!isInternetAlive()){
-            networkResponse = NO_INTERNET;
+        if (!safeConnection()){
+            running = false;
             return;
         }
-        running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
                 .addConverterFactory(GsonConverterFactory.create());
@@ -127,11 +122,10 @@ public class NetworkHandler {
 
 
     public void postEventNetworkRequest(final Event event) {
-        if (!isInternetAlive()){
-            networkResponse = NO_INTERNET;
+        if (!safeConnection()){
+            running = false;
             return;
         }
-        running =  true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
                 .addConverterFactory(GsonConverterFactory.create());
@@ -161,11 +155,10 @@ public class NetworkHandler {
     }
 
     public void getEventsNearNetworkRequest(final String currentCoordinates) {
-        if (!isInternetAlive()){
-            networkResponse = NO_INTERNET;
+        if (!safeConnection()){
+            running = false;
             return;
         }
-        running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
                 .addConverterFactory(GsonConverterFactory.create());
@@ -190,11 +183,14 @@ public class NetworkHandler {
     }
 
     public void checkLoggedInNetworkRequest(final User user) {
-        if (!isInternetAlive()){
-            networkResponse = NO_INTERNET;
+        if (!safeConnection()){
+            running = false;
+            return;
+        }else if(user.getUsername() == null){
+            networkResponse = USER_NULL;
+            running = false;
             return;
         }
-        running = true;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(ConnectionUtils.MAIN_SERVER_API)
                 .addConverterFactory(GsonConverterFactory.create());
@@ -283,6 +279,19 @@ public class NetworkHandler {
     private void showSnackbar(final String message, Activity activity) {
         Snackbar.make(activity.findViewById(android.R.id.content),message,
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    private boolean safeConnection(){
+        running = true;
+        if(!isInternetAlive()){
+            networkResponse = NO_INTERNET;
+            return false;
+        }else if(!isServerAlive()){
+            networkResponse = NO_SERVER;
+            return false;
+        }else {
+            return true;
+        }
     }
 
     public boolean isRunning(){

@@ -104,11 +104,11 @@ public class InitialAcitivity extends AppCompatActivity {
         logo_welcome.startAnimation(resizeAnimation);
 
 
-        networkHandler.checkLoggedInNetworkRequest(credentialsManager.getUser());
         Thread welcomeThread = new Thread() {
             int currentTime = 0;
             @Override
             public void run() {
+                networkHandler.checkLoggedInNetworkRequest(credentialsManager.getUser());
                 try {
                     super.run();
                     while (networkHandler.isRunning() || currentTime<ALPHA_TIME_ANIMATION) {
@@ -160,8 +160,10 @@ public class InitialAcitivity extends AppCompatActivity {
                                 showLoginRegistrarionButtons();
                                 if (networkHandler.getNetworkResponse().getStatus() == MessageCodes.NO_INTERNET_CONNECTION){
                                     showSnackbar("No internet connection.");
+                                    networkHandler.announceInternetConnection(InitialAcitivity.this);
                                 }else if (networkHandler.getNetworkResponse().getStatus() == MessageCodes.FAILED_CONNECTION){
                                     showSnackbar("Server didn't respond.");
+                                    networkHandler.announceServerAlive(InitialAcitivity.this);
                                 }
                             }
                         });

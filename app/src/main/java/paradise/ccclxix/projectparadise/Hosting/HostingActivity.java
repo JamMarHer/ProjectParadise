@@ -178,7 +178,7 @@ public class HostingActivity extends AppCompatActivity {
 
             launch.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(final View view) {
                     CredentialsManager cm = new CredentialsManager(getContext());
                     eventManager.updateEmail(cm.getEmail());
                     eventManager.updateToken(cm.getToken());
@@ -191,11 +191,11 @@ public class HostingActivity extends AppCompatActivity {
                         resizeAnimation.setRepeatMode(Animation.REVERSE);
                         resizeAnimation.setDuration(369);
                         view.startAnimation(resizeAnimation);
-                        networkHandler.postEventNetworkRequest(eventManager.getEvent());
 
                         Thread postEvent = new Thread() {
                             @Override
                             public void run() {
+                                networkHandler.postEventNetworkRequest(eventManager.getEvent());
                                 try {
                                     super.run();
                                     while (networkHandler.isRunning()) {
@@ -206,7 +206,7 @@ public class HostingActivity extends AppCompatActivity {
                                 } finally {
                                     NetworkResponse networkResponse = networkHandler.getNetworkResponse();
                                         switch (networkResponse.getStatus()){
-                                            case 100:
+                                            case MessageCodes.OK:
                                                 eventManager.updateID(networkResponse.getResponse().getEventID());
                                                 Intent intent =  new Intent(getContext(), MainActivity.class);
                                                 intent.putExtra("source","event_created");
@@ -215,12 +215,15 @@ public class HostingActivity extends AppCompatActivity {
                                                 break;
                                             case MessageCodes.INCORRECT_FORMAT:
                                                 showSnackbar("There has been a problem with the server response.");
+                                                view.clearAnimation();
                                                 break;
                                             case MessageCodes.FAILED_CONNECTION:
                                                 showSnackbar("Server didn't respond.");
+                                                view.clearAnimation();
                                                 break;
                                             case MessageCodes.NO_INTERNET_CONNECTION:
                                                 showSnackbar("No internet connection.");
+                                                view.clearAnimation();
                                                 break;
                                             }
                                     }

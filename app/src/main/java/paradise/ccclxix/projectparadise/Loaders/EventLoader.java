@@ -54,10 +54,11 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     @Override
     public List<Event> loadInBackground() {
 
-        networkHandler.getEventsNearNetworkRequest(locationManager.getLastFormatedLocation(getContext()));
+
         Thread getEvents = new Thread() {
             @Override
             public void run() {
+                networkHandler.getEventsNearNetworkRequest(locationManager.getLastFormatedLocation(getContext()));
                 try {
                     super.run();
                     while (networkHandler.isRunning()) {

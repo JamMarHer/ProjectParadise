@@ -36,7 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.BuildConfig;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
@@ -213,11 +213,11 @@ public class HostingActivity extends AppCompatActivity {
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(intent);
                                                     break;
-                                                case ErrorCodes.INCORRECT_FORMAT:
+                                                case MessageCodes.INCORRECT_FORMAT:
                                                     Toast.makeText(getContext(), "Incorrect formatting", Toast.LENGTH_SHORT).show();
                                                     break;
 
-                                                case ErrorCodes.FAILED_CONNECTION:
+                                                case MessageCodes.FAILED_CONNECTION:
                                                     Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
                                                     break;
                                             }

@@ -4,56 +4,36 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
-import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -204,14 +184,14 @@ public class LoginActivity extends AppCompatActivity {
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         LoginActivity.this.startActivity(intent);
                                         break;
-                                    case ErrorCodes.EMAIL_NOT_AVAILABLE:
+                                    case MessageCodes.EMAIL_NOT_AVAILABLE:
                                         setError(mPasswordView, getString(R.string.error_incorrect_password));
                                         break;
-                                    case ErrorCodes.INCORRECT_FORMAT:
+                                    case MessageCodes.INCORRECT_FORMAT:
                                         Toast.makeText(LoginActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
                                         break;
 
-                                    case ErrorCodes.FAILED_CONNECTION:
+                                    case MessageCodes.FAILED_CONNECTION:
                                         Toast.makeText(LoginActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
@@ -244,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 System.out.println(response.raw());
-                if (response.body().getStatus() == ErrorCodes.INCORRECT_LOGIN) {
+                if (response.body().getStatus() == MessageCodes.INCORRECT_LOGIN) {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
                 } else if (response.body().getStatus() == 100) {

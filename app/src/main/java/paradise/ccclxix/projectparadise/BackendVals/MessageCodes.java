@@ -1,11 +1,12 @@
 package paradise.ccclxix.projectparadise.BackendVals;
 
-public class ErrorCodes {
+public class MessageCodes {
 
     // Intended code ranges; 101-200 Network
     //                       200-250 Registration
     //                       250-300 Login
     //                       300-*   DB Exceptions and more.
+    public final static int OK = 100;
     // Registration related.
     public final static int USER_NOT_AVAILABLE = 200;
     public final static int USERNAME_DOES_NOT_EXIST = 201;

@@ -1,29 +1,23 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.APIForms.EventResponse;
-import paradise.ccclxix.projectparadise.APIForms.User;
-import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
@@ -32,7 +26,6 @@ import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
-import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

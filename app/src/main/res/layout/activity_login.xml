@@ -7,7 +7,9 @@
     android:background="@drawable/gradient_1"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".Login.LoginActivity">
+    tools:context=".Login.LoginActivity"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true" >
 
     <!-- Login progress -->
 

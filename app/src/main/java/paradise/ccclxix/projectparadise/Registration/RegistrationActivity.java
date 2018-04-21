@@ -21,20 +21,12 @@ import android.widget.Toast;
 
 
 import paradise.ccclxix.projectparadise.APIForms.User;
-import paradise.ccclxix.projectparadise.APIForms.UserResponse;
-import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
-import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -181,19 +173,19 @@ public class RegistrationActivity extends AppCompatActivity {
                                         finish();
                                         RegistrationActivity.this.startActivity(intent);
                                         break;
-                                    case ErrorCodes.EMAIL_NOT_AVAILABLE:
+                                    case MessageCodes.EMAIL_NOT_AVAILABLE:
                                         setError(emailView, getString(R.string.error_email_not_available));
                                         break;
 
-                                    case ErrorCodes.USER_NOT_AVAILABLE:
+                                    case MessageCodes.USER_NOT_AVAILABLE:
                                         setError(usernameView, getString(R.string.error_username_not_available));
                                         break;
 
-                                    case ErrorCodes.INCORRECT_FORMAT:
+                                    case MessageCodes.INCORRECT_FORMAT:
                                         Toast.makeText(RegistrationActivity.this, "Incorrect formatting", Toast.LENGTH_SHORT).show();
                                         break;
 
-                                    case ErrorCodes.FAILED_CONNECTION:
+                                    case MessageCodes.FAILED_CONNECTION:
                                         Toast.makeText(RegistrationActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
                                         break;
                                 }

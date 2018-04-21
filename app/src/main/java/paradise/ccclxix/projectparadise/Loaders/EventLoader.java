@@ -13,21 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
-import paradise.ccclxix.projectparadise.APIForms.UserResponse;
-import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
-import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
-import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
-import paradise.ccclxix.projectparadise.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventLoader extends AsyncTaskLoader<List<Event>> {
 
@@ -79,7 +68,7 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
                         case 100:
                             data.addAll(networkResponse.getListEvents());
                             break;
-                        case ErrorCodes.FAILED_CONNECTION:
+                        case MessageCodes.FAILED_CONNECTION:
                             Toast.makeText(getContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
                             break;
                     }

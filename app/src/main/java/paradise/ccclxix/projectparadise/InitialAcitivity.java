@@ -4,24 +4,25 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
-import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,22 +33,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class InitialAcitivity extends AppCompatActivity {
 
-    CredentialsManager credentialsManager;
-    final int TIME_ANIMATION = 1;
-    private boolean connectionDone = false;
+    private CredentialsManager credentialsManager;
+    final int ALPHA_TIME_ANIMATION= 1002;
+    final int TRANSLATE_TIME_ANIMATION = 501;
 
     private ImageView logo_welcome;
+    private TextView idae_title;
     private LinearLayout loginRegisterLayout;
+    NetworkHandler networkHandler;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+/*
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+*/
+        networkHandler = new NetworkHandler();
 
         //Hides The action bar from the users view
         ActionBar actionBar = getSupportActionBar();
@@ -58,82 +62,19 @@ public class InitialAcitivity extends AppCompatActivity {
         credentialsManager = new CredentialsManager(this);
         setContentView(R.layout.activity_initial_acitivity);
         logo_welcome = findViewById(R.id.welcome_logo);
+        idae_title = findViewById(R.id.idae_title);
         loginRegisterLayout = findViewById(R.id.login_register_layout);
         try {
-            startAnimation();
+            startAlphaAnimation();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void checkCurrentLoginStatus(){
-
-        if (credentialsManager.checkLoggedIn()){
-            System.out.println(credentialsManager.getToken());
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                    .addConverterFactory(GsonConverterFactory.create());
-            Retrofit retrofit = builder.build();
-
-            iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-
-            Call<UserResponse> call = iDaeClient.check_token(credentialsManager.getUser());
-
-
-            call.enqueue(new Callback<UserResponse>() {
-
-                @Override
-                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                    if (response.body().getStatus() == 100) {
-                        Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
-                        intent.putExtra("source","logged_in");
-                        finish();
-                        InitialAcitivity.this.startActivity(intent);
-                    } else if(response.body().getStatus() == ErrorCodes.INCORRECT_TOKEN) {
-                        credentialsManager.clear();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showLoginRegistrarionButtons();
-                            }
-                        });
-                    }else {
-                        credentialsManager.clear();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showLoginRegistrarionButtons();
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    if(credentialsManager.getToken() != null){
-                        Toast.makeText(InitialAcitivity.this, "There's no internet connection :/",
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
-                        intent.putExtra("source","logged_in_no_network");
-                        finish();
-                        InitialAcitivity.this.startActivity(intent);
-                    }else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showLoginRegistrarionButtons();
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    }
 
     private void showLoginRegistrarionButtons(){
-        logo_welcome.setVisibility(View.INVISIBLE);
+        idae_title.setVisibility(View.VISIBLE);
         loginRegisterLayout.setVisibility(View.VISIBLE);
     }
 
@@ -149,36 +90,76 @@ public class InitialAcitivity extends AppCompatActivity {
     }
 
 
-    private void startAnimation() throws InterruptedException {
+    private void startAlphaAnimation() throws InterruptedException {
         loginRegisterLayout.setVisibility(View.INVISIBLE);
+        idae_title.setVisibility(View.INVISIBLE);
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
         logo_welcome.clearAnimation();
         logo_welcome.startAnimation(anim);
 
+        networkHandler.checkLoggedInNetworkRequest(credentialsManager.getUser());
         Thread welcomeThread = new Thread() {
-            int wait = 0;
-
+            int currentTime = 0;
             @Override
             public void run() {
                 try {
                     super.run();
-                    checkCurrentLoginStatus();
-                    while (wait < TIME_ANIMATION) {
-                        sleep(100);
-                        wait += 100;
+                    while (networkHandler.isRunning() || currentTime<ALPHA_TIME_ANIMATION) {
+                        sleep(36);
+                        currentTime += 36;
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showLoginRegistrarionButtons();
-                        }
-                    });
+                    if(credentialsManager.checkLoggedIn()) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                                Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
+                                switch (networkResponse.getStatus()) {
+                                    case MessageCodes.OK:
+                                        intent.putExtra("source", "logged_in");
+                                        finish();
+                                        InitialAcitivity.this.startActivity(intent);
+                                        break;
+                                    case MessageCodes.INCORRECT_TOKEN:
+                                        credentialsManager.clear();
+                                        showLoginRegistrarionButtons();
+                                        break;
+                                    case MessageCodes.INCORRECT_FORMAT:
+                                        Toast.makeText(InitialAcitivity.this, "There has been a problem with the server response. :/",
+                                                Toast.LENGTH_SHORT).show();
+                                        credentialsManager.clear();
+                                        showLoginRegistrarionButtons();
+                                        break;
+                                    case MessageCodes.FAILED_CONNECTION:
+                                        Toast.makeText(InitialAcitivity.this, "There has been a problem with the connection. :/",
+                                                Toast.LENGTH_SHORT).show();
+                                        intent.putExtra("source", "logged_in_no_network");
+                                        finish();
+                                        InitialAcitivity.this.startActivity(intent);
+                                        break;
+                                }
+                            }
+                        });
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLoginRegistrarionButtons();
+                            }
+                        });
+
+                    }
                 }
             }
         };
-        welcomeThread.start();
+        try {
+            welcomeThread.start();
+        }catch (Exception e){
+            Log.d("INITIAL_A_ANIMATION", e.getMessage());
+        }
+
      }
 }

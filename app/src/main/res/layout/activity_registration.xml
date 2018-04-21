@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_1"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true" >
 
 
     <ProgressBar

@@ -90,11 +90,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
 
-        FrameLayout fragment_container = findViewById(R.id.fragment_container);
-        AnimationDrawable animationDrawable = (AnimationDrawable)fragment_container.getBackground();
-        animationDrawable.setEnterFadeDuration(3000);
-        animationDrawable.setExitFadeDuration(3000);
-        animationDrawable.start();
+
     }
 
     @Override

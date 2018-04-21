@@ -5,6 +5,7 @@
     android:id="@+id/activity_hosting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_1"
     android:fitsSystemWindows="true"
     tools:context=".Hosting.HostingActivity">
 

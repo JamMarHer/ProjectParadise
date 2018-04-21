@@ -7,6 +7,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -156,6 +157,7 @@ public class HostingActivity extends AppCompatActivity {
             final LocationManager locationManager = new LocationManager(getContext());
             launch = rootView.findViewById(R.id.host_launch_button);
             eventManager = new EventManager(getContext());
+
             fragment_n = getArguments().getInt(ARG_SECTION_NUMBER);
             networkHandler = new NetworkHandler();
 
@@ -181,6 +183,7 @@ public class HostingActivity extends AppCompatActivity {
                     eventManager.updateEmail(cm.getEmail());
                     eventManager.updateToken(cm.getToken());
                     eventManager.updateLocation(locationManager.getLastFormatedLocation(getContext()));
+
                     if (eventManager.checkValidEvent()) {
                         launch.setText("lit");
                         ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
@@ -234,11 +237,22 @@ public class HostingActivity extends AppCompatActivity {
             return rootView;
         }
 
-        public void updateName() {
-            if (!eventName.getText().toString().equals("")) {
-                System.out.println("updating name");
-                eventManager.updateName(eventName.getText().toString());
+        @Nullable
+        @Override
+        public View getView() {
+            if (fragment_n == 2){
+                updateName();
+            }else if(fragment_n == 3){
+                updatePrivacy();
             }
+            return super.getView();
+
+        }
+
+        public void updateName() {
+            System.out.println("updating name");
+            eventManager.updateName(eventName.getText().toString());
+
         }
 
         public void updatePrivacy() {

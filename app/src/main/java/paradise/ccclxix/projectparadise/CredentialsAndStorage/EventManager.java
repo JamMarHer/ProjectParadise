@@ -21,13 +21,34 @@ public class EventManager {
 
     //TODO expand on reason to let the user know
     public boolean checkValidEvent(){
-        return !(this.getName()  == null || this.getEmail() == null || this.getPrivacy() == null
-        || this.getLongitude() == null || this.getLatitude() == null);
+        if(this.getName() == null){
+            Log.d("EVENT_INVALID: ", "NAME");
+            return false;
+        } else if(this.getEmail() == null){
+            Log.d("EVENT_INVALID: ", "EMAIL");
+            return false;
+        } else if(this.getPrivacy() == null){
+            Log.d("EVENT_INVALID: ", "PRIVACY");
+            return false;
+        } else if(this.getLatitude() == null){
+            Log.d("EVENT_INVALID: ", "LATITUDE");
+            return false;
+        } else if(this.getLongitude() == null){
+            Log.d("EVENT_INVALID: ", "LONGITUDE");
+            return false;
+        }
+        return true;
     }
 
     public EventManager(Context context){
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
+    }
+
+    public void clear(){
+        SharedPreferences.Editor editor =  sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 
     public void updateLocation(String location){
@@ -59,6 +80,9 @@ public class EventManager {
 
     public void updateName(String name){
         SharedPreferences.Editor editor= sharedPreferences.edit();
+        if (name.equals("")){
+            return;
+        }
         editor.putString("name", name);
         editor.apply();
     }

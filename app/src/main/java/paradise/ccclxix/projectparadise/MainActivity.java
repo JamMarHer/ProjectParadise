@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 EventManager eventManager =  new EventManager(getApplicationContext());
                 Event currentEvent =  eventManager.getEvent();
                 invalidateEvent(currentEvent);
+                eventManager.clear();
 
 
                 Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);

@@ -1,13 +1,9 @@
 package paradise.ccclxix.projectparadise.Network;
 
-import android.content.Intent;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.APIForms.APICall;
-import paradise.ccclxix.projectparadise.APIForms.APIResponse;
+
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.APIForms.EventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
@@ -15,10 +11,7 @@ import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.ErrorCodes;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
-import paradise.ccclxix.projectparadise.MainActivity;
-import paradise.ccclxix.projectparadise.R;
-import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

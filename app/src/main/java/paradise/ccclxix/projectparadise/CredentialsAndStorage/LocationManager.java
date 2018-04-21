@@ -31,7 +31,6 @@ public class LocationManager {
     private Context context;
     private SharedPreferences sharedPreferences;
     private final String APP_MODE = "iDaeLocation";
-    protected Location mLastLocation;
     private FusedLocationProviderClient mFusedLocationClient;
 
     public LocationManager(Context context){
@@ -61,7 +60,6 @@ public class LocationManager {
     }
 
 
-
     public String getLastFormatedLocation(Context context) {
         this.context = context;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -72,6 +70,7 @@ public class LocationManager {
             public void onSuccess(Location location) {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
+                    System.out.println("Current:  Lat: "+ Double.toString(location.getLatitude())+", Lon: "+Double.toString(location.getLongitude()));
                     setLocation(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
 
                 }

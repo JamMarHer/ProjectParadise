@@ -36,10 +36,12 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     public boolean runnig = false;
     public static final String ACTION = "com.loaders.FORCE";
     private NetworkHandler networkHandler;
+    private LocationManager locationManager;
 
     public EventLoader(Context context) {
         super(context);
         networkHandler = new NetworkHandler();
+        locationManager = new LocationManager(context);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
     public List<Event> loadInBackground() {
         Log.d("TE", "UPdated");
 
-        networkHandler.getEventsNearNetworkRequest(getCurrentCoor());
+        networkHandler.getEventsNearNetworkRequest(locationManager.getLastFormatedLocation(getContext()));
         Thread getEvents = new Thread() {
             @Override
             public void run() {
@@ -94,39 +96,6 @@ public class EventLoader extends AsyncTaskLoader<List<Event>> {
         }
 
         return data;
-    }
-
-    private void getData() {
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
-        Call<List<Event>> call = iDaeClient.get_events_nearme(getCurrentCoor());
-
-        call.enqueue(new Callback<List<Event>>() {
-            @Override
-            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
-                System.out.println(response.raw());
-                data.addAll(response.body());
-                System.out.println(response.body().toString());
-                runnig = false;
-            }
-
-            @Override
-            public void onFailure(Call<List<Event>> call, Throwable t) {
-                System.out.println(t.getMessage());
-
-                runnig = false;
-            }
-        });
-    }
-
-    private String getCurrentCoor() {
-        LocationManager lm = new LocationManager(getContext());
-        return lm.getFormatedLocation();
     }
 
     @Override

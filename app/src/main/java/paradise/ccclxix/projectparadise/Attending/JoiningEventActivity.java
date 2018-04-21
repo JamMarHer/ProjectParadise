@@ -104,7 +104,7 @@ public class JoiningEventActivity extends AppCompatActivity {
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            lastLocationFormated = locationManager.getLastFormatedLocation();
+            lastLocationFormated = locationManager.getLastFormatedLocation(getApplicationContext());
         }
     }
 

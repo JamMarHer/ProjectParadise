@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 
@@ -29,6 +30,14 @@ public class EventManager {
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
+    public void updateLocation(String location){
+        this.updateLocation(location.split("___")[0],location.split("___")[1]);
+    }
+
+    public void updateLocation(String latitude, String longitude){
+        this.updateLatitude(latitude);
+        this.updateLongitude(longitude);
+    }
 
     public void updateLatitude(String latitude){
         SharedPreferences.Editor editor = sharedPreferences.edit();

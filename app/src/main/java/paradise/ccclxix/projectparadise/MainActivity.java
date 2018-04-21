@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import paradise.ccclxix.projectparadise.APIForms.EventResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
+import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
@@ -28,6 +30,8 @@ import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.Network.NetworkHandler;
+import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment musicFragment;
     private HolderFragment sharesFragment;
     private AppModeManager appModeManager;
+    private NetworkHandler networkHandler;
 
     private boolean running = false;
 
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         appModeManager = new AppModeManager(getApplicationContext());
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
+        networkHandler = new NetworkHandler(getApplicationContext());
         if (source.equals("registration")){
             appModeManager.setModeToExplore();
             Toast.makeText(MainActivity.this, "Welcome fam.", Toast.LENGTH_SHORT).show();
@@ -85,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Working without internet.");
+            showSnackbar("Working without internet. Trying to reconnect.");
+            networkHandler.announceInternetConnection(this);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appModeManager.getMode().equals("host")){
@@ -95,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Trying to connect to server.");
+            showSnackbar("Server didn't respond. Trying to communicate.");
+            networkHandler.announceServerAlive(this);
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -105,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
     }
+
 
 
     private void showSnackbar(final String message) {

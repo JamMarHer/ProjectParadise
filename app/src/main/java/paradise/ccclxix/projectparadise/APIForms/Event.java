@@ -1,8 +1,6 @@
 package paradise.ccclxix.projectparadise.APIForms;
 
 
-import paradise.ccclxix.projectparadise.Loaders.EventLoader;
-
 public class Event implements  APICall{
 
     private String token = null;
@@ -13,6 +11,16 @@ public class Event implements  APICall{
     private String latitude = null;
     private String longitude = null;
 
+
+    public Event (){
+
+    }
+
+    public Event setUpLoginEvent(String token, String event_id){
+        this.token = token;
+        this.event_id = event_id;
+        return this;
+    }
 
     public Event (String token, String name){
         this.token = token;

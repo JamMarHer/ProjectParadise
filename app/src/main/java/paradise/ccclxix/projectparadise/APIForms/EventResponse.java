@@ -1,5 +1,8 @@
 package paradise.ccclxix.projectparadise.APIForms;
 
+import java.util.List;
+import java.util.Map;
+
 public class EventResponse implements APIResponse {
 
     private int status;
@@ -26,6 +29,16 @@ public class EventResponse implements APIResponse {
 
     public String getEvent_id() {
         return event_id;
+    }
+
+    @Override
+    public List<SecureUser> getAttendants() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> getMeta() {
+        return null;
     }
 
     public void setEvent_id(String event_id) {

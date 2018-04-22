@@ -14,9 +14,11 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_logout_host">Stop hosting</string>
+    <string name="action_logout_attendant">Leave event</string>
     <string name="action_create_account">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="display_qr_code">Display QR code</string>
     <string name="title_create_event">Create event</string>
     <string name="title_activity_registration">Create Account</string>
     <string name="error_invalid_email">This email address is invalid</string>

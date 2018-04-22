@@ -16,6 +16,7 @@ import java.util.List;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.APIForms.EventResponse;
+import paradise.ccclxix.projectparadise.APIForms.FullEventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
@@ -175,6 +176,78 @@ public class NetworkHandler {
 
             @Override
             public void onFailure(Call<List<Event>> call, Throwable t) {
+                networkResponse =  new NetworkResponse(MessageCodes.FAILED_CONNECTION);
+                running = false;
+            }
+        });
+    }
+
+    public void isEventValidNetworkRequest(final String event_id) {
+        if (!safeConnection()){
+            running = false;
+            return;
+        }
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+        Call<EventResponse> call = iDaeClient.is_event_valid(event_id);
+
+        call.enqueue(new Callback<EventResponse>() {
+            @Override
+            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
+                if (response.body().getStatus() == MessageCodes.OK){
+                    networkResponse = new NetworkResponse(MessageCodes.OK, response.body());
+                }else if(response.body().getStatus() == MessageCodes.INVALID_EVENT){
+                    networkResponse = new NetworkResponse(MessageCodes.OK, response.body());
+                }else {
+                    networkResponse = new NetworkResponse(MessageCodes.INCORRECT_FORMAT);
+                }
+
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<EventResponse> call, Throwable t) {
+                networkResponse =  new NetworkResponse(MessageCodes.FAILED_CONNECTION);
+                running = false;
+            }
+        });
+    }
+
+    public void loginEvent(final Event event) {
+        if (!safeConnection()){
+            running = false;
+            return;
+        }
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(ConnectionUtils.MAIN_SERVER_API)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
+        Call<FullEventResponse> call = iDaeClient.login_event(event);
+
+        call.enqueue(new Callback<FullEventResponse>() {
+            @Override
+            public void onResponse(Call<FullEventResponse> call, Response<FullEventResponse> response) {
+                if (response.body().getStatus() == MessageCodes.OK){
+                    networkResponse = new NetworkResponse(MessageCodes.OK, response.body());
+                }else if(response.body().getStatus() == MessageCodes.INVALID_EVENT){
+                    networkResponse = new NetworkResponse(MessageCodes.OK, response.body());
+                }else {
+                    System.out.println(response.body().getMeta().toString());
+                    System.out.println(response.body().getStatus());
+                    networkResponse = new NetworkResponse(MessageCodes.INCORRECT_FORMAT);
+                }
+
+                running = false;
+            }
+
+            @Override
+            public void onFailure(Call<FullEventResponse> call, Throwable t) {
                 networkResponse =  new NetworkResponse(MessageCodes.FAILED_CONNECTION);
                 running = false;
             }

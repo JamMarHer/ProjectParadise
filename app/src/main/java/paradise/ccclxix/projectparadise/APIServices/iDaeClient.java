@@ -4,6 +4,7 @@ import java.util.List;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.APIForms.EventResponse;
+import paradise.ccclxix.projectparadise.APIForms.FullEventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
 import retrofit2.Call;
@@ -32,7 +33,13 @@ public interface iDaeClient {
     @GET("/iDae/public/api/events/near_me/{coor}")
     Call<List<Event>> get_events_nearme(@Path("coor") String coor);
 
+    @GET("/iDae/public/api/events/valid_event/{event_id}")
+    Call<EventResponse> is_event_valid(@Path("event_id") String event_id);
+
     @POST("/iDae/public/api/events/invalidate")
     Call<EventResponse> invalidate_event(@Body Event event);
+
+    @POST("/iDae/public/api/user/login_event")
+    Call<FullEventResponse> login_event(@Body Event event);
 
 }

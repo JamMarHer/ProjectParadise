@@ -8,8 +8,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,27 +15,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
-import paradise.ccclxix.projectparadise.APIForms.EventResponse;
-import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
-import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.Fragments.HomeAttendantFragment;
 import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
-import paradise.ccclxix.projectparadise.Fragments.HostingHomeFragment;
+import paradise.ccclxix.projectparadise.Fragments.HomeHostingFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -67,10 +58,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             appModeManager.setModeToExplore();
             Toast.makeText(MainActivity.this, "Welcome fam.", Toast.LENGTH_SHORT).show();
             loadExploreMode();
-        }else if (source.equals("event_created")){
+        }else if (source.equals("event_created")) {
             appModeManager.setModeToHost();
             invalidateOptionsMenu();
             loadHostMode();
+        }else if (source.equals("qr_code_scanned")) {
+            appModeManager.setModeToAttendant();
+            loginEvent(intent.getStringExtra("event_id"));
+            loadAttendantMode();
         }else if (source.equals("joined_event")) {
             appModeManager.setModeToAttendant();
             loadAttendantMode();
@@ -117,7 +112,49 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     }
 
+    private void loginEvent(String eventID){
+        CredentialsManager cm = new CredentialsManager(getApplicationContext());
+        final Event event =  new Event().setUpLoginEvent(cm.getToken(), eventID);
 
+        Thread loginEvent = new Thread() {
+            @Override
+            public void run() {
+                networkHandler.loginEvent(event);
+                try {
+                    super.run();
+                    while (networkHandler.isRunning()) {
+                        sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            NetworkResponse networkResponse = networkHandler.getNetworkResponse();
+                            switch (networkResponse.getStatus()){
+
+                                case MessageCodes.OK:
+                                    showSnackbar("You are now logged in. There are "+String.valueOf(
+                                            networkResponse.getResponse().getAttendants().size())+ " attendants.");
+                                    break;
+                                case MessageCodes.INCORRECT_FORMAT:
+                                    showSnackbar("There has been a problem with the server response.");
+                                    break;
+                                case MessageCodes.FAILED_CONNECTION:
+                                    showSnackbar("Server didn't respond.");
+                                    break;
+                                case MessageCodes.NO_INTERNET_CONNECTION:
+                                    showSnackbar("No internet connection.");
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        loginEvent.start();
+    }
 
     private void showSnackbar(final String message) {
         Snackbar.make(findViewById(android.R.id.content),message,
@@ -131,9 +168,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.log_out_hosting:
                 appModeManager.setModeToExplore();
 
-                //TODO wrapup the event.
                 Event currentEvent = eventManager.getEvent();
                 invalidateEvent(currentEvent);
+                return true;
+            case R.id.log_out_attending:
+                appModeManager.setModeToExplore();
+                logoutEvent(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -146,9 +186,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (appModeManager.isHostingMode()){
             inflater.inflate(R.menu.menu_hosting, menu);
             return true;
+        }else if(appModeManager.isAttendantMode()){
+            inflater.inflate(R.menu.menu_attending, menu);
+            return true;
         }
         return false;
     }
+
 
     public void loadExploreMode(){
         homeFragment =  new HomeFragment();
@@ -157,13 +201,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void loadHostMode(){
-        homeFragment =  new HostingHomeFragment();
+        homeFragment =  new HomeHostingFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
     }
 
     public void loadAttendantMode(){
-        homeFragment =  new HomeFragment();
+        homeFragment =  new HomeAttendantFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
     }
@@ -259,5 +303,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
         };
         invalidateEvent.start();
+    }
+
+    // TODO
+    private void logoutEvent(final Event event){
+        Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
+        finish();
+        startActivity(intent);
     }
 }

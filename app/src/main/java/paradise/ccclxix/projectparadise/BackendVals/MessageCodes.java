@@ -25,5 +25,8 @@ public class MessageCodes {
     public final static int SERVER_NOT_ALIVE = 303;
     public final static int NO_INTERNET_CONNECTION = 304;
 
+    //Event
+    public final static int INVALID_EVENT = 400;
+
 
 }

@@ -44,7 +44,10 @@
             android:name=".Attending.JoiningEventActivity"
             android:label="@string/title_activity_joining_event"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Attending.QRScannerActivity"></activity>
+        <activity android:name=".Attending.QRScannerActivity" />
+        <activity
+            android:name=".Hosting.CreateEventActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
@@ -25,7 +24,7 @@ import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
 import paradise.ccclxix.projectparadise.Fragments.HomeHostingFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
-import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
+import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void createEvent(View view){
-        Intent intent = new Intent(MainActivity.this, HostingActivity.class);
+        Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
         MainActivity.this.startActivity(intent);
     }
 

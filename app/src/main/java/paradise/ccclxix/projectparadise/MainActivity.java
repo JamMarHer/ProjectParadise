@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         networkHandler = new NetworkHandler(getApplicationContext());
         if (source.equals("registration")){
             appModeManager.setModeToExplore();
-            Toast.makeText(MainActivity.this, "Welcome fam.", Toast.LENGTH_SHORT).show();
+            showSnackbar("Welcome fam :)");
             loadExploreMode();
         }else if (source.equals("event_created")) {
             appModeManager.setModeToHost();

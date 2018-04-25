@@ -17,16 +17,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
-import paradise.ccclxix.projectparadise.APIForms.User;
+import Idae.IDaeClient;
+import Idae.model.UserToAddRequest;
+import Idae.model.UserToAddResponse;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
-import paradise.ccclxix.projectparadise.Network.NetworkHandler;
-import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 
 
@@ -34,24 +34,28 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private static final int REQUEST_READ_CONTACTS = 0;
 
+    UserToAddResponse userToAddResponse;
+    ApiClientFactory apiClientFactory;
+    IDaeClient iDaeClient;
+
 
     private View mProgressView;
     private View mRegistrationFormView;
     private boolean running = false;
-    private User userToRegister;
-
     private CredentialsManager credentialsManager;
     private EditText usernameView;
     private AutoCompleteTextView emailView;
     private EditText passwordView;
     private EditText rePasswordView;
-    private NetworkHandler networkHandler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_registration);
         super.onCreate(savedInstanceState);
+
+        apiClientFactory = new ApiClientFactory();
+        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
         credentialsManager = new CredentialsManager(this);
         usernameView = findViewById(R.id.registration_username);
@@ -68,7 +72,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 return false;
             }
         });
-        networkHandler = new NetworkHandler(getApplicationContext());
         mRegistrationFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.register_progress);
 
@@ -143,7 +146,10 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            userToRegister = new User(username, email, password);
+            final UserToAddRequest userToAddRequest = new UserToAddRequest();
+            userToAddRequest.setEmail(email);
+            userToAddRequest.setUsername(username);
+            userToAddRequest.setPassword(password);
 
             showProgress(true);
             running = true;
@@ -151,25 +157,25 @@ public class RegistrationActivity extends AppCompatActivity {
             Thread addUser = new Thread() {
                 @Override
                 public void run() {
-                    networkHandler.addUserNetworkRequest(userToRegister);
+                    userToAddResponse = iDaeClient.idaeUserAddPost(userToAddRequest);
                     try {
                         super.run();
-                        while (networkHandler.isRunning()) {
-                            sleep(100);
+                        while (userToAddResponse == null) {
+                            sleep(36);
                         }
+                        System.out.println(userToAddResponse.getToken());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                NetworkResponse networkResponse = networkHandler.getNetworkResponse();
-                                switch (networkResponse.getStatus()){
+                                switch (userToAddResponse.getStatus()){
 
-                                    case 100:   Toast.makeText(RegistrationActivity.this, "User added :)", Toast.LENGTH_SHORT).show();
+                                    case 100:
                                         Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                        credentialsManager.registrationSave(userToRegister.getUsername(),userToRegister.getEmail(),
-                                                networkResponse.getResponse().getToken());
+                                        credentialsManager.registrationSave(userToAddRequest.getUsername(),userToAddRequest.getEmail(),
+                                                userToAddResponse.getToken());
                                         intent.putExtra("source","registration");
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         finish();

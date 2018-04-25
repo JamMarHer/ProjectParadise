@@ -18,23 +18,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import paradise.ccclxix.projectparadise.APIForms.User;
-import paradise.ccclxix.projectparadise.APIForms.UserResponse;
-import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
-import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+
+
+import Idae.IDaeClient;
+import Idae.model.UserLoginRequest;
+import Idae.model.UserLoginResposne;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
 import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A login screen that offers login via email/password.
@@ -57,9 +53,10 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private boolean running = false;
-    private User userToLogin;
+    private UserLoginResposne userLoginResposne;
+    private ApiClientFactory apiClientFactory;
+    private IDaeClient iDaeClient;
     private CredentialsManager credentialsManager;
-    private NetworkHandler networkHandler;
 
     // UI references.
     // TODO name of class variables don't exactly match resgistration class.
@@ -73,8 +70,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        apiClientFactory =  new ApiClientFactory();
+        iDaeClient = apiClientFactory.build(IDaeClient.class);
+
         // Set up the login form.
-        networkHandler = new NetworkHandler(getApplicationContext());
 
         credentialsManager = new CredentialsManager(this);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -153,9 +152,10 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
-            userToLogin = new User("by_email", email,password);
+            final UserLoginRequest userLoginRequest = new UserLoginRequest();
+            userLoginRequest.setEmail(email);
+            userLoginRequest.setPassword(password);
             showProgress(true);
-            //loginNetworkRequest(userToLogin);
 
             showProgress(true);
             running = true;
@@ -163,11 +163,11 @@ public class LoginActivity extends AppCompatActivity {
             Thread loginUser = new Thread() {
                 @Override
                 public void run() {
-                    networkHandler.loginNetworkRequest(userToLogin);
+                    userLoginResposne = iDaeClient.idaeUserLoginPost(userLoginRequest);
                     try {
                         super.run();
-                        while (networkHandler.isRunning()) {
-                            sleep(100);
+                        while (userLoginResposne == null) {
+                            sleep(39);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -175,13 +175,13 @@ public class LoginActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                NetworkResponse networkResponse = networkHandler.getNetworkResponse();
-                                switch (networkResponse.getStatus()){
-
-                                    case 100:
+                                switch (userLoginResposne.getStatus()){
+                                    case MessageCodes.OK:
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        credentialsManager.registrationSave(userToLogin.getUsername(),userToLogin.getEmail(),
-                                                networkResponse.getResponse().getToken());
+                                        credentialsManager.registrationSave(
+                                                userLoginResposne.getUsername(),
+                                                userLoginRequest.getEmail(),
+                                                userLoginResposne.getToken());
                                         intent.putExtra("source","login");
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         LoginActivity.this.startActivity(intent);
@@ -189,14 +189,8 @@ public class LoginActivity extends AppCompatActivity {
                                     case MessageCodes.EMAIL_NOT_AVAILABLE:
                                         setError(mPasswordView, getString(R.string.error_incorrect_password));
                                         break;
-                                    case MessageCodes.INCORRECT_FORMAT:
-                                        showSnackbar("There has been a problem with the server response.");
-                                        break;
                                     case MessageCodes.FAILED_CONNECTION:
-                                        showSnackbar("Server didn't respond.");
-                                        break;
-                                    case MessageCodes.NO_INTERNET_CONNECTION:
-                                        showSnackbar("No internet connection.");
+                                        showSnackbar("Problem with connection please try again later.");
                                         break;
                                 }
                                 showProgress(false);

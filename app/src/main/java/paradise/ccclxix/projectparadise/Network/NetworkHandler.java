@@ -19,6 +19,8 @@ import paradise.ccclxix.projectparadise.APIForms.EventResponse;
 import paradise.ccclxix.projectparadise.APIForms.FullEventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
+import paradise.ccclxix.projectparadise.APIForms.UserToAddRequest;
+import paradise.ccclxix.projectparadise.APIForms.UserToAddResponse;
 import paradise.ccclxix.projectparadise.APIServices.iDaeClient;
 import paradise.ccclxix.projectparadise.BackendVals.ConnectionUtils;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
@@ -83,7 +85,7 @@ public class NetworkHandler {
     }
 
 
-    public void addUserNetworkRequest(final User user){
+    public void addUserNetworkRequest(final UserToAddRequest user){
         if (!safeConnection()){
             running = false;
             return;
@@ -95,10 +97,10 @@ public class NetworkHandler {
 
         iDaeClient iDaeClient = retrofit.create(paradise.ccclxix.projectparadise.APIServices.iDaeClient.class);
 
-        Call<UserResponse> call = iDaeClient.addUser(user);
-        call.enqueue(new Callback<UserResponse>() {
+        Call<UserToAddResponse> call = iDaeClient.addUser(user);
+        call.enqueue(new Callback<UserToAddResponse>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+            public void onResponse(Call<UserToAddResponse> call, Response<UserToAddResponse> response) {
                 System.out.println(response.raw());
                 if (response.body().getStatus() == MessageCodes.EMAIL_NOT_AVAILABLE) {
                     networkResponse = new NetworkResponse(MessageCodes.EMAIL_NOT_AVAILABLE, response.body());
@@ -114,7 +116,7 @@ public class NetworkHandler {
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<UserToAddResponse> call, Throwable t) {
                 networkResponse = new NetworkResponse(MessageCodes.FAILED_CONNECTION);
                 running = false;
             }
@@ -290,6 +292,7 @@ public class NetworkHandler {
     public void checkLoggedInNetworkRequest(final User user) {
         if (!safeConnection()){
             running = false;
+            System.out.println("here");
             return;
         }else if(user.getToken() == null){
             networkResponse = USER_NULL;
@@ -391,9 +394,6 @@ public class NetworkHandler {
         if(!isInternetAlive()){
             networkResponse = NO_INTERNET;
             return false;
-        }else if(!isServerAlive()){
-            networkResponse = NO_SERVER;
-            return false;
         }else {
             return true;
         }
@@ -411,7 +411,7 @@ public class NetworkHandler {
 
     private boolean isServerAlive(){
         try {
-            SocketAddress sockaddr = new InetSocketAddress(ConnectionUtils.MAIN_SERVER_IP, 80);
+            SocketAddress sockaddr = new InetSocketAddress(ConnectionUtils.MAIN_SERVER_IP,80);
             // Create an unbound socket
             Socket sock = new Socket();
 

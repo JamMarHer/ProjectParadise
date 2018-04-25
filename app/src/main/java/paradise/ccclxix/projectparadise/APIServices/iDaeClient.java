@@ -7,6 +7,8 @@ import paradise.ccclxix.projectparadise.APIForms.EventResponse;
 import paradise.ccclxix.projectparadise.APIForms.FullEventResponse;
 import paradise.ccclxix.projectparadise.APIForms.User;
 import paradise.ccclxix.projectparadise.APIForms.UserResponse;
+import paradise.ccclxix.projectparadise.APIForms.UserToAddRequest;
+import paradise.ccclxix.projectparadise.APIForms.UserToAddResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -18,8 +20,12 @@ public interface iDaeClient {
     @GET("/iDae/api/user/{user}")
     Call<UserResponse> getUserPresense(@Path("user") String user);
 
-    @POST("/iDae/public/api/user/add")
-    Call<UserResponse> addUser(@Body User user);
+    @POST("/idae/user/add")
+    Call<UserToAddResponse> addUser(@Body UserToAddRequest user);
+
+
+
+
 
     @POST("/iDae/public/api/user/login")
     Call<UserResponse> loginUser(@Body User user);

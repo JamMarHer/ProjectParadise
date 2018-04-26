@@ -2,13 +2,9 @@ package paradise.ccclxix.projectparadise.Attending;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -18,27 +14,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import paradise.ccclxix.projectparadise.APIForms.Event;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
-import paradise.ccclxix.projectparadise.Hosting.HostingActivity;
 import paradise.ccclxix.projectparadise.Loaders.EventLoader;
 import paradise.ccclxix.projectparadise.Loaders.EventLoaderAdapter;
-import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class JoiningEventActivity extends AppCompatActivity {
@@ -79,12 +67,13 @@ public class JoiningEventActivity extends AppCompatActivity {
 
         eventLoaderAdapter = new EventLoaderAdapter(this);
         locationManager = new LocationManager(getApplicationContext());
-
+/*
         getSupportLoaderManager().initLoader(R.id.string_loader_id, null,  loaderCallbacks);
         eventLoader = new EventLoader(getApplicationContext(), this);
 
         ListView events_list = findViewById(R.id.events_listview);
         events_list.setAdapter(eventLoaderAdapter);
+        */
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         super.onCreate(savedInstanceState);
     }

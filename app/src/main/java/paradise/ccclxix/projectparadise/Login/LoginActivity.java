@@ -22,14 +22,12 @@ import android.widget.TextView;
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
 
-import Idae.IDaeClient;
-import Idae.model.UserLoginRequest;
-import Idae.model.UserLoginResposne;
+import iDaeAPI.IDaeClient;
+import iDaeAPI.model.UserLoginRequest;
+import iDaeAPI.model.UserLoginResposne;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
-import paradise.ccclxix.projectparadise.Network.NetworkHandler;
-import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 
 /**

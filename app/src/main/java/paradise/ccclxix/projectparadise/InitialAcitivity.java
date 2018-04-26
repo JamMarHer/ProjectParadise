@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
-import Idae.IDaeClient;
-import Idae.model.UserCheckTokenRequest;
-import Idae.model.UserCheckTokenResponse;
+import iDaeAPI.IDaeClient;
+import iDaeAPI.model.UserCheckTokenRequest;
+import iDaeAPI.model.UserCheckTokenResponse;
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;

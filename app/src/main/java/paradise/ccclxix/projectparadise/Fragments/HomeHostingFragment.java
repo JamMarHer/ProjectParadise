@@ -81,7 +81,7 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
     }
 
     private Bitmap getEventQR(){
-        return QRCode.from(eventManager.getID()).bitmap();
+        return QRCode.from(eventManager.getEventHost().getEventID()).bitmap();
     }
 
     private LoaderManager.LoaderCallbacks<List<String>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<String>>() {

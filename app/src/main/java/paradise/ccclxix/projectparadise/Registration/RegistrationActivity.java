@@ -21,9 +21,9 @@ import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 
-import Idae.IDaeClient;
-import Idae.model.UserToAddRequest;
-import Idae.model.UserToAddResponse;
+import iDaeAPI.IDaeClient;
+import iDaeAPI.model.UserToAddRequest;
+import iDaeAPI.model.UserToAddResponse;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;

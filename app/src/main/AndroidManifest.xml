@@ -37,10 +37,6 @@
             android:name=".Login.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".Hosting.HostingActivity"
-            android:label="@string/title_activity_hosting"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Attending.JoiningEventActivity"
             android:label="@string/title_activity_joining_event"
             android:theme="@style/AppTheme.NoActionBar" />

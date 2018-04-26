@@ -16,10 +16,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.google.gson.Gson;
 import com.google.zxing.Result;
 
+import iDaeAPI.IDaeClient;
+import iDaeAPI.model.EventAttenEnterRequest;
+import iDaeAPI.model.EventAttenEnterResponse;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Network.NetworkHandler;
@@ -32,18 +40,28 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
-    private NetworkHandler networkHandler;
+
+    ApiClientFactory apiClientFactory;
+    IDaeClient iDaeClient;
+
+    EventAttenEnterResponse eventAttenEnterResponse;
+    CredentialsManager credentialsManager;
+    EventManager eventManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
-        networkHandler =  new NetworkHandler(getApplicationContext());
+        apiClientFactory = new ApiClientFactory();
+        iDaeClient = apiClientFactory.build(IDaeClient.class);
+
+        credentialsManager = new CredentialsManager(getApplicationContext());
+        eventManager = new EventManager(getApplicationContext());
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkPermission()){
-                Toast.makeText(QRScannerActivity.this, "Persmission is granted", Toast.LENGTH_SHORT).show();
+                showSnackbar("Scan the QR code from one of the event hosts.");
             }else {
                 requestPermission();
             }
@@ -128,16 +146,18 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     @Override
     public void handleResult(Result result) {
         final String scanResult = result.getText();
+        final EventAttenEnterRequest eventAttenEnterRequest = new EventAttenEnterRequest();
+        eventAttenEnterRequest.setEventID(scanResult);
+        eventAttenEnterRequest.setUsername(credentialsManager.getUsername());
+        eventAttenEnterRequest.setToken(credentialsManager.getToken());
 
-
-
-        Thread checkEvent = new Thread() {
+        Thread loginEvent = new Thread() {
             @Override
             public void run() {
-                networkHandler.isEventValidNetworkRequest(scanResult);
+                eventAttenEnterResponse = iDaeClient.idaeEventAttendantEntereventPost(eventAttenEnterRequest);
                 try {
                     super.run();
-                    while (networkHandler.isRunning()) {
+                    while (eventAttenEnterResponse == null) {
                         sleep(100);
                     }
                 } catch (InterruptedException e) {
@@ -146,26 +166,30 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            NetworkResponse networkResponse = networkHandler.getNetworkResponse();
-                            switch (networkResponse.getStatus()){
-                                case 100:
-                                    createSuccessDialog(scanResult, networkResponse.getResponse().getEvent_id());
+                            switch (eventAttenEnterResponse.getStatus()){
+
+                                case MessageCodes.OK:
+                                    if (eventAttenEnterResponse.getAgeTarget().equals("all")){
+                                        startMainActivity(eventAttenEnterResponse);
+                                        break;
+                                    }
+                                    createSuccessDialog(scanResult, eventAttenEnterResponse);
                                     break;
-                                case MessageCodes.INVALID_EVENT:
-                                    scannerView.resumeCameraPreview(QRScannerActivity.this);
-                                    showSnackbar("Event is no longer valid.");
+                                case MessageCodes.INCORRECT_TOKEN:
+                                    showSnackbar("You have been logged out.");
+                                    try {
+                                        sleep(300);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intentOut = new Intent(QRScannerActivity.this, InitialAcitivity.class);
+                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    credentialsManager.clear();
+                                    QRScannerActivity.this.startActivity(intentOut);
                                     break;
-                                case MessageCodes.INCORRECT_FORMAT:
+                                case MessageCodes.SERVER_ERROR:
                                     scannerView.resumeCameraPreview(QRScannerActivity.this);
-                                    showSnackbar("There has been a problem with the server response.");
-                                    break;
-                                case MessageCodes.FAILED_CONNECTION:
-                                    scannerView.resumeCameraPreview(QRScannerActivity.this);
-                                    showSnackbar("Server didn't respond.");
-                                    break;
-                                case MessageCodes.NO_INTERNET_CONNECTION:
-                                    scannerView.resumeCameraPreview(QRScannerActivity.this);
-                                    showSnackbar("No internet connection.");
+                                    showSnackbar("Server didn't respond, please try again later.");
                                     break;
                             }
                         }
@@ -173,14 +197,25 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 }
             }
         };
-        checkEvent.start();
+        loginEvent.start();
 
     }
 
-    private void createSuccessDialog(final String scanResult, final String eventName){
+    public void startMainActivity(EventAttenEnterResponse event){
+        Intent intent = new Intent(QRScannerActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("source", "qr_code_scanned");
+        eventManager.updateEventAttendant(event);
+        eventManager.setAttendantMode();
+
+        finish();
+        startActivity(intent);
+    }
+
+    private void createSuccessDialog(final String scanResult, final EventAttenEnterResponse event){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
 
-        builder.setTitle("Event found!");
+        builder.setTitle(String.format("Event: %s", event.getName()));
 
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -200,12 +235,15 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 Intent intent = new Intent(QRScannerActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("source", "qr_code_scanned");
-                intent.putExtra("event_id", scanResult);
+                eventManager.updateEventAttendant(event);
+                eventManager.setAttendantMode();
                 finish();
                 startActivity(intent);
             }
         });
-        builder.setMessage(eventName);
+        builder.setMessage(String.format("This event is intended for %s+ years old. \n If you are %s+" +
+                " years old and want to join hit that join button!", event.getAgeTarget(),event.getAgeTarget()));
+
         AlertDialog alert = builder.create();
         alert.show();
     }

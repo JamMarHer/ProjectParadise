@@ -13,8 +13,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+
+import iDaeAPI.IDaeClient;
+import iDaeAPI.model.EventAttenEnterRequest;
+import iDaeAPI.model.EventAttenEnterResponse;
+import iDaeAPI.model.EventAttenLeaveRequest;
+import iDaeAPI.model.EventAttenLeaveResponse;
+import iDaeAPI.model.EventHostLeaveRequest;
+import iDaeAPI.model.EventHostLeaveResponse;
 import paradise.ccclxix.projectparadise.APIForms.Event;
 import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
+import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
@@ -39,11 +49,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment musicFragment;
     private HolderFragment sharesFragment;
     private AppModeManager appModeManager;
-    private NetworkHandler networkHandler;
 
-    private EventManager eventManager;
 
-    private boolean running = false;
+    ApiClientFactory apiClientFactory;
+    IDaeClient iDaeClient;
+
+    EventHostLeaveResponse eventHostLeaveResponse;
+    EventAttenEnterResponse eventAttenEnterResponse;
+    EventAttenLeaveResponse eventAttenLeaveResponse;
+
+    EventManager eventManager;
+    CredentialsManager credentialsManager;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         appModeManager = new AppModeManager(getApplicationContext());
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
-        networkHandler = new NetworkHandler(getApplicationContext());
         if (source.equals("registration")){
             appModeManager.setModeToExplore();
             showSnackbar("Welcome fam :)");
@@ -63,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             loadHostMode();
         }else if (source.equals("qr_code_scanned")) {
             appModeManager.setModeToAttendant();
-            loginEvent(intent.getStringExtra("event_id"));
             loadAttendantMode();
         }else if (source.equals("joined_event")) {
             appModeManager.setModeToAttendant();
@@ -89,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 loadExploreMode();
             }
             showSnackbar("Working without internet. Trying to reconnect.");
-            networkHandler.announceInternetConnection(this);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appModeManager.getMode().equals("host")){
@@ -100,60 +116,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 loadExploreMode();
             }
             showSnackbar("Server didn't respond. Trying to communicate.");
-            networkHandler.announceServerAlive(this);
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+
+        credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
+
+        apiClientFactory = new ApiClientFactory();
+        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
 
     }
 
-    private void loginEvent(String eventID){
-        CredentialsManager cm = new CredentialsManager(getApplicationContext());
-        final Event event =  new Event().setUpLoginEvent(cm.getToken(), eventID);
-
-        Thread loginEvent = new Thread() {
-            @Override
-            public void run() {
-                networkHandler.loginEvent(event);
-                try {
-                    super.run();
-                    while (networkHandler.isRunning()) {
-                        sleep(100);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            NetworkResponse networkResponse = networkHandler.getNetworkResponse();
-                            switch (networkResponse.getStatus()){
-
-                                case MessageCodes.OK:
-                                    showSnackbar("You are now logged in. There are "+String.valueOf(
-                                            networkResponse.getResponse().getAttendants().size())+ " attendants.");
-                                    break;
-                                case MessageCodes.INCORRECT_FORMAT:
-                                    showSnackbar("There has been a problem with the server response.");
-                                    break;
-                                case MessageCodes.FAILED_CONNECTION:
-                                    showSnackbar("Server didn't respond.");
-                                    break;
-                                case MessageCodes.NO_INTERNET_CONNECTION:
-                                    showSnackbar("No internet connection.");
-                                    break;
-                            }
-                        }
-                    });
-                }
-            }
-        };
-        loginEvent.start();
-    }
 
     private void showSnackbar(final String message) {
         Snackbar.make(findViewById(android.R.id.content),message,
@@ -167,12 +144,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.log_out_hosting:
                 appModeManager.setModeToExplore();
 
-                Event currentEvent = eventManager.getEvent();
-                invalidateEvent(currentEvent);
+                leaveHostEvent();
                 return true;
             case R.id.log_out_attending:
                 appModeManager.setModeToExplore();
-                logoutEvent(null);
+                leaveAttendantEvent();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -217,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void joinEvent(View view){
-        Intent intent = new Intent(MainActivity.this, JoiningEventActivity.class);
+        Intent intent = new Intent(MainActivity.this, QRScannerActivity.class);
         MainActivity.this.startActivity(intent);
     }
 
@@ -261,14 +237,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
-    private void invalidateEvent(final Event event){
+    private void leaveHostEvent(){
+
+        final EventHostLeaveRequest eventHostLeaveRequest = new EventHostLeaveRequest();
+        eventHostLeaveRequest.setEventID(eventManager.getEventHost().getEventID());
+        eventHostLeaveRequest.setToken(credentialsManager.getToken());
+        eventHostLeaveRequest.setUsername(credentialsManager.getUsername());
+
         Thread invalidateEvent = new Thread() {
             @Override
             public void run() {
-                networkHandler.invalidateEventNetworkRequest(event);
+                eventHostLeaveResponse = iDaeClient.idaeEventHostLeaveeventPost(eventHostLeaveRequest);
                 try {
                     super.run();
-                    while (networkHandler.isRunning()) {
+                    while (eventHostLeaveResponse == null) {
                         sleep(100);
                     }
                 } catch (InterruptedException e) {
@@ -277,23 +259,29 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            NetworkResponse networkResponse = networkHandler.getNetworkResponse();
-                            switch (networkResponse.getStatus()){
+                            switch (eventHostLeaveResponse.getStatus()){
 
-                                case 100:
-                                    eventManager.clear();
+                                case MessageCodes.OK:
+                                    eventManager.updateEventHost(null);
                                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
                                     finish();
                                     startActivity(intent);
                                     break;
-                                case MessageCodes.INCORRECT_FORMAT:
-                                    showSnackbar("There has been a problem with the server response.");
+                                case MessageCodes.INCORRECT_TOKEN:
+                                    showSnackbar("You have been logged out.");
+                                    try {
+                                        sleep(300);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intentOut = new Intent(MainActivity.this, InitialAcitivity.class);
+                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                    credentialsManager.clear();
+                                    MainActivity.this.startActivity(intentOut);
                                     break;
-                                case MessageCodes.FAILED_CONNECTION:
-                                    showSnackbar("Server didn't respond.");
-                                    break;
-                                case MessageCodes.NO_INTERNET_CONNECTION:
-                                    showSnackbar("No internet connection.");
+                                case MessageCodes.SERVER_ERROR:
+                                    showSnackbar("Server didn't respond, please try again later.");
                                     break;
                             }
                         }
@@ -304,10 +292,59 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         invalidateEvent.start();
     }
 
-    // TODO
-    private void logoutEvent(final Event event){
-        Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-        finish();
-        startActivity(intent);
+    private void leaveAttendantEvent(){
+
+        final EventAttenLeaveRequest eventAttenLeaveRequest = new EventAttenLeaveRequest();
+        eventAttenLeaveRequest.setEventID(eventManager.getEventAttendant().getEventID());
+        eventAttenLeaveRequest.setToken(credentialsManager.getToken());
+        eventAttenLeaveRequest.setUsername(credentialsManager.getUsername());
+
+        Thread invalidateEvent = new Thread() {
+            @Override
+            public void run() {
+                eventAttenLeaveResponse = iDaeClient.idaeEventAttendantLeaveeventPost(eventAttenLeaveRequest);
+                try {
+                    super.run();
+                    while (eventAttenLeaveResponse == null) {
+                        sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            switch (eventAttenLeaveResponse.getStatus()){
+
+                                case MessageCodes.OK:
+                                    eventManager.updateEventHost(null);
+                                    Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
+                                    finish();
+                                    startActivity(intent);
+                                    break;
+                                case MessageCodes.INCORRECT_TOKEN:
+                                    showSnackbar("You have been logged out.");
+                                    try {
+                                        sleep(300);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intentOut = new Intent(MainActivity.this, InitialAcitivity.class);
+                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                    credentialsManager.clear();
+                                    MainActivity.this.startActivity(intentOut);
+                                    break;
+                                case MessageCodes.SERVER_ERROR:
+                                    showSnackbar("Server didn't respond, please try again later.");
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        invalidateEvent.start();
     }
+
 }

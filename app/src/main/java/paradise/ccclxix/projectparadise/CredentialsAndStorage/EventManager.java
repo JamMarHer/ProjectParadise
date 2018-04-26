@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import iDaeAPI.model.EventAttenEnterRequest;
+import iDaeAPI.model.EventAttenEnterResponse;
+import iDaeAPI.model.EventCreateResponse;
 import paradise.ccclxix.projectparadise.APIForms.Event;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -15,116 +20,63 @@ public class EventManager {
     private final String TEMP_EVENT = "iDaeTempEvent";
 
 
-    public Event getEvent(){
-        return new Event(this.getToken(),this.getID(),this.getEmail(), this.getName(), this.getPrivacy(), this.getLatitude(), this.getLongitude());
-    }
-
-    //TODO expand on reason to let the user know
-    public boolean checkValidEvent(){
-        if(this.getName() == null){
-            Log.d("EVENT_INVALID: ", "NAME");
-            return false;
-        } else if(this.getEmail() == null){
-            Log.d("EVENT_INVALID: ", "EMAIL");
-            return false;
-        } else if(this.getPrivacy() == null){
-            Log.d("EVENT_INVALID: ", "PRIVACY");
-            return false;
-        } else if(this.getLatitude() == null){
-            Log.d("EVENT_INVALID: ", "LATITUDE");
-            return false;
-        } else if(this.getLongitude() == null){
-            Log.d("EVENT_INVALID: ", "LONGITUDE");
-            return false;
-        }
-        return true;
-    }
-
     public EventManager(Context context){
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
-    public void clear(){
-        SharedPreferences.Editor editor =  sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+    public EventManager(Context context, EventCreateResponse event){
+        this.context = context;
+        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
+        this.updateEventHost(event);
+        this.setHostMode();
     }
 
-    public void updateLocation(String location){
-        this.updateLocation(location.split("___")[0],location.split("___")[1]);
+    public EventManager(Context context, EventAttenEnterResponse event){
+        this.context = context;
+        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
+        this.updateEventAttendant(event);
+        this.setAttendantMode();
     }
 
-    public void updateLocation(String latitude, String longitude){
-        this.updateLatitude(latitude);
-        this.updateLongitude(longitude);
-    }
-
-    public void updateLatitude(String latitude){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("latitude", latitude);
-        editor.apply();
-    }
-
-    public void updateLongitude(String longitude){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("longitude", longitude);
-        editor.apply();
-    }
-
-    public void updateEmail(String email){
+    public void setAttendantMode(){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("email", email);
+        editor.putString("eventMode", "attendant");
         editor.apply();
     }
 
-    public void updateName(String name){
+    public void setHostMode(){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        if (name.equals("")){
-            return;
-        }
-        editor.putString("name", name);
+        editor.putString("eventMode", "host");
         editor.apply();
     }
 
-    public void updateID(String id){
+    public String getMode(){
+        return  this.sharedPreferences.getString("eventMode", null);
+    }
+
+    public void updateEventAttendant(EventAttenEnterResponse event){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("id", id);
+        Gson gson = new Gson();
+        editor.putString("eventAtten", gson.toJson(event));
         editor.apply();
     }
 
-    public void updatePrivacy(String privacy){
+    public void updateEventHost(EventCreateResponse event){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("privacy", privacy);
+        Gson gson = new Gson();
+        editor.putString("eventHost", gson.toJson(event));
         editor.apply();
     }
 
-    public void updateToken(String token){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("token", token);
-        editor.apply();
+    public EventCreateResponse getEventHost(){
+        Gson gson = new Gson();
+        return gson.fromJson(sharedPreferences.getString("eventHost", null),EventCreateResponse.class);
     }
 
-    public String getEmail(){
-        return sharedPreferences.getString("email", null);
+    public EventAttenEnterResponse getEventAttendant(){
+        Gson gson = new Gson();
+        return gson.fromJson(sharedPreferences.getString("eventAtten", null), EventAttenEnterResponse.class);
     }
-
-    public String getName(){
-        return sharedPreferences.getString("name",null);
-    }
-
-    public String getID(){
-        return sharedPreferences.getString("id",null);
-    }
-
-    public String getPrivacy(){
-        return sharedPreferences.getString("privacy","true");
-    }
-
-    public String getLatitude(){ return  sharedPreferences.getString("latitude", null);}
-
-    public String getLongitude(){ return  sharedPreferences.getString("longitude", null);}
-
-    public String getToken(){ return  sharedPreferences.getString("token", null);}
 
 }

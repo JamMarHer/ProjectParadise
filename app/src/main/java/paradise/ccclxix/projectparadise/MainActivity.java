@@ -1,6 +1,7 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -12,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.androidadvance.topsnackbar.TSnackbar;
 
 import iDaeAPI.IDaeClient;
 import iDaeAPI.model.EventAttenEnterRequest;
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
             appModeManager.setModeToExplore();
-            showSnackbar("Welcome fam :)");
+            showSnackbar("Welcome fam :)", false, false);
             loadExploreMode();
         }else if (source.equals("event_created")) {
             appModeManager.setModeToHost();
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Working without internet. Trying to reconnect.");
+            showSnackbar("Working without internet. Trying to reconnect.", false, false);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appModeManager.getMode().equals("host")){
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Server didn't respond. Trying to communicate.");
+            showSnackbar("Server didn't respond. Trying to communicate.", false, false);
         }
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -132,9 +135,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    private void showSnackbar(final String message) {
-        Snackbar.make(findViewById(android.R.id.content),message,
-                Snackbar.LENGTH_LONG).show();
+    private void showSnackbar(final String message, boolean fireEmoji, boolean coolEmoji) {
+        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(Color.WHITE);
+        if (fireEmoji) {
+            snackbar.setIconLeft(R.drawable.fire_emoji, 24);
+        }
+        else if (coolEmoji) {
+            snackbar.setIconLeft(R.drawable.cool, 24);
+        }
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
     }
 
     @Override
@@ -176,12 +190,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void loadHostMode(){
+        showSnackbar("  You are now hosting.", true, false);
         homeFragment =  new HomeHostingFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
     }
 
     public void loadAttendantMode(){
+        showSnackbar("  You are now part of the blob", false, true);
         homeFragment =  new HomeAttendantFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
@@ -268,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     startActivity(intent);
                                     break;
                                 case MessageCodes.INCORRECT_TOKEN:
-                                    showSnackbar("You have been logged out.");
+                                    showSnackbar("You have been logged out.", false, false);
                                     try {
                                         sleep(300);
                                     } catch (InterruptedException e) {
@@ -281,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     MainActivity.this.startActivity(intentOut);
                                     break;
                                 case MessageCodes.SERVER_ERROR:
-                                    showSnackbar("Server didn't respond, please try again later.");
+                                    showSnackbar("Server didn't respond, please try again later.", false, false);
                                     break;
                             }
                         }
@@ -323,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     startActivity(intent);
                                     break;
                                 case MessageCodes.INCORRECT_TOKEN:
-                                    showSnackbar("You have been logged out.");
+                                    showSnackbar("You have been logged out.", false, false);
                                     try {
                                         sleep(300);
                                     } catch (InterruptedException e) {
@@ -336,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     MainActivity.this.startActivity(intentOut);
                                     break;
                                 case MessageCodes.SERVER_ERROR:
-                                    showSnackbar("Server didn't respond, please try again later.");
+                                    showSnackbar("Server didn't respond, please try again later.", false, false);
                                     break;
                             }
                         }

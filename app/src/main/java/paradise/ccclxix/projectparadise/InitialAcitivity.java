@@ -1,6 +1,7 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.androidadvance.topsnackbar.TSnackbar;
 
 import iDaeAPI.IDaeClient;
 import iDaeAPI.model.UserCheckTokenRequest;
@@ -168,7 +170,12 @@ public class InitialAcitivity extends AppCompatActivity {
     }
 
     private void showSnackbar(final String message) {
-        Snackbar.make(findViewById(android.R.id.content),message,
-                Snackbar.LENGTH_LONG).show();
+        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(Color.WHITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
     }
 }

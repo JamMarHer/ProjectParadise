@@ -105,7 +105,6 @@ public class CreateEventActivity extends AppCompatActivity {
                     resizeAnimation.setDuration(369);
                     view.startAnimation(resizeAnimation);
                     addEvent();
-                    showSnackbar("working!");
                 }
             }
         });
@@ -252,6 +251,8 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
+
+    // TODO properly integrate the new snack bar.
     private void showSnackbar(final String message) {
         Snackbar.make(findViewById(android.R.id.content),message,
                 Snackbar.LENGTH_LONG).show();

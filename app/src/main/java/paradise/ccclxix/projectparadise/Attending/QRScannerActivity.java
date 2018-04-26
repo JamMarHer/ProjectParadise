@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -14,9 +15,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.gson.Gson;
 import com.google.zxing.Result;
 
@@ -249,7 +252,12 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     }
 
     private void showSnackbar(final String message) {
-        Snackbar.make(findViewById(android.R.id.content),message,
-                Snackbar.LENGTH_LONG).show();
+        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(Color.WHITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#27000000"));
+        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
     }
 }

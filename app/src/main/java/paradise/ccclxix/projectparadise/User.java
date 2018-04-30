@@ -1,15 +1,22 @@
-package paradise.ccclxix.projectparadise.APIForms;
+package paradise.ccclxix.projectparadise;
 
-public class UserToAddRequest{
 
-    private String username;
-    private String email;
-    private String password;
+public class User {
 
-    public UserToAddRequest(String username, String email, String password){
+    private String username = null;
+    private String email = null;
+    private String password = null;
+    private String token = null;
+
+    public User (String username, String email, String password){
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User (String email, String token){
+        this.email = email;
+        this.token = token;
     }
 
     public String getUsername() {
@@ -36,4 +43,11 @@ public class UserToAddRequest{
         this.password = password;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

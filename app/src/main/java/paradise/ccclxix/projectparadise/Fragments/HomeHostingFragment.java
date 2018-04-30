@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -39,11 +40,27 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
     private LayoutInflater popupInflater;
     private EventManager eventManager;
 
+    private TextView eventName;
+    private TextView currentlyAttending;
+    private TextView songName;
+    private TextView albumName;
+    private TextView artistName;
+    private TextView nextSongName;
+    private ImageView songImage;
+    private Button addHostButton;
+    private Button removeHostButton;
+    private Button removeAttendantButton;
+    private Button sendNotificationButton;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         loaderAdapter = new LoaderAdapter(getContext());
         getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
         stringLoader = new StringLoader(getContext());
+        eventManager = new EventManager(getContext());
+
+
+
         super.onCreate(savedInstanceState);
     }
 
@@ -61,6 +78,22 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
         popupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+
+        eventName = view.findViewById(R.id.eventNameHosting);
+        currentlyAttending = view.findViewById(R.id.attendingEventHosting);
+        songName = view.findViewById(R.id.songNameHosting);
+        albumName = view.findViewById(R.id.albumNameHosting);
+        artistName = view.findViewById(R.id.artistNameHosting);
+        nextSongName = view.findViewById(R.id.nextSongNameHosting);
+        songImage = view.findViewById(R.id.songImageHosting);
+        addHostButton = view.findViewById(R.id.addHostHosting);
+        removeHostButton = view.findViewById(R.id.removeHostHosting);
+        removeAttendantButton = view.findViewById(R.id.removeAttendantHosting);
+        sendNotificationButton = view.findViewById(R.id.sendNotificationHosting);
+        setupEventInfo();
+
+
+
 
         final Button displayQR = (Button) view.findViewById(R.id.floatingButtonDisplayQR);
         displayQR.setOnTouchListener(new View.OnTouchListener() {
@@ -80,8 +113,16 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
         return view;
     }
 
+
+    private void setupEventInfo(){
+        eventName.setText(eventManager.getEvent().getName());
+        System.out.println(eventManager.getEvent().getName());
+        currentlyAttending.setText(String.valueOf(eventManager.getEvent().getAttending().size()));
+
+    }
+
     private Bitmap getEventQR(){
-        return QRCode.from(eventManager.getEventHost().getEventID()).bitmap();
+        return QRCode.from(eventManager.getEvent().getEventID()).bitmap();
     }
 
     private LoaderManager.LoaderCallbacks<List<String>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<String>>() {

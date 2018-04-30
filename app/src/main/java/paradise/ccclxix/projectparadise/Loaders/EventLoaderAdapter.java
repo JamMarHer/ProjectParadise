@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.APIForms.Event;
+import iDaeAPI.model.Event;
 import paradise.ccclxix.projectparadise.R;
 
 public class EventLoaderAdapter extends BaseAdapter {
@@ -47,8 +47,8 @@ public class EventLoaderAdapter extends BaseAdapter {
 
         TextView event_name =  view.findViewById(R.id.event_name);
         TextView event_logo =  view.findViewById(R.id.event_logo);
-        event_name.setText(data.get(position).getEvent_name());
-        event_logo.setText(String.valueOf(data.get(position).getEvent_name().charAt(0)));
+        event_name.setText(data.get(position).getName());
+        event_logo.setText(String.valueOf(data.get(position).getName().charAt(0)));
         return view;
     }
 

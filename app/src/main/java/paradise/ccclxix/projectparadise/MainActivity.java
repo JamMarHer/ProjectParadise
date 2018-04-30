@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -19,14 +18,10 @@ import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
 
 import iDaeAPI.IDaeClient;
-import iDaeAPI.model.EventAttenEnterRequest;
-import iDaeAPI.model.EventAttenEnterResponse;
 import iDaeAPI.model.EventAttenLeaveRequest;
 import iDaeAPI.model.EventAttenLeaveResponse;
 import iDaeAPI.model.EventHostLeaveRequest;
 import iDaeAPI.model.EventHostLeaveResponse;
-import paradise.ccclxix.projectparadise.APIForms.Event;
-import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
@@ -39,8 +34,6 @@ import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
-import paradise.ccclxix.projectparadise.Network.NetworkHandler;
-import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -58,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     IDaeClient iDaeClient;
 
     EventHostLeaveResponse eventHostLeaveResponse;
-    EventAttenEnterResponse eventAttenEnterResponse;
+    EventAttenLeaveResponse eventAttenEnterResponse;
     EventAttenLeaveResponse eventAttenLeaveResponse;
 
     EventManager eventManager;
@@ -256,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void leaveHostEvent(){
 
         final EventHostLeaveRequest eventHostLeaveRequest = new EventHostLeaveRequest();
-        eventHostLeaveRequest.setEventID(eventManager.getEventHost().getEventID());
+        eventHostLeaveRequest.setEventID(eventManager.getEvent().getEventID());
         eventHostLeaveRequest.setToken(credentialsManager.getToken());
         eventHostLeaveRequest.setUsername(credentialsManager.getUsername());
 
@@ -278,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             switch (eventHostLeaveResponse.getStatus()){
 
                                 case MessageCodes.OK:
-                                    eventManager.updateEventHost(null);
+                                    eventManager.updateEvent(null);
                                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
                                     finish();
                                     startActivity(intent);
@@ -311,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void leaveAttendantEvent(){
 
         final EventAttenLeaveRequest eventAttenLeaveRequest = new EventAttenLeaveRequest();
-        eventAttenLeaveRequest.setEventID(eventManager.getEventAttendant().getEventID());
+        eventAttenLeaveRequest.setEventID(eventManager.getEvent().getEventID());
         eventAttenLeaveRequest.setToken(credentialsManager.getToken());
         eventAttenLeaveRequest.setUsername(credentialsManager.getUsername());
 
@@ -333,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             switch (eventAttenLeaveResponse.getStatus()){
 
                                 case MessageCodes.OK:
-                                    eventManager.updateEventHost(null);
+                                    eventManager.updateEvent(null);
                                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
                                     finish();
                                     startActivity(intent);

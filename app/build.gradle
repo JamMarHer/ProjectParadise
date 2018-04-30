@@ -47,4 +47,5 @@ dependencies {
     implementation files('libs/aws-android-sdk-apigateway-core-2.6.18.jar')
     implementation files('libs/aws-android-sdk-core-2.6.18.jar')
     implementation files('libs/iDae_api_pre_alpha_2-0.1.jar')
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }

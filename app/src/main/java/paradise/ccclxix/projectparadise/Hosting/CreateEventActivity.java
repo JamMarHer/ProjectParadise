@@ -29,8 +29,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import iDaeAPI.IDaeClient;
+import iDaeAPI.model.Event;
 import iDaeAPI.model.EventCreateRequest;
-import iDaeAPI.model.EventCreateResponse;
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.BuildConfig;
@@ -55,7 +55,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     ApiClientFactory apiClientFactory;
     IDaeClient iDaeClient;
-    EventCreateResponse eventCreateResponse;
+    Event eventCreateResponse;
 
     private LocationManager locationManager;
     private CredentialsManager credentialsManager;
@@ -192,6 +192,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         public void run() {
                             switch (eventCreateResponse.getStatus()){
                                 case MessageCodes.OK:
+                                    eventManager.updateEvent(eventCreateResponse);
                                     Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
                                     eventManager = new EventManager(getApplicationContext(), eventCreateResponse);
                                     intent.putExtra("source","event_created");

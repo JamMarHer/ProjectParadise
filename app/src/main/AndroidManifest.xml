@@ -43,7 +43,10 @@
         <activity android:name=".Attending.QRScannerActivity" />
         <activity
             android:name=".Hosting.CreateEventActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Chat.ChatActivity"
+            android:parentActivityName=".MainActivity"
+            />
     </application>
 
 </manifest>

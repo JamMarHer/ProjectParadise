@@ -3,7 +3,8 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import paradise.ccclxix.projectparadise.APIForms.User;
+
+import paradise.ccclxix.projectparadise.User;
 
 import static android.content.Context.MODE_PRIVATE;
 

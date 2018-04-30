@@ -2,14 +2,10 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
-import iDaeAPI.model.EventAttenEnterRequest;
-import iDaeAPI.model.EventAttenEnterResponse;
-import iDaeAPI.model.EventCreateResponse;
-import paradise.ccclxix.projectparadise.APIForms.Event;
+import iDaeAPI.model.Event;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -25,58 +21,25 @@ public class EventManager {
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
-    public EventManager(Context context, EventCreateResponse event){
+    public EventManager(Context context, Event event){
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
-        this.updateEventHost(event);
-        this.setHostMode();
+        this.updateEvent(event);
     }
 
-    public EventManager(Context context, EventAttenEnterResponse event){
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
-        this.updateEventAttendant(event);
-        this.setAttendantMode();
-    }
 
-    public void setAttendantMode(){
+    public void updateEvent(Event event){
         SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("eventMode", "attendant");
+        Gson gson = new Gson();
+        System.out.println(event.toString());
+        editor.putString("event", gson.toJson(event));
         editor.apply();
     }
 
-    public void setHostMode(){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("eventMode", "host");
-        editor.apply();
-    }
-
-    public String getMode(){
-        return  this.sharedPreferences.getString("eventMode", null);
-    }
-
-    public void updateEventAttendant(EventAttenEnterResponse event){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
+    public Event getEvent(){
         Gson gson = new Gson();
-        editor.putString("eventAtten", gson.toJson(event));
-        editor.apply();
-    }
-
-    public void updateEventHost(EventCreateResponse event){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        Gson gson = new Gson();
-        editor.putString("eventHost", gson.toJson(event));
-        editor.apply();
-    }
-
-    public EventCreateResponse getEventHost(){
-        Gson gson = new Gson();
-        return gson.fromJson(sharedPreferences.getString("eventHost", null),EventCreateResponse.class);
-    }
-
-    public EventAttenEnterResponse getEventAttendant(){
-        Gson gson = new Gson();
-        return gson.fromJson(sharedPreferences.getString("eventAtten", null), EventAttenEnterResponse.class);
+        System.out.println(gson.fromJson(sharedPreferences.getString("event", null), Event.class));
+        return gson.fromJson(sharedPreferences.getString("event", null), Event.class);
     }
 
 }

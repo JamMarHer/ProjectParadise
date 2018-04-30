@@ -25,16 +25,13 @@ import com.google.zxing.Result;
 
 import iDaeAPI.IDaeClient;
 import iDaeAPI.model.EventAttenEnterRequest;
-import iDaeAPI.model.EventAttenEnterResponse;
+import iDaeAPI.model.Event;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
-import paradise.ccclxix.projectparadise.Network.NetworkHandler;
-import paradise.ccclxix.projectparadise.Network.NetworkResponse;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.Manifest.permission.CAMERA;
@@ -47,7 +44,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     ApiClientFactory apiClientFactory;
     IDaeClient iDaeClient;
 
-    EventAttenEnterResponse eventAttenEnterResponse;
+    Event eventAttenEnterResponse;
     CredentialsManager credentialsManager;
     EventManager eventManager;
 
@@ -204,18 +201,16 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
     }
 
-    public void startMainActivity(EventAttenEnterResponse event){
+    public void startMainActivity(Event event){
         Intent intent = new Intent(QRScannerActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("source", "qr_code_scanned");
-        eventManager.updateEventAttendant(event);
-        eventManager.setAttendantMode();
-
+        eventManager.updateEvent(event);
         finish();
         startActivity(intent);
     }
 
-    private void createSuccessDialog(final String scanResult, final EventAttenEnterResponse event){
+    private void createSuccessDialog(final String scanResult, final Event event){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
 
         builder.setTitle(String.format("Event: %s", event.getName()));
@@ -238,8 +233,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 Intent intent = new Intent(QRScannerActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("source", "qr_code_scanned");
-                eventManager.updateEventAttendant(event);
-                eventManager.setAttendantMode();
+                eventManager.updateEvent(event);
                 finish();
                 startActivity(intent);
             }

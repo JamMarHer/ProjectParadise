@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
@@ -22,12 +23,11 @@ import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
-
-import iDaeAPI.IDaeClient;
-import iDaeAPI.model.UserLoginRequest;
-import iDaeAPI.model.UserLoginResposne;
-import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -53,9 +53,7 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private boolean running = false;
-    private UserLoginResposne userLoginResposne;
     private ApiClientFactory apiClientFactory;
-    private IDaeClient iDaeClient;
     private CredentialsManager credentialsManager;
 
     // UI references.
@@ -66,13 +64,15 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         apiClientFactory =  new ApiClientFactory();
-        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
+        mAuth = FirebaseAuth.getInstance();
         // Set up the login form.
 
         credentialsManager = new CredentialsManager(this);
@@ -152,55 +152,29 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
-            final UserLoginRequest userLoginRequest = new UserLoginRequest();
-            userLoginRequest.setEmail(email);
-            userLoginRequest.setPassword(password);
             showProgress(true);
 
             showProgress(true);
             running = true;
 
-            Thread loginUser = new Thread() {
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
-                public void run() {
-                    userLoginResposne = iDaeClient.idaeUserLoginPost(userLoginRequest);
-                    try {
-                        super.run();
-                        while (userLoginResposne == null) {
-                            sleep(39);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                switch (userLoginResposne.getStatus()){
-                                    case MessageCodes.OK:
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        credentialsManager.registrationSave(
-                                                userLoginResposne.getUsername(),
-                                                userLoginRequest.getEmail(),
-                                                userLoginResposne.getToken());
-                                        intent.putExtra("source","login");
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        LoginActivity.this.startActivity(intent);
-                                        break;
-                                    case MessageCodes.EMAIL_NOT_AVAILABLE:
-                                        setError(mPasswordView, getString(R.string.error_incorrect_password));
-                                        break;
-                                    case MessageCodes.FAILED_CONNECTION:
-                                        showSnackbar("Problem with connection please try again later.");
-                                        break;
-                                }
-                                showProgress(false);
-                                running = false;
-                            }
-                        });
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        credentialsManager.updateCredentials();
+                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        mainIntent.putExtra("source", "login");
+                        startActivity(mainIntent);
+                        running = false;
+                        showProgress(false);
+                        finish();
+                    }else {
+                        showProgress(false);
+                        running = false;
+                        showSnackbar("There has been a problem login you in.");
                     }
                 }
-            };
-            loginUser.start();
+            });
         }
     }
 

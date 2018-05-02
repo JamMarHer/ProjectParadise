@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp">
+
+    <RelativeLayout
+        android:id="@+id/message_layout_other"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/user_message_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/user_thump_nail_personal"
+            android:layout_marginLeft="3dp"
+            android:layout_toEndOf="@+id/user_thump_nail_personal"
+            android:background="@drawable/circle_holder_gray"
+            android:text="TextView"
+            android:textColor="@color/colorWhite" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_thump_nail_personal"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/album_example" />
+
+        <TextView
+            android:id="@+id/chat_username_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@+id/user_thump_nail_personal"
+            android:text="TextView"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/chat_image_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/chat_username_personal"
+            android:layout_below="@+id/chat_username_personal"
+            android:layout_marginBottom="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toEndOf="@+id/user_thump_nail_personal"
+            android:adjustViewBounds="true"
+            android:baselineAlignBottom="true"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/message_layout_personal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_thump_nail_personal"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/album_example" />
+
+        <TextView
+            android:id="@+id/chat_username_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="3dp"
+            android:layout_toStartOf="@+id/user_thump_nail_personal"
+            android:text="TextView"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_message_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chat_username_personal"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="6dp"
+            android:layout_toStartOf="@+id/user_thump_nail_personal"
+            android:background="@drawable/circle_shadow"
+            android:text="TextView"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/chat_image_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/chat_username_personal"
+            android:layout_below="@+id/chat_username_personal"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="58dp"
+            android:layout_marginRight="12dp"
+            android:layout_toEndOf="@+id/user_thump_nail_personal"
+            android:adjustViewBounds="true"
+            android:baselineAlignBottom="true"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

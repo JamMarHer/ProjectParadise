@@ -13,21 +13,13 @@ import java.util.List;
 
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 import paradise.ccclxix.projectparadise.R;
-import paradise.ccclxix.projectparadise.Loaders.StringLoader;
 
 public class HomeFragment extends HolderFragment implements EnhancedFragment {
-
-    private LoaderAdapter loaderAdapter;
-    private StringLoader stringLoader;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        loaderAdapter = new LoaderAdapter(getContext());
-        getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
-        stringLoader = new StringLoader(getContext());
         super.onCreate(savedInstanceState);
     }
 
@@ -52,29 +44,6 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         return view;
     }
 
-    private LoaderManager.LoaderCallbacks<List<String>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<String>>() {
-        @Override
-        public Loader<List<String>> onCreateLoader(int id, Bundle args) {
-            return stringLoader;
-        }
-
-        @Override
-        public void onLoadFinished(Loader<List<String>> loader, List<String> data) {
-            loaderAdapter.swapData(data);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<List<String>> loader) {
-            ArrayList<String> list = new ArrayList<>();
-            list.add("working");
-            loaderAdapter.swapData(list);
-        }
-    };
-
-    @Override
-    public LoaderAdapter getLoaderAdapter() {
-        return this.loaderAdapter;
-    }
 
     @Override
     public String getName() {

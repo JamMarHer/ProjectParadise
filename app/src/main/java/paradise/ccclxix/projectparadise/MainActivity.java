@@ -16,12 +16,18 @@ import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import iDaeAPI.IDaeClient;
-import iDaeAPI.model.EventAttenLeaveRequest;
-import iDaeAPI.model.EventAttenLeaveResponse;
-import iDaeAPI.model.EventHostLeaveRequest;
-import iDaeAPI.model.EventHostLeaveResponse;
+import java.util.HashMap;
+import java.util.Objects;
+
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
@@ -33,12 +39,10 @@ import paradise.ccclxix.projectparadise.Fragments.HomeHostingFragment;
 import paradise.ccclxix.projectparadise.Fragments.MusicFragment;
 import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
-import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
-    private LoaderAdapter loaderAdapter;
     private static int SPLASH_TIME_OUT = 4000;
     private HolderFragment currentFragment;
     private HolderFragment homeFragment;
@@ -48,14 +52,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     ApiClientFactory apiClientFactory;
-    IDaeClient iDaeClient;
-
-    EventHostLeaveResponse eventHostLeaveResponse;
-    EventAttenLeaveResponse eventAttenEnterResponse;
-    EventAttenLeaveResponse eventAttenLeaveResponse;
 
     EventManager eventManager;
     CredentialsManager credentialsManager;
+
+    private FirebaseAuth mAuth;
 
 
 
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
         appModeManager = new AppModeManager(getApplicationContext());
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -120,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         eventManager = new EventManager(getApplicationContext());
 
         apiClientFactory = new ApiClientFactory();
-        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
@@ -157,6 +158,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 appModeManager.setModeToExplore();
                 leaveAttendantEvent();
                 return true;
+            case R.id.log_out_account:
+                mAuth.signOut();
+                Intent intent = new Intent(this, InitialAcitivity.class);
+                startActivity(intent);
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -170,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }else if(appModeManager.isAttendantMode()){
             inflater.inflate(R.menu.menu_attending, menu);
+            return true;
+        }else if(appModeManager.isExploreMode()){
+            inflater.inflate(R.menu.menu_exploring, menu);
             return true;
         }
         return false;
@@ -247,113 +256,87 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void leaveHostEvent(){
-
-        final EventHostLeaveRequest eventHostLeaveRequest = new EventHostLeaveRequest();
-        eventHostLeaveRequest.setEventID(eventManager.getEvent().getEventID());
-        eventHostLeaveRequest.setToken(credentialsManager.getToken());
-        eventHostLeaveRequest.setUsername(credentialsManager.getUsername());
-
-        Thread invalidateEvent = new Thread() {
-            @Override
-            public void run() {
-                eventHostLeaveResponse = iDaeClient.idaeEventHostLeaveeventPost(eventHostLeaveRequest);
-                try {
-                    super.run();
-                    while (eventHostLeaveResponse == null) {
-                        sleep(100);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switch (eventHostLeaveResponse.getStatus()){
-
-                                case MessageCodes.OK:
-                                    eventManager.updateEvent(null);
+        if (mAuth.getCurrentUser() != null){
+            credentialsManager.updateCredentials();
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child("events_us")
+                    .child(eventManager.getEventID())
+                    .child("attending")
+                    .child(credentialsManager.getUsername());
+            databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReference =firebaseDatabase.getReference()
+                                .child("events_us")
+                                .child(eventManager.getEventID())
+                                .child("attendend")
+                                .child(credentialsManager.getUsername());
+                        HashMap<String, Long>  inOut= new HashMap<>();
+                        inOut.put("in", eventManager.getPersonalTimeIn());
+                        inOut.put("out", System.currentTimeMillis());
+                        databaseReference.setValue(inOut).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    appModeManager.setModeToExplore();
                                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-                                    finish();
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
-                                    break;
-                                case MessageCodes.INCORRECT_TOKEN:
-                                    showSnackbar("You have been logged out.", false, false);
-                                    try {
-                                        sleep(300);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent intentOut = new Intent(MainActivity.this, InitialAcitivity.class);
-                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                                    credentialsManager.clear();
-                                    MainActivity.this.startActivity(intentOut);
-                                    break;
-                                case MessageCodes.SERVER_ERROR:
-                                    showSnackbar("Server didn't respond, please try again later.", false, false);
-                                    break;
+                                    finish();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }else {
+                        showSnackbar("Something went wrong", false, false);
+                    }
                 }
-            }
-        };
-        invalidateEvent.start();
+            });
+        }
     }
 
+
     private void leaveAttendantEvent(){
-
-        final EventAttenLeaveRequest eventAttenLeaveRequest = new EventAttenLeaveRequest();
-        eventAttenLeaveRequest.setEventID(eventManager.getEvent().getEventID());
-        eventAttenLeaveRequest.setToken(credentialsManager.getToken());
-        eventAttenLeaveRequest.setUsername(credentialsManager.getUsername());
-
-        Thread invalidateEvent = new Thread() {
-            @Override
-            public void run() {
-                eventAttenLeaveResponse = iDaeClient.idaeEventAttendantLeaveeventPost(eventAttenLeaveRequest);
-                try {
-                    super.run();
-                    while (eventAttenLeaveResponse == null) {
-                        sleep(100);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switch (eventAttenLeaveResponse.getStatus()){
-
-                                case MessageCodes.OK:
-                                    eventManager.updateEvent(null);
+        if (mAuth.getCurrentUser() != null){
+            credentialsManager.updateCredentials();
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child("events_us")
+                    .child(eventManager.getEventID())
+                    .child("attending")
+                    .child(credentialsManager.getUsername());
+            databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReference =firebaseDatabase.getReference()
+                                .child("events_us")
+                                .child(eventManager.getEventID())
+                                .child("attendend").child(credentialsManager.getUsername());
+                        HashMap<String, Long>  inOut= new HashMap<>();
+                        inOut.put("in", eventManager.getPersonalTimeIn());
+                        inOut.put("out", System.currentTimeMillis());
+                        databaseReference.setValue(inOut).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    appModeManager.setModeToExplore();
                                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-                                    finish();
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
-                                    break;
-                                case MessageCodes.INCORRECT_TOKEN:
-                                    showSnackbar("You have been logged out.", false, false);
-                                    try {
-                                        sleep(300);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent intentOut = new Intent(MainActivity.this, InitialAcitivity.class);
-                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                                    credentialsManager.clear();
-                                    MainActivity.this.startActivity(intentOut);
-                                    break;
-                                case MessageCodes.SERVER_ERROR:
-                                    showSnackbar("Server didn't respond, please try again later.", false, false);
-                                    break;
+                                    finish();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }else {
+                        showSnackbar("Something went wrong", false, false);
+                    }
                 }
-            }
-        };
-        invalidateEvent.start();
+            });
+        }
     }
 
 }

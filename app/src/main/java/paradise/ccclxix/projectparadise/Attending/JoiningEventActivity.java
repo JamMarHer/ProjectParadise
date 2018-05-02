@@ -22,17 +22,14 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.List;
 
-import iDaeAPI.model.Event;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
-import paradise.ccclxix.projectparadise.Loaders.EventLoader;
-import paradise.ccclxix.projectparadise.Loaders.EventLoaderAdapter;
+
 import paradise.ccclxix.projectparadise.R;
 
 public class JoiningEventActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private EventLoaderAdapter eventLoaderAdapter;
-    private EventLoader eventLoader;
+
     private LocationManager locationManager;
     private String lastLocationFormated;
     private static final String TAG = JoiningEventActivity.class.getSimpleName();
@@ -55,16 +52,7 @@ public class JoiningEventActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab_refresh = (FloatingActionButton) findViewById(R.id.fab_refresh);
-        fab_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EventLoader.ACTION);
-                LocalBroadcastManager.getInstance(view.getContext()).sendBroadcast(intent);
-            }
-        });
 
-        eventLoaderAdapter = new EventLoaderAdapter(this);
         locationManager = new LocationManager(getApplicationContext());
 /*
         getSupportLoaderManager().initLoader(R.id.string_loader_id, null,  loaderCallbacks);
@@ -95,24 +83,6 @@ public class JoiningEventActivity extends AppCompatActivity {
         }
     }
 
-
-    private LoaderManager.LoaderCallbacks<List<Event>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<Event>>() {
-        @Override
-        public Loader<List<Event>> onCreateLoader(int id, Bundle args) {
-            return eventLoader;
-        }
-
-        @Override
-        public void onLoadFinished(Loader<List<Event>> loader, List<Event> data) {
-            eventLoaderAdapter.swapData(data);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<List<Event>> loader) {
-            ArrayList<Event> list = new ArrayList<>();
-            eventLoaderAdapter.swapData(list);
-        }
-    };
 
     private boolean checkPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,

@@ -20,10 +20,16 @@ import android.widget.TextView;
 
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import iDaeAPI.IDaeClient;
-import iDaeAPI.model.UserToAddRequest;
-import iDaeAPI.model.UserToAddResponse;
+import java.util.HashMap;
+
 import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -34,9 +40,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    UserToAddResponse userToAddResponse;
     ApiClientFactory apiClientFactory;
-    IDaeClient iDaeClient;
 
 
     private View mProgressView;
@@ -48,14 +52,17 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passwordView;
     private EditText rePasswordView;
 
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_registration);
         super.onCreate(savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
+
         apiClientFactory = new ApiClientFactory();
-        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
         credentialsManager = new CredentialsManager(this);
         usernameView = findViewById(R.id.registration_username);
@@ -94,7 +101,7 @@ public class RegistrationActivity extends AppCompatActivity {
         rePasswordView.setError(null);
 
         // Store values at the time for the registration attempt.
-        String username =  usernameView.getText().toString();
+        final String username =  usernameView.getText().toString();
         String email = emailView.getText().toString();
         String password = passwordView.getText().toString();
         String passwordRe = rePasswordView.getText().toString();
@@ -146,68 +153,47 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            final UserToAddRequest userToAddRequest = new UserToAddRequest();
-            userToAddRequest.setEmail(email);
-            userToAddRequest.setUsername(username);
-            userToAddRequest.setPassword(password);
+
 
             showProgress(true);
             running = true;
 
-            Thread addUser = new Thread() {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
-                public void run() {
-                    userToAddResponse = iDaeClient.idaeUserAddPost(userToAddRequest);
-                    try {
-                        super.run();
-                        while (userToAddResponse == null) {
-                            sleep(36);
-                        }
-                        System.out.println(userToAddResponse.getToken());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        runOnUiThread(new Runnable() {
+                public void onComplete(@NonNull Task<AuthResult> task) {
+
+
+                    if (task.isSuccessful()){
+                        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+                        String userID = current_user.getUid();
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference databaseReference = database.getReference().child("users").child(userID);
+
+                        HashMap<String, String> userMap = new HashMap<>();
+                        userMap.put("username", username);
+                        userMap.put("status", "We lit");
+                        userMap.put("thumb_image", "default");
+                        databaseReference.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void run() {
-                                switch (userToAddResponse.getStatus()){
-
-                                    case 100:
-                                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                        credentialsManager.registrationSave(userToAddRequest.getUsername(),userToAddRequest.getEmail(),
-                                                userToAddResponse.getToken());
-                                        intent.putExtra("source","registration");
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        finish();
-                                        RegistrationActivity.this.startActivity(intent);
-                                        break;
-                                    case MessageCodes.EMAIL_NOT_AVAILABLE:
-                                        setError(emailView, getString(R.string.error_email_not_available));
-                                        break;
-
-                                    case MessageCodes.USER_NOT_AVAILABLE:
-                                        setError(usernameView, getString(R.string.error_username_not_available));
-                                        break;
-
-                                    case MessageCodes.INCORRECT_FORMAT:
-                                        showSnackbar("There has been a problem with the server response.");
-                                        break;
-
-                                    case MessageCodes.FAILED_CONNECTION:
-                                        showSnackbar("Server didn't respond.");
-                                        break;
-                                    case MessageCodes.NO_INTERNET_CONNECTION:
-                                        showSnackbar("No internet connection.");
-                                        break;
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    credentialsManager.updateUsername(username);
+                                    Intent mainIntent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                    mainIntent.putExtra("source", "registration");
+                                    startActivity(mainIntent);
+                                    running = false;
+                                    finish();
                                 }
-                                showProgress(false);
-                                running = false;
                             }
                         });
+
+                    }else {
+                        showProgress(false);
+                        running = false;
+                        showSnackbar("The authentication has failed.");
                     }
                 }
-            };
-            addUser.start();
+            });
         }
 
     }

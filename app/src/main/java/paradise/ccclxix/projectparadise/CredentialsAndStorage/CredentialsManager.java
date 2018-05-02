@@ -4,6 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import paradise.ccclxix.projectparadise.User;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -13,10 +20,35 @@ public class CredentialsManager {
     private Context context;
     private SharedPreferences sharedPreferences;
     private final String CREDENTIALS = "iDaeCredentials";
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private FirebaseAuth mAuth;
 
     public CredentialsManager(Context context){
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(CREDENTIALS, MODE_PRIVATE);
+        mAuth = FirebaseAuth.getInstance();
+        updateCredentials();
+    }
+
+    public void updateCredentials(){
+        if(mAuth.getCurrentUser() != null){
+            DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid());
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    System.out.println(dataSnapshot.toString() + "HEREHERERERE");
+
+                    updateUsername(dataSnapshot.child("username").getValue().toString());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        System.out.println(getUsername());
+
     }
 
     public void registrationSave(String username, String email, String token){

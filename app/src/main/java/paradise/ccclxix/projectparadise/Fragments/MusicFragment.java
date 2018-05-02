@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
 import paradise.ccclxix.projectparadise.R;
 
 public class MusicFragment extends HolderFragment implements EnhancedFragment {
@@ -19,10 +18,6 @@ public class MusicFragment extends HolderFragment implements EnhancedFragment {
         return inflater.inflate(R.layout.fragment_music, null);
     }
 
-    @Override
-    public LoaderAdapter getLoaderAdapter() {
-        return null;
-    }
 
     @Override
     public String getName() {

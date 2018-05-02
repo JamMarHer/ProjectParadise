@@ -8,13 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -24,22 +22,26 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import iDaeAPI.IDaeClient;
-import iDaeAPI.model.Event;
-import iDaeAPI.model.EventCreateRequest;
+import java.util.HashMap;
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
-import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.BuildConfig;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
-import paradise.ccclxix.projectparadise.InitialAcitivity;
-import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
+import paradise.ccclxix.projectparadise.Models.Event;
 import paradise.ccclxix.projectparadise.R;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -53,8 +55,6 @@ public class CreateEventActivity extends AppCompatActivity {
     TextView eventCreateTextPrivate;
     Button eventCreateButtonLaunch;
 
-    ApiClientFactory apiClientFactory;
-    IDaeClient iDaeClient;
     Event eventCreateResponse;
 
     private LocationManager locationManager;
@@ -66,6 +66,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String lastLocationFormated;
 
+    private FirebaseAuth firebaseAuth;
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -75,6 +77,8 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         eventCreateName =               findViewById(R.id.createEventName);
         eventCreateSwitchPrivate =      findViewById(R.id.createEventPrivate);
@@ -89,8 +93,6 @@ public class CreateEventActivity extends AppCompatActivity {
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
 
-        apiClientFactory = new ApiClientFactory();
-        iDaeClient = apiClientFactory.build(IDaeClient.class);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -163,65 +165,79 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void addEvent(){
-        Thread loginUser = new Thread() {
-            @Override
-            public void run() {
-                final EventCreateRequest eventCreateRequest = new EventCreateRequest();
 
-                eventCreateRequest.setUsername(credentialsManager.getUsername());
-                eventCreateRequest.setToken(credentialsManager.getToken());
-
-                eventCreateRequest.setEventName(eventCreateName.getText().toString());
-                eventCreateRequest.setPrivacy(getPrivacy());
-                eventCreateRequest.setLatitude(locationManager.getLastLatitude(getApplicationContext()));
-                eventCreateRequest.setLongitude(locationManager.getLastLongitude(getApplicationContext()));
-                eventCreateRequest.setAgeTarget(getAgeTarget());
-
-                eventCreateResponse = iDaeClient.idaeEventHostAddeventPost(eventCreateRequest);
-
-                try {
-                    super.run();
-                    while (eventCreateResponse == null) {
-                        sleep(39);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switch (eventCreateResponse.getStatus()){
-                                case MessageCodes.OK:
-                                    eventManager.updateEvent(eventCreateResponse);
-                                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-                                    eventManager = new EventManager(getApplicationContext(), eventCreateResponse);
-                                    intent.putExtra("source","event_created");
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    CreateEventActivity.this.startActivity(intent);
-                                    break;
-                                case MessageCodes.INCORRECT_TOKEN:
-                                    showSnackbar("You have been logged out.");
-                                    try {
-                                        sleep(300);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent intentOut = new Intent(CreateEventActivity.this, InitialAcitivity.class);
-                                    intentOut.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    credentialsManager.clear();
-                                    CreateEventActivity.this.startActivity(intentOut);
-                                    break;
-                                case MessageCodes.SERVER_ERROR:
-                                    showSnackbar("Problem with connection please try again later.");
-                                    break;
-                            }
-                            eventCreateButtonLaunch.clearAnimation();
-                        }
-                    });
+        if (firebaseAuth.getCurrentUser() != null){
+            final HashMap<String, String> eventMap = new HashMap<>();
+            FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+            final String userID = current_user.getUid();
+            final long timeStamp = System.currentTimeMillis();
+            final String eventID = String.format("%s_%s", userID, String.valueOf(timeStamp));
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(
+                    eventID);
+            DatabaseReference userDatabaseReference = database.getReference().child("users").child(userID);
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    eventMap.put("host", dataSnapshot.child("username").getValue().toString());
                 }
-            }
-        };
-        loginUser.start();
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            eventMap.put("name_event", eventCreateName.getText().toString());
+            eventMap.put("event_id", eventID);
+            eventMap.put("privacy", getPrivacy());
+            eventMap.put("latitude", locationManager.getLastLatitude(getApplicationContext()));
+            eventMap.put("longitude", locationManager.getLastLongitude(getApplicationContext()));
+            eventMap.put("active", "true");
+            eventMap.put("age_target", getAgeTarget());
+            eventDatabaseReference.setValue(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(credentialsManager.getUsername());
+                        DatabaseReference eventDatabaseReference1 = database.getReference().child("events_us").child(eventID).child("attended");
+                        HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
+                        HashMap<String, Long> in = new HashMap<>();
+                        in.put("in", timeStamp);
+                        eventDatabaseReference.setValue(in).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()){
+                                    showSnackbar("Something went wrong");
+                                }
+                            }
+                        });
+                        eventDatabaseReference1.setValue(attended).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                                    intent.putExtra("source", "event_created");
+
+                                    eventManager.updateEventID(eventID);
+                                    eventManager.updatePersonalTimein(timeStamp);
+
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
+
+
+                    }else {
+                        showSnackbar("Something went wrong creating your event.");
+                        eventCreateButtonLaunch.clearAnimation();
+                    }
+                }
+            });
+        }
     }
 
 

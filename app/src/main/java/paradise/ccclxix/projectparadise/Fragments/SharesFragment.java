@@ -13,17 +13,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
-import iDaeAPI.model.EventAttendingItem;
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
+import paradise.ccclxix.projectparadise.Models.EventAttendingItem;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.User;
 
@@ -44,7 +51,7 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
             View inflater1 = inflater.inflate(R.layout.fragment_shares, null);
             listAttendingUsers = inflater1.findViewById(R.id.usersAttending);
             eventManager = new EventManager(getContext());
-            usersAdapter = new UsersAdapter(getContext(), eventManager.getEvent().getAttending());
+            usersAdapter = new UsersAdapter(getContext());
             listAttendingUsers.setAdapter(usersAdapter);
             listAttendingUsers.setLayoutManager(new LinearLayoutManager(getContext()));
             return inflater1;
@@ -53,10 +60,6 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
     }
 
-    @Override
-    public LoaderAdapter getLoaderAdapter() {
-        return null;
-    }
 
     @Override
     public String getName() {
@@ -82,12 +85,44 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
         private LayoutInflater inflater;
 
-        private List<EventAttendingItem> users;
+        private List<String> usersList;
+        HashMap<String, HashMap<String, Long>> attendingUsers;
 
-        public UsersAdapter(Context context, List<EventAttendingItem> users){
-            inflater =LayoutInflater.from(context);
-            this.users = users;
+        public UsersAdapter(final Context context){
+            attendingUsers = new HashMap<>();
+            usersList = new ArrayList<>();
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            final DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child("events_us")
+                    .child(eventManager.getEventID()).child("attending");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    attendingUsers.clear();
+                    usersList.clear();
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        System.out.println(dataSnapshot1.getKey());
+                        HashMap<String, Long> inOut = new HashMap<>();
+                        inOut.put("in", Long.valueOf(dataSnapshot.child(dataSnapshot1.getKey()).child("in").getValue().toString()));
+                        attendingUsers.put(dataSnapshot1.getKey(), inOut);
+                        usersList.clear();
+
+                        usersList.addAll(attendingUsers.keySet());
+                    }
+                    usersAdapter.notifyDataSetChanged();
+                    inflater =LayoutInflater.from(context);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println(databaseError.getMessage());
+                }
+            });
+
         }
+
+
 
         @Override
         public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -98,7 +133,7 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
         @Override
         public void onBindViewHolder(UsersViewHolder holder, int position) {
-            final String usernameString = users.get(position).getUsername();
+            final String usernameString = usersList.get(position);
             holder.username.setText(usernameString);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,9 +145,10 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
             });
         }
 
+
         @Override
         public int getItemCount() {
-            return users.size();
+            return usersList.size();
         }
     }
 

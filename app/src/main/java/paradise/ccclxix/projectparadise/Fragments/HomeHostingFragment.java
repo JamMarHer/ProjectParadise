@@ -19,24 +19,27 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Loaders.LoaderAdapter;
-import paradise.ccclxix.projectparadise.Loaders.StringLoader;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class HomeHostingFragment extends HolderFragment implements EnhancedFragment {
 
-    private LoaderAdapter loaderAdapter;
-    private StringLoader stringLoader;
     private LayoutInflater popupInflater;
     private EventManager eventManager;
 
@@ -52,13 +55,12 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
     private Button removeAttendantButton;
     private Button sendNotificationButton;
 
+    HashMap<String, Object> event;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        loaderAdapter = new LoaderAdapter(getContext());
-        getLoaderManager().initLoader(R.id.string_loader_id, null, loaderCallbacks);
-        stringLoader = new StringLoader(getContext());
         eventManager = new EventManager(getContext());
-
+        event = new HashMap<>();
 
 
         super.onCreate(savedInstanceState);
@@ -115,39 +117,53 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
 
 
     private void setupEventInfo(){
-        eventName.setText(eventManager.getEvent().getName());
-        System.out.println(eventManager.getEvent().getName());
-        currentlyAttending.setText(String.valueOf(eventManager.getEvent().getAttending().size()));
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference =firebaseDatabase.getReference()
+                .child("events_us")
+                .child(eventManager.getEventID());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event.put("name_event", dataSnapshot.child("name_event").getValue().toString());
+                eventName.setText((String)event.get("name_event"));
+                event.put("event_id", eventManager.getEventID());
+                event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
+                event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
+                event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
+                event.put("age_target", dataSnapshot.child("age_target").getValue().toString());
+                HashMap<String, HashMap<String, Long>> attending = new HashMap<>();
+                HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.child("attending").getChildren()) {
+                    HashMap<String, Long> inOut = new HashMap<>();
+                    inOut.put("in", Long.valueOf(dataSnapshot.child("attending").child(dataSnapshot1.getKey()).child("in").getValue().toString()));
+                    attending.put(dataSnapshot1.getKey(), inOut);
+                }
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.child("attended").getChildren()) {
+                    HashMap<String, Long> inOut = new HashMap<>();
+                    inOut.put("in", Long.valueOf(dataSnapshot.child("attended").child(dataSnapshot1.getKey()).child("in").getValue().toString()));
+                    inOut.put("out", Long.valueOf(dataSnapshot.child("attended").child(dataSnapshot1.getKey()).child("out").getValue().toString()));
+                    attended.put(dataSnapshot1.getKey(), inOut);
+                }
+
+
+                event.put("attended", attended);
+                event.put("attending", attending);
+                currentlyAttending.setText(String.valueOf(attending.size()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
+            }
+        });
 
     }
 
     private Bitmap getEventQR(){
-        return QRCode.from(eventManager.getEvent().getEventID()).bitmap();
+        return QRCode.from((String)eventManager.getEventID()).bitmap();
     }
 
-    private LoaderManager.LoaderCallbacks<List<String>> loaderCallbacks = new LoaderManager.LoaderCallbacks<List<String>>() {
-        @Override
-        public Loader<List<String>> onCreateLoader(int id, Bundle args) {
-            return stringLoader;
-        }
 
-        @Override
-        public void onLoadFinished(Loader<List<String>> loader, List<String> data) {
-            loaderAdapter.swapData(data);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<List<String>> loader) {
-            ArrayList<String> list = new ArrayList<>();
-            list.add("working");
-            loaderAdapter.swapData(list);
-        }
-    };
-
-    @Override
-    public LoaderAdapter getLoaderAdapter() {
-        return this.loaderAdapter;
-    }
 
     @Override
     public String getName() {

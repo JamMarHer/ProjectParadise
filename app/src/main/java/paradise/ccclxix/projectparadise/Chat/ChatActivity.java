@@ -209,8 +209,8 @@ public class ChatActivity extends AppCompatActivity {
             StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
             Uri imageUri = data.getData();
 
-            final String currentUser = "messages/"+mauth+"/" + mChatUserID;
-            final String chatUserRef = "messages/"+mChatUserID+"/" + mauth;
+            final String currentUser = "messages/"+mauth.getUid()+"/" + mChatUserID;
+            final String chatUserRef = "messages/"+mChatUserID+"/" + mauth.getUid();
 
             DatabaseReference userMessagePush = databaseReference.child("messages")
                     .child(mauth.getUid()).child(mChatUserID).push();

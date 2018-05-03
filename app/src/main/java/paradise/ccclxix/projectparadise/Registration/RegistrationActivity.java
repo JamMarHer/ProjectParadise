@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -178,6 +179,18 @@ public class RegistrationActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
                                     credentialsManager.updateUsername(username);
+                                    if (credentialsManager.getToken() != null){
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        DatabaseReference eventDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("token");
+                                        eventDatabaseReference.setValue(credentialsManager.getToken()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()){
+                                                    Log.d("UPDATED_TOKEN", "New token has been added to db.");
+                                                }
+                                            }
+                                        });
+                                    }
                                     Intent mainIntent = new Intent(RegistrationActivity.this, MainActivity.class);
                                     mainIntent.putExtra("source", "registration");
                                     startActivity(mainIntent);

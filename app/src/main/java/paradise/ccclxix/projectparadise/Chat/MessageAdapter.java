@@ -43,13 +43,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.relativeLayout_other.setVisibility(View.INVISIBLE);
             if (type.equals("text")){
                 holder.messageText_personal.setText(messages.getMessage());
-                holder.message_username_personal.setText(messages.getFrom());
                 holder.messageImage_personal.setVisibility(View.INVISIBLE);
             }else {
 
                 Picasso.with(holder.thumbnail_personal.getContext()).load(messages.getMessage())
                         .placeholder(R.drawable.album_example).into(holder.messageImage_personal);
-                holder.message_username_personal.setText(messages.getFrom());
                 holder.messageText_personal.setVisibility(View.INVISIBLE);
 
             }
@@ -57,13 +55,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.relativeLayout_personal.setVisibility(View.INVISIBLE);
             if (type.equals("text")){
                 holder.messageText_other.setText(messages.getMessage());
-                holder.message_username_other.setText(messages.getFrom());
                 holder.messageImage_other.setVisibility(View.INVISIBLE);
             }else {
 
                 Picasso.with(holder.thumbnail_other.getContext()).load(messages.getMessage())
                         .placeholder(R.drawable.album_example).into(holder.messageImage_other);
-                holder.message_username_other.setText(messages.getFrom());
                 holder.messageText_other.setVisibility(View.INVISIBLE);
 
             }
@@ -79,13 +75,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public TextView messageText_other;
         public CircleImageView thumbnail_other;
-        public TextView message_username_other;
         public ImageView messageImage_other;
         public RelativeLayout relativeLayout_other;
 
         public TextView messageText_personal;
         public CircleImageView thumbnail_personal;
-        public TextView message_username_personal;
         public ImageView messageImage_personal;
         public RelativeLayout relativeLayout_personal;
 
@@ -94,14 +88,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             setIsRecyclable(false);
             relativeLayout_other = itemView.findViewById(R.id.message_layout_other);
             messageText_other = itemView.findViewById(R.id.user_message_other);
-            thumbnail_other = itemView.findViewById(R.id.user_thump_nail_personal);
-            message_username_other = itemView.findViewById(R.id.chat_username_personal);
+            thumbnail_other = itemView.findViewById(R.id.user_thump_nail_other);
             messageImage_other = itemView.findViewById(R.id.chat_image_other);
 
             relativeLayout_personal = itemView.findViewById(R.id.message_layout_personal);
             messageText_personal = itemView.findViewById(R.id.user_message_personal);
             thumbnail_personal = itemView.findViewById(R.id.user_thump_nail_personal);
-            message_username_personal = itemView.findViewById(R.id.chat_username_personal);
             messageImage_personal = itemView.findViewById(R.id.chat_image_personal);
         }
     }

@@ -175,19 +175,7 @@ public class CreateEventActivity extends AppCompatActivity {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(
                     eventID);
-            DatabaseReference userDatabaseReference = database.getReference().child("users").child(userID);
-            userDatabaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    eventMap.put("host", dataSnapshot.child("username").getValue().toString());
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
+            eventMap.put("host", firebaseAuth.getUid());
             eventMap.put("name_event", eventCreateName.getText().toString());
             eventMap.put("event_id", eventID);
             eventMap.put("privacy", getPrivacy());
@@ -200,7 +188,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(credentialsManager.getUsername());
+                        DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(firebaseAuth.getUid());
                         DatabaseReference eventDatabaseReference1 = database.getReference().child("events_us").child(eventID).child("attended");
                         HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
                         HashMap<String, Long> in = new HashMap<>();

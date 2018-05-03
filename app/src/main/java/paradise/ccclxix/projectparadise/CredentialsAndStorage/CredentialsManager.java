@@ -36,8 +36,6 @@ public class CredentialsManager {
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    System.out.println(dataSnapshot.toString() + "HEREHERERERE");
-
                     updateUsername(dataSnapshot.child("username").getValue().toString());
                 }
 
@@ -48,8 +46,9 @@ public class CredentialsManager {
             });
         }
         System.out.println(getUsername());
-
     }
+
+
 
     public void registrationSave(String username, String email, String token){
         SharedPreferences.Editor editor= sharedPreferences.edit();

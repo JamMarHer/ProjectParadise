@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .child("events_us")
                     .child(eventManager.getEventID())
                     .child("attending")
-                    .child(credentialsManager.getUsername());
+                    .child(mAuth.getUid());
             databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 .child("events_us")
                                 .child(eventManager.getEventID())
                                 .child("attendend")
-                                .child(credentialsManager.getUsername());
+                                .child(mAuth.getUid());
                         HashMap<String, Long>  inOut= new HashMap<>();
                         inOut.put("in", eventManager.getPersonalTimeIn());
                         inOut.put("out", System.currentTimeMillis());
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .child("events_us")
                     .child(eventManager.getEventID())
                     .child("attending")
-                    .child(credentialsManager.getUsername());
+                    .child(mAuth.getUid());
             databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         DatabaseReference databaseReference =firebaseDatabase.getReference()
                                 .child("events_us")
                                 .child(eventManager.getEventID())
-                                .child("attendend").child(credentialsManager.getUsername());
+                                .child("attendend").child(mAuth.getUid());
                         HashMap<String, Long>  inOut= new HashMap<>();
                         inOut.put("in", eventManager.getPersonalTimeIn());
                         inOut.put("out", System.currentTimeMillis());

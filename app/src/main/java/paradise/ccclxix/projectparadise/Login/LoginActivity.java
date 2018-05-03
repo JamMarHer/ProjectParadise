@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,10 +28,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.TokenAuthentication;
 
 /**
  * A login screen that offers login via email/password.
@@ -162,11 +167,24 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         credentialsManager.updateCredentials();
+                        if (credentialsManager.getToken() != null){
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference eventDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("token");
+                            eventDatabaseReference.setValue(credentialsManager.getToken()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        Log.d("UPDATED_TOKEN", "New token has been added to db.");
+                                    }
+                                }
+                            });
+                        }
                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                         mainIntent.putExtra("source", "login");
                         startActivity(mainIntent);
                         running = false;
                         showProgress(false);
+
                         finish();
                     }else {
                         showProgress(false);

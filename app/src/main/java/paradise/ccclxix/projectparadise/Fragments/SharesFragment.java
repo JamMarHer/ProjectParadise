@@ -85,12 +85,12 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
         private LayoutInflater inflater;
 
-        private List<String> usersList;
-        HashMap<String, HashMap<String, Long>> attendingUsers;
+        private List<String> userIdsList;
+        private List<String> usernameList;
 
         public UsersAdapter(final Context context){
-            attendingUsers = new HashMap<>();
-            usersList = new ArrayList<>();
+            userIdsList = new ArrayList<>();
+            usernameList = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
@@ -98,16 +98,24 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    attendingUsers.clear();
-                    usersList.clear();
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        System.out.println(dataSnapshot1.getKey());
-                        HashMap<String, Long> inOut = new HashMap<>();
-                        inOut.put("in", Long.valueOf(dataSnapshot.child(dataSnapshot1.getKey()).child("in").getValue().toString()));
-                        attendingUsers.put(dataSnapshot1.getKey(), inOut);
-                        usersList.clear();
+                    userIdsList.clear();
+                    usernameList.clear();
+                    for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
-                        usersList.addAll(attendingUsers.keySet());
+                        FirebaseDatabase firebaseDatabase =  FirebaseDatabase.getInstance();
+                        DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child("users").child(dataSnapshot1.getKey());
+                        userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                usernameList.add(dataSnapshot.child("username").getValue().toString());
+                                userIdsList.add(dataSnapshot1.getKey());
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     usersAdapter.notifyDataSetChanged();
                     inflater =LayoutInflater.from(context);
@@ -133,13 +141,17 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
         @Override
         public void onBindViewHolder(UsersViewHolder holder, int position) {
-            final String usernameString = usersList.get(position);
-            holder.username.setText(usernameString);
+            final String userID = userIdsList.get(position);
+            final String username = usernameList.get(position);
+            holder.username.setText(username);
+
+
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    intent.putExtra("user_id", usernameString);
+                    intent.putExtra("user_id", userID);
+                    intent.putExtra("username_other", username);
                     startActivity(intent);
                 }
             });
@@ -148,7 +160,7 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
 
         @Override
         public int getItemCount() {
-            return usersList.size();
+            return usernameList.size();
         }
     }
 

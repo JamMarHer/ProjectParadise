@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "paradise.ccclxix.projectparadise"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -34,9 +34,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:support-vector-drawable:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.google.firebase:firebase-auth:11.6.0'
-    implementation 'com.google.firebase:firebase-database:11.6.0'
-    implementation 'com.google.firebase:firebase-storage:11.6.0'
+    implementation 'com.google.firebase:firebase-auth:11.8.0'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -44,7 +45,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.google.android.gms:play-services-location:11.6.0'
+    implementation 'com.google.android.gms:play-services-location:11.8.0'
     implementation 'com.androidadvance:topsnackbar:1.1.1'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation files('libs/aws-android-sdk-apigateway-core-2.6.18.jar')

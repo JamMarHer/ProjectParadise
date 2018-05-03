@@ -4,6 +4,7 @@ package paradise.ccclxix.projectparadise.Chat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,7 +50,8 @@ import paradise.ccclxix.projectparadise.R;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private String mChatUser;
+    private String mChatUserID;
+    private String mChatUserName;
     private Toolbar toolbar;
     private FirebaseAuth mauth;
     private String username;
@@ -65,7 +68,7 @@ public class ChatActivity extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private static final int ITEMS_TO_LOAD = 10;
+    private static final int ITEMS_TO_LOAD = 369;
     public static final int GALLERY_PICK = 1;
     private int pageNumber = 1;
 
@@ -99,9 +102,9 @@ public class ChatActivity extends AppCompatActivity {
         mauth = FirebaseAuth.getInstance();
         if(mauth.getCurrentUser() != null){
             username = credentialsManager.getUsername();
-            System.out.println("CURRENT " + username);
         }
-        mChatUser = getIntent().getStringExtra("user_id");
+        mChatUserID = getIntent().getStringExtra("user_id");
+        mChatUserName = getIntent().getStringExtra("username_other");
 
         chatAddButton = findViewById(R.id.chat_add);
         chatSendButton = findViewById(R.id.chat_send);
@@ -109,7 +112,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages = findViewById(R.id.chat_messages);
         swipeRefreshLayout = findViewById(R.id.chat_swipe_layout);
         linearLayoutManager = new LinearLayoutManager(this);
-        messageAdapter = new MessageAdapter(messagesList, username);
+        messageAdapter = new MessageAdapter(messagesList, mauth.getUid());
         chatMessages.setHasFixedSize(false);
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);
@@ -123,21 +126,21 @@ public class ChatActivity extends AppCompatActivity {
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View action_bar_view = inflater.inflate(R.layout.chat_custom_bar, null);
         TextView barUsername = (TextView)action_bar_view.findViewById(R.id.usernameCustomActionBar);
-        barUsername.setText(mChatUser);
+        barUsername.setText(mChatUserName);
         actionBar.setCustomView(action_bar_view);
 
         final DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child("chat").child(credentialsManager.getUsername()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("chat").child(mauth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.hasChild(mChatUser)){
+                if (!dataSnapshot.hasChild(mChatUserID)){
                     Map chatAddMap = new HashMap();
                     chatAddMap.put("seen", false);
                     chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
 
                     Map chatUserMap = new HashMap();
-                    chatUserMap.put("chat/"+ credentialsManager.getUsername()+"/"+mChatUser,chatAddMap);
-                    chatUserMap.put("chat/"+ mChatUser + "/" + credentialsManager.getUsername(),chatAddMap);
+                    chatUserMap.put("chat/"+ mauth.getUid()+"/"+mChatUserID,chatAddMap);
+                    chatUserMap.put("chat/"+ mChatUserID + "/" + mauth.getUid(),chatAddMap);
 
                     databaseReference.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
                         @Override
@@ -166,9 +169,8 @@ public class ChatActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pageNumber++;
-                itemPosition =0;
-                loadMoreMessages();
+                showSnackbar("You are good son.");
+                swipeRefreshLayout.setRefreshing(false);
 
             }
         });
@@ -186,6 +188,17 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    private void showSnackbar(final String message) {
+        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_SHORT);
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.setIconLeft(R.drawable.fire_emoji, 24);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -196,11 +209,11 @@ public class ChatActivity extends AppCompatActivity {
             StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
             Uri imageUri = data.getData();
 
-            final String currentUser = "messages/"+username+"/" + mChatUser;
-            final String chatUserRef = "messages/"+mChatUser+"/" + username;
+            final String currentUser = "messages/"+mauth+"/" + mChatUserID;
+            final String chatUserRef = "messages/"+mChatUserID+"/" + mauth;
 
             DatabaseReference userMessagePush = databaseReference.child("messages")
-                    .child(username).child(mChatUser).push();
+                    .child(mauth.getUid()).child(mChatUserID).push();
 
             final String pushID = userMessagePush.getKey();
 
@@ -217,7 +230,7 @@ public class ChatActivity extends AppCompatActivity {
                         messageMap.put("seen", false);
                         messageMap.put("type", "image");
                         messageMap.put("time", ServerValue.TIMESTAMP);
-                        messageMap.put("from", username);
+                        messageMap.put("from", mauth.getUid());
 
                         Map messageUserMap = new HashMap();
                         messageUserMap.put(currentUser + "/" + pushID, messageMap);
@@ -240,59 +253,10 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void loadMoreMessages(){
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("messages").child(username).child(mChatUser);
-        Query messageQuery = databaseReference.orderByKey().endAt(lastKey).limitToLast(10);
-
-        messageQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Messages message =  dataSnapshot.getValue(Messages.class);
-
-                String messageKey = dataSnapshot.getKey();
-                if (!prevKey.equals(messageKey)){
-                    messagesList.add(itemPosition++, message);
-                    messageAdapter.notifyDataSetChanged();
-                }else {
-                    prevKey = lastKey;
-                }
-                if (itemPosition ==1){
-                    lastKey = messageKey;
-                }
-
-
-
-
-                swipeRefreshLayout.setRefreshing(false);
-                linearLayoutManager.scrollToPositionWithOffset(itemPosition,0);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void loadMessages(){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("messages").child(username).child(mChatUser);
-        Query messageQuery = databaseReference.limitToLast(pageNumber * ITEMS_TO_LOAD);
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child("messages").child(mauth.getUid()).child(mChatUserID);
+        Query messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
@@ -336,13 +300,13 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage(){
         String message = chatMessageText.getText().toString();
         if (!TextUtils.isEmpty(message)){
-            String currentUserRef = "messages/" + credentialsManager.getUsername()+ "/"+ mChatUser;
-            String chatUserRef = "messages/" + mChatUser + "/" + credentialsManager.getUsername();
+            String currentUserRef = "messages/" + mauth.getUid()+ "/"+ mChatUserID;
+            String chatUserRef = "messages/" + mChatUserID + "/" + mauth.getUid();
 
             DatabaseReference databaseReference = firebaseDatabase.getReference();
             DatabaseReference userMessagePush = databaseReference.child("messages")
-                    .child(credentialsManager.getUsername())
-                    .child(mChatUser).push();
+                    .child(mauth.getUid())
+                    .child(mChatUserID).push();
 
             String pushID = userMessagePush.getKey();
 
@@ -352,7 +316,7 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
-            messageMap.put("from", credentialsManager.getUsername());
+            messageMap.put("from", mauth.getUid());
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef + "/"+ pushID, messageMap);

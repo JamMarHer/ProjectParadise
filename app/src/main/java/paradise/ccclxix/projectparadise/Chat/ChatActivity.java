@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,6 +48,9 @@ import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -71,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
     private static final int ITEMS_TO_LOAD = 369;
     public static final int GALLERY_PICK = 1;
     private int pageNumber = 1;
+    private String token;
 
     private int itemPosition = 0;
     private String lastKey = "";
@@ -298,7 +303,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(){
-        String message = chatMessageText.getText().toString();
+        final String message = chatMessageText.getText().toString();
         if (!TextUtils.isEmpty(message)){
             String currentUserRef = "messages/" + mauth.getUid()+ "/"+ mChatUserID;
             String chatUserRef = "messages/" + mChatUserID + "/" + mauth.getUid();
@@ -317,6 +322,8 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", mauth.getUid());
+            messageMap.put("fromUsername", username);
+            messageMap.put("toUsername", mChatUserName);
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef + "/"+ pushID, messageMap);

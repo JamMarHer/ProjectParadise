@@ -27,6 +27,7 @@ import java.util.zip.Inflater;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -91,6 +92,8 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
         public UsersAdapter(final Context context){
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();
+            CredentialsManager cm =  new CredentialsManager(context);
+            final String personalUN = cm.getUsername();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
@@ -107,8 +110,14 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
                         userDatabaseReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                usernameList.add(dataSnapshot.child("username").getValue().toString());
-                                userIdsList.add(dataSnapshot1.getKey());
+                                String otherUN = dataSnapshot.child("username").getValue().toString();
+                                if(!personalUN.equals(otherUN)){
+                                    usernameList.add(otherUN);
+                                    userIdsList.add(dataSnapshot1.getKey());
+                                }
+
+                                usersAdapter.notifyDataSetChanged();
+                                inflater =LayoutInflater.from(context);
                             }
 
                             @Override
@@ -117,8 +126,6 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
                             }
                         });
                     }
-                    usersAdapter.notifyDataSetChanged();
-                    inflater =LayoutInflater.from(context);
 
                 }
 

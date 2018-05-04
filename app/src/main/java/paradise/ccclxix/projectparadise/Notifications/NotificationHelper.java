@@ -41,11 +41,11 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationHelper(Context ctx) {
         super(ctx);
 
-        NotificationChannel messageChannel = new NotificationChannel(PRIMARY_CHANNEL,
+        NotificationChannel messageChannelOutsideChat = new NotificationChannel(PRIMARY_CHANNEL,
                 "New Message Notification", NotificationManager.IMPORTANCE_HIGH);
-        messageChannel.setLightColor(Color.GREEN);
-        messageChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-        getManager().createNotificationChannel(messageChannel);
+        messageChannelOutsideChat.setLightColor(Color.GREEN);
+        messageChannelOutsideChat.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        getManager().createNotificationChannel(messageChannelOutsideChat);
 
     }
 

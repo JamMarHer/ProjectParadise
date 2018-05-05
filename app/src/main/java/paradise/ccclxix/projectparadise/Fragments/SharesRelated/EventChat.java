@@ -171,7 +171,14 @@ public class EventChat extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showSnackbar("You are good son.");
+                TSnackbar snackbar = TSnackbar.make(inflater1.getRootView().findViewById(android.R.id.content), "You are good, son.", TSnackbar.LENGTH_SHORT);
+                snackbar.setActionTextColor(Color.WHITE);
+                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+                TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                snackbar.show();
                 swipeRefreshLayout.setRefreshing(false);
 
             }
@@ -195,16 +202,6 @@ public class EventChat extends Fragment{
         return inflater1;
     }
 
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(inflater1.findViewById(android.R.id.content), message, TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {

@@ -54,23 +54,23 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shares,container, false);
+        ViewPager viewPager =  view.findViewById(R.id.viewpager);
         appModeManager = new AppModeManager(getContext());
         if(appModeManager.isHostingMode() || appModeManager.isAttendantMode()) {
-            View view = inflater.inflate(R.layout.fragment_shares,container, false);
-            // Setting ViewPager for each Tabs
-            ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
             setUpAttending(viewPager);
-            // Set Tabs inside Toolbar
-            TabLayout tabs = (TabLayout) view.findViewById(R.id.result_tabs);
+            TabLayout tabs = view.findViewById(R.id.result_tabs);
+            tabs.setupWithViewPager(viewPager);
+            return view;
+        }else{
+            setUpExploring(viewPager);
+            TabLayout tabs = view.findViewById(R.id.result_tabs);
             tabs.setupWithViewPager(viewPager);
             return view;
         }
-        return inflater.inflate(R.layout.fragment_shares, null);
-
     }
 
     private void setUpAttending(ViewPager viewPager) {
-
 
         FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
         adapter.addFragment(new AttendantsInEvent(), "Attending");
@@ -78,9 +78,15 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
         adapter.addFragment(new EventChat(), "Event Chat");
         viewPager.setAdapter(adapter);
 
-        System.out.println("here");
+    }
+
+    private void setUpExploring(ViewPager viewPager){
+        FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
+        adapter.addFragment(new OnGoingChats(), "Chats");
+        viewPager.setAdapter(adapter);
 
     }
+
     @Override
     public String getName() {
         return null;

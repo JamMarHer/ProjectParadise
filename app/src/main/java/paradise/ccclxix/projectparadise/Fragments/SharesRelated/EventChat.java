@@ -94,7 +94,6 @@ public class EventChat extends Fragment{
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Messages message =  dataSnapshot.getValue(Messages.class);
-                System.out.println("LOADING1");
                 itemPosition++;
                 if (itemPosition ==1){
                     String key = dataSnapshot.getKey();
@@ -167,7 +166,8 @@ public class EventChat extends Fragment{
                 sendMessage();
             }
         });
-/*
+
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -176,7 +176,7 @@ public class EventChat extends Fragment{
 
             }
         });
-*/
+
         chatAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

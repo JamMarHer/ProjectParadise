@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
+
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
 
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
+        navigation.setSelectedItemId(R.id.navigation_home);
 
     }
 
@@ -242,13 +244,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //TODO come back here when the replacing happends, the cache is also lost.
 
         switch (item.getItemId()){
             case R.id.navigation_home:
-                return fragmentToShow(musicFragment, sharesFragment, homeFragment);
+                return fragmentToShow(homeFragment, sharesFragment, musicFragment);
             case R.id.navigation_music:
-                return fragmentToShow(homeFragment, musicFragment, sharesFragment);
+                return fragmentToShow(musicFragment, homeFragment, sharesFragment);
             case R.id.navigation_shares:
                 return fragmentToShow(sharesFragment, musicFragment, homeFragment);
         }

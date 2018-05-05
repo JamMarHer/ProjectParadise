@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="71" />
+                                                <entry key="scalingPercent" value="46" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -34,8 +34,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\Jam\Desktop\iDaeLogo.png" />
+                                      <entry key="backgroundColor" value="fbf7ff" />
+                                      <entry key="foregroundImage" value="C:\Users\Jam\Desktop\iDaeLogo2.png" />
                                     </map>
                                   </option>
                                 </PersistentState>

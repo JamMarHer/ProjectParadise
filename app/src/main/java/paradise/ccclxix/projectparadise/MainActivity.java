@@ -219,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void loadAllFragments(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, homeFragment)
                 .add(R.id.fragment_container, musicFragment)
+                .add(R.id.fragment_container, homeFragment)
                 .add(R.id.fragment_container, sharesFragment)
                 .commit();
     }
@@ -246,9 +246,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()){
             case R.id.navigation_home:
-                return fragmentToShow(homeFragment, musicFragment, sharesFragment);
-            case R.id.navigation_music:
                 return fragmentToShow(musicFragment, sharesFragment, homeFragment);
+            case R.id.navigation_music:
+                return fragmentToShow(homeFragment, musicFragment, sharesFragment);
             case R.id.navigation_shares:
                 return fragmentToShow(sharesFragment, musicFragment, homeFragment);
         }

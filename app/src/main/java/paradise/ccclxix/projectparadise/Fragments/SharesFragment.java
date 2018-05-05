@@ -78,7 +78,7 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
         adapter.addFragment(new EventChat(), "Event Chat");
         viewPager.setAdapter(adapter);
 
-
+        System.out.println("here");
 
     }
     @Override

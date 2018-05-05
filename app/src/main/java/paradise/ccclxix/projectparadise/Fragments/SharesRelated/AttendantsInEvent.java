@@ -50,7 +50,7 @@ public class AttendantsInEvent extends Fragment{
     }
 
 
-    public class UsersViewHolder extends RecyclerView.ViewHolder{
+    private class UsersViewHolder extends RecyclerView.ViewHolder{
 
         TextView username;
         ImageView thumpnail;
@@ -64,7 +64,7 @@ public class AttendantsInEvent extends Fragment{
         }
     }
 
-    public class UsersAdapter extends RecyclerView.Adapter<UsersViewHolder>{
+    private class UsersAdapter extends RecyclerView.Adapter<UsersViewHolder>{
 
         private LayoutInflater inflater;
 
@@ -118,7 +118,6 @@ public class AttendantsInEvent extends Fragment{
             });
 
         }
-
 
 
 

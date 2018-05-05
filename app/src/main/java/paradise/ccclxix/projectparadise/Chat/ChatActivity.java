@@ -231,7 +231,6 @@ public class ChatActivity extends AppCompatActivity {
 
                         Map messageMap = new HashMap();
                         messageMap.put("message", downloadURL);
-                        messageMap.put("message", downloadURL);
                         messageMap.put("seen", false);
                         messageMap.put("type", "image");
                         messageMap.put("time", ServerValue.TIMESTAMP);

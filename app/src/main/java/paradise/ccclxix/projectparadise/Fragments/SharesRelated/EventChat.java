@@ -176,7 +176,7 @@ public class EventChat extends Fragment{
                 snackbar.setIconLeft(R.drawable.fire_emoji, 24);
                 View snackbarView = snackbar.getView();
                 snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
                 textView.setTextColor(Color.WHITE);
                 snackbar.show();
                 swipeRefreshLayout.setRefreshing(false);

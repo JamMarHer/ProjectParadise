@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     EventManager eventManager;
     CredentialsManager credentialsManager;
 
+    private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
 
 
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         mAuth = FirebaseAuth.getInstance();
         appModeManager = new AppModeManager(getApplicationContext());
         Intent  intent = getIntent();
@@ -124,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         apiClientFactory = new ApiClientFactory();
 
+
+
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
         navigation.setSelectedItemId(R.id.navigation_home);
@@ -170,17 +177,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        super.onCreateOptionsMenu(menu);
         if (appModeManager.isHostingMode()){
-            inflater.inflate(R.menu.menu_hosting, menu);
+            getMenuInflater().inflate(R.menu.menu_hosting, menu);
             return true;
         }else if(appModeManager.isAttendantMode()){
-            inflater.inflate(R.menu.menu_attending, menu);
+            getMenuInflater().inflate(R.menu.menu_attending, menu);
             return true;
         }else if(appModeManager.isExploreMode()){
-            inflater.inflate(R.menu.menu_exploring, menu);
+            getMenuInflater().inflate(R.menu.menu_exploring, menu);
             return true;
         }
         return false;

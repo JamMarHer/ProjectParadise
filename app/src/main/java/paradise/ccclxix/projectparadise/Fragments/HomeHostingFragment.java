@@ -50,6 +50,7 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
     private TextView artistName;
     private TextView nextSongName;
     private ImageView songImage;
+    private ImageView privacyImage;
     private Button addHostButton;
     private Button removeHostButton;
     private Button removeAttendantButton;
@@ -92,6 +93,7 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
         removeHostButton = view.findViewById(R.id.removeHostHosting);
         removeAttendantButton = view.findViewById(R.id.removeAttendantHosting);
         sendNotificationButton = view.findViewById(R.id.sendNotificationHosting);
+        privacyImage = view.findViewById(R.id.eventPrivacy);
         setupEventInfo();
 
 
@@ -149,6 +151,14 @@ public class HomeHostingFragment extends HolderFragment implements EnhancedFragm
                 event.put("attended", attended);
                 event.put("attending", attending);
                 currentlyAttending.setText(String.valueOf(attending.size()));
+
+                if (event.get("privacy").equals("private")){
+                    privacyImage.setImageResource(R.drawable.ic_lock_outline_white_24dp);
+                }else {
+                    privacyImage.setImageResource(R.drawable.ic_lock_open_white_24dp);
+                }
+
+
             }
 
             @Override

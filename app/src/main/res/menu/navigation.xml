@@ -5,7 +5,7 @@
     <item
         android:id="@+id/navigation_music"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_music" />
+        android:title="@string/title_blobs" />
 
     <item
         android:id="@+id/navigation_home"
@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/navigation_shares"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_shares" />
+        android:icon="@drawable/ic_group_black_24dp"
+        android:title="@string/title_social" />
 
 </menu>

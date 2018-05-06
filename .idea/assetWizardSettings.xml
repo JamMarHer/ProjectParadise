@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="105" />
+                                                <entry key="scalingPercent" value="70" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -34,9 +34,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="dddddd" />
+                                      <entry key="backgroundColor" value="ffffff" />
                                       <entry key="backgroundImage" value="$PROJECT_DIR$/app/src/main/res/drawable/circle_holder_gray.xml" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Desktop/web_hi_res_512.png" />
+                                      <entry key="foregroundImage" value="$USER_HOME$/Documents/iDaeAPI/screeen.png" />
                                       <entry key="previewDensity" value="XXHIGH" />
                                     </map>
                                   </option>

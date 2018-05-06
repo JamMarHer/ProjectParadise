@@ -40,7 +40,7 @@
                     android:textSize="24sp" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/eventPrivacy"
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"

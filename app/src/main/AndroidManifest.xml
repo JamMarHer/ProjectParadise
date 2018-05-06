@@ -57,12 +57,10 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".Attending.JoiningEventActivity"
-            android:label="@string/title_activity_joining_event"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_joining_event" />
         <activity android:name=".Attending.QRScannerActivity" />
         <activity
-            android:name=".Hosting.CreateEventActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Hosting.CreateEventActivity"/>
         <activity
             android:name=".Chat.ChatActivity"
             android:parentActivityName=".MainActivity" />

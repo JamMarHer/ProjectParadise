@@ -37,6 +37,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
     private CredentialsManager credentialsManager;
     private TextView personalUsername;
+    private TextView personalName;
     private ImageView settingsImageView;
     private ImageView infoImageView;
 
@@ -62,7 +63,9 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         personalUsername = view.findViewById(R.id.personal_username);
         settingsImageView = view.findViewById(R.id.settings_Imageview);
         infoImageView = view.findViewById(R.id.info_Imageview);
+        personalName = view.findViewById(R.id.personal_name);
 
+        personalName.setText("Jam");
         personalUsername.setText(credentialsManager.getUsername());
 
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_3"
     tools:context=".Chat.ChatActivity">
 
 
@@ -20,7 +21,6 @@
             android:id="@+id/chat_messages"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/colorPrimaryDark"
             app:layout_constraintBottom_toTopOf="@+id/event_chat_functions"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +31,8 @@
         android:id="@+id/event_chat_functions"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/circle_holder_white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

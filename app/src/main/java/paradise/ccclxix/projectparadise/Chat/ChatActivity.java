@@ -101,9 +101,12 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         credentialsManager = new CredentialsManager(getApplicationContext());
+        /*
+        Toolbar toolbar = findViewById(R.id.)
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true);
+        */
         mauth = FirebaseAuth.getInstance();
         if(mauth.getCurrentUser() != null){
             username = credentialsManager.getUsername();
@@ -132,7 +135,7 @@ public class ChatActivity extends AppCompatActivity {
         View action_bar_view = inflater.inflate(R.layout.chat_custom_bar, null);
         TextView barUsername = (TextView)action_bar_view.findViewById(R.id.usernameCustomActionBar);
         barUsername.setText(mChatUserName);
-        actionBar.setCustomView(action_bar_view);
+        //actionBar.setCustomView(action_bar_view);
 
         final DatabaseReference databaseReference = firebaseDatabase.getReference();
         databaseReference.child("chat").child(mauth.getUid()).addValueEventListener(new ValueEventListener() {

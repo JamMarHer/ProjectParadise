@@ -2,9 +2,9 @@
     android:shape="rectangle">
 
     <gradient
-        android:startColor="#ffffff"
-        android:endColor="#e9e8e8"
-        android:angle="45"/>
+        android:startColor="#c86396cc"
+        android:endColor="#c86c0383"
+        android:angle="260"/>
     <padding android:left="6dp"
         android:top="6dp"
         android:right="6dp"
@@ -14,4 +14,3 @@
 
 
 </shape>
-

@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="3dp"
             android:layout_toEndOf="@+id/user_thump_nail_other"
-            android:background="@drawable/circle_holder_gray"
+            android:background="@drawable/circle_holder_main_color"
             android:text="TextView"
             android:textColor="@color/colorWhite" />
 
@@ -71,7 +71,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="3dp"
             android:layout_toStartOf="@+id/user_thump_nail_personal"
-            android:background="@drawable/circle_shadow"
+            android:background="@drawable/circle_holder_second_main_color"
             android:text="TextView"
             android:textColor="@color/colorWhite" />
 

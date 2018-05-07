@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
@@ -40,9 +42,8 @@ public class InitialAcitivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_initial_acitivity);
-        idae_title = findViewById(R.id.idae_title);
-        loginRegisterLayout = findViewById(R.id.login_register_layout);
-
+        idae_title = findViewById(R.id.idae_title2);
+        loginRegisterLayout = findViewById(R.id.registration_buttons);
         /*
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -64,25 +65,48 @@ public class InitialAcitivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         logo_welcome = findViewById(R.id.welcome_logo);
+        loginRegisterLayout.setVisibility(View.INVISIBLE);
+        ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);
+        resizeAnimation.setRepeatCount(Animation.INFINITE);
+        resizeAnimation.setRepeatMode(Animation.REVERSE);
+        resizeAnimation.setDuration(1500);
+        logo_welcome.startAnimation(resizeAnimation);
+        Thread t = new Thread(){
+            @Override
+            public void run(){
+                try {
+                    long time = System.currentTimeMillis();
+                    while(System.currentTimeMillis()-time <= 1500){
+                        sleep(500);
+                    }
 
-        if (currentUser == null){
-            showLoginRegistrarionButtons();
-        }else {
-            Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
-            intent.putExtra("source", "logged_in");
-            startActivity(intent);
-            finish();
-        }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            logo_welcome.clearAnimation();
+
+                            if (currentUser == null){
+                                loginRegisterLayout.setVisibility(View.VISIBLE);
+                            }else {
+                                Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
+                                intent.putExtra("source", "logged_in");
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        t.start();
+
     }
 
-    private void showLoginRegistrarionButtons(){
-        logo_welcome.getLayoutParams().height = 120;
-        logo_welcome.getLayoutParams().width = 120;
-        idae_title.setVisibility(View.VISIBLE);
-        loginRegisterLayout.setVisibility(View.VISIBLE);
-    }
 
 
     public void register (View view){

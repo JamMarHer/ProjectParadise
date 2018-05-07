@@ -203,14 +203,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public void loadHostMode(){
         showSnackbar("  You are now hosting.", true, false);
-        homeFragment =  new HomeHostingFragment();
+        homeFragment =  new HomeFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
     }
 
     public void loadAttendantMode(){
         showSnackbar("  You are now part of the blob", false, true);
-        homeFragment =  new HomeAttendantFragment();
+        homeFragment =  new HomeFragment();
         musicFragment = new MusicFragment();
         sharesFragment = new SharesFragment();
     }

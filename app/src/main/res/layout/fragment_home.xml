@@ -24,12 +24,13 @@
                 android:background="@drawable/circle_holder_grey_white">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/info_Imageview"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="6dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/circle_holder_grey_white"
+                    android:clickable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_info_outline_black_24dp" />
@@ -47,12 +48,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/button2"
+                    android:id="@+id/settings_Imageview"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="6dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/circle_holder_grey_white"
+                    android:clickable="true"
                     android:src="@drawable/ic_settings_black_24dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -66,21 +68,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="3dp"
                     android:text="TextView"
+                    android:textColor="@color/common_google_signin_btn_text_dark_focused"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/personal_thumbnail" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
-                    android:text="TextView"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/personal_username" />
 
             </android.support.constraint.ConstraintLayout>
 

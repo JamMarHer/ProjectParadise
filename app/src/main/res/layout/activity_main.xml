@@ -37,7 +37,7 @@
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
+        android:background="@color/common_google_signin_btn_text_dark_default"
         android:maxHeight="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

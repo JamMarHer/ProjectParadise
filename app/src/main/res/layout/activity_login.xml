@@ -31,6 +31,10 @@
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_holder_grey_white"
             android:orientation="vertical"
             android:paddingLeft="15dp"
             android:paddingRight="15dp">
@@ -46,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
-                android:background="@drawable/circle_holder_grey_white"
+                android:background="@drawable/circle_holder_white"
                 android:textColorHint="@color/colorPrimary">
 
                 <AutoCompleteTextView
@@ -66,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/circle_holder_grey_white"
+                android:background="@drawable/circle_holder_white"
                 android:gravity="center"
                 android:textColorHint="@color/colorPrimary">
 

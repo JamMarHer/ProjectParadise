@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
@@ -62,12 +63,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -134,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
         navigation.setSelectedItemId(R.id.navigation_home);
+
+
 
     }
 

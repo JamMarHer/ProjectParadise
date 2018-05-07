@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_3"
     tools:context=".Chat.ChatActivity">
 
 
@@ -31,7 +32,8 @@
         android:id="@+id/event_chat_functions"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorWhite"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/circle_holder_white"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

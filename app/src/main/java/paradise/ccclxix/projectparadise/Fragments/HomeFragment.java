@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,10 +23,13 @@ import android.widget.TextView;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import net.glxn.qrgen.android.QRCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
@@ -37,11 +41,12 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
     private CredentialsManager credentialsManager;
     private TextView personalUsername;
-    private TextView personalName;
     private ImageView settingsImageView;
     private ImageView infoImageView;
+    private ImageView shareWaveImageView;
 
     View generalView;
+    EventManager eventManager;
 
 
     private Toolbar mainToolbar;
@@ -51,6 +56,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        eventManager = new EventManager(getContext());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -63,38 +69,66 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         personalUsername = view.findViewById(R.id.personal_username);
         settingsImageView = view.findViewById(R.id.settings_Imageview);
         infoImageView = view.findViewById(R.id.info_Imageview);
-        personalName = view.findViewById(R.id.personal_name);
+        shareWaveImageView = view.findViewById(R.id.share_wave);
 
-        personalName.setText("Jam");
         personalUsername.setText(credentialsManager.getUsername());
 
 
-        View popupView = inflater.inflate(R.layout.settings_popup, null);
+        View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
+
+        View shareWavePopupView = inflater.inflate(R.layout.share_wave_popup, null);
+        ImageView qrCode = shareWavePopupView.findViewById(R.id.qrCode);
+        TextView eventname = shareWavePopupView.findViewById(R.id.waveName);
+        if (eventManager.getEventID() != null){
+            qrCode.setImageBitmap(getEventQR());
+            eventname.setText(eventManager.getEventName());
+        }
+
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height);
-        popupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+        final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
+        final PopupWindow shareWavePopupWindow = new PopupWindow(shareWavePopupView, width,height);
+        settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+        shareWavePopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
 
         settingsImageView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                    settingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                 }
                 return true;
             }
 
         });
 
-        Button logoutButton = popupView.findViewById(R.id.logoutButton);
-        Button updateProfilePicture = popupView.findViewById(R.id.updateProfilePicture);
-        Button closeSettings = popupView.findViewById(R.id.close_settings);
+        shareWaveImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    shareWavePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                }
+                return true;
+            }
+        });
+
+        Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
+        Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
+        Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
+        final Button closeShareWave = shareWavePopupView.findViewById(R.id.close_share);
 
         closeSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                popupWindow.dismiss();
+                settingsPopupWindow.dismiss();
+            }
+        });
+
+        closeShareWave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareWavePopupWindow.dismiss();
             }
         });
 
@@ -125,6 +159,11 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         });
 
         return view;
+    }
+
+
+    private Bitmap getEventQR(){
+        return QRCode.from((String)eventManager.getEventID()).bitmap();
     }
 
 

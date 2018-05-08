@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.zxing.Result;
@@ -62,7 +63,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     EventManager eventManager;
 
 
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +218,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         builder.setTitle(String.format("Event: %s", (String)event.get("name_event")));
 
+
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -234,8 +236,10 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
             public void onClick(final DialogInterface dialogInterface, int i) {
 
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 eventManager.updateEventID(eventID);
+                eventManager.updateEventName((String)event.get("event_name"));
                 DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(mAuth.getUid());
                 HashMap<String, Long> in = new HashMap<>();
                 final long timeIn = System.currentTimeMillis();
@@ -244,16 +248,22 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
+                            DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("waves").child("in").child(eventID);
+                            userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
 
-                            databaseReference.removeEventListener(valueEventListener);
-                            final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("source", "qr_code_scanned");
-                            dialogInterface.dismiss();
-                            eventManager.updatePersonalTimein(timeIn);
+                                    databaseReference.removeEventListener(valueEventListener);
+                                    final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("source", "qr_code_scanned");
+                                    dialogInterface.dismiss();
+                                    eventManager.updatePersonalTimein(timeIn);
 
-                            finish();
-                            QRScannerActivity.this.startActivity(intent);
+                                    finish();
+                                    QRScannerActivity.this.startActivity(intent);
+                                }
+                            });
                         }else{
                             showSnackbar("Something went wrong");
                             scannerView.resumeCameraPreview(QRScannerActivity.this);

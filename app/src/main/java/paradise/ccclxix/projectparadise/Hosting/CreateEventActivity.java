@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -75,8 +76,6 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -187,7 +186,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(firebaseAuth.getUid());
                         DatabaseReference eventDatabaseReference1 = database.getReference().child("events_us").child(eventID).child("attended");
                         HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
@@ -205,15 +204,28 @@ public class CreateEventActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-                                    intent.putExtra("source", "event_created");
 
-                                    eventManager.updateEventID(eventID);
-                                    eventManager.updatePersonalTimein(timeStamp);
+                                    DatabaseReference userDatabaseReference = database.getReference().child("users").child(firebaseAuth.getUid()).child("waves").child("in").child(eventID);
+                                    userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
 
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
+                                                Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                                                intent.putExtra("source", "event_created");
+
+                                                eventManager.updateEventID(eventID);
+                                                eventManager.updatePersonalTimein(timeStamp);
+
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                finish();
+                                            }else {
+                                                Log.d("CREATING_WAVE", "Problem adding wave to user.");
+                                            }
+                                        }
+                                    });
+
                                 }
                             }
                         });

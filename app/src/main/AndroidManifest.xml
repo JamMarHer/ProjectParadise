@@ -55,9 +55,6 @@
         <activity
             android:name=".Login.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity
-            android:name=".Attending.JoiningEventActivity"
-            android:label="@string/title_activity_joining_event" />
         <activity android:name=".Attending.QRScannerActivity" />
         <activity
             android:name=".Hosting.CreateEventActivity"/>

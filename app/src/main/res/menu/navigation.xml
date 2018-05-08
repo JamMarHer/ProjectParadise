@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/navigation_shares"
-        android:icon="@drawable/ic_group_black_24dp"
+        android:icon="@drawable/ic_chat_black_24dp"
         android:title="@string/title_social" />
 
 </menu>

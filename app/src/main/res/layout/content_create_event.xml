@@ -16,7 +16,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
+        android:background="@drawable/circle_holder_main_colors"
         android:fontFamily="@font/lobster_regular"
         android:text="Launch!"
         android:textColor="@color/colorGray"
@@ -51,7 +51,7 @@
             android:layout_marginTop="3dp"
             android:fontFamily="@font/lobster_regular"
             android:gravity="center_horizontal"
-            android:text="Event setup"
+            android:text="Start a Wave"
             android:textColor="@color/colorWhite"
             android:textSize="30sp" />
 
@@ -73,7 +73,7 @@
             android:backgroundTint="@color/colorWhite"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Event Name"
+            android:hint="Wave Name"
             android:inputType="textPersonName"
             android:shadowColor="@color/colorWhite"
             android:textColor="@color/colorWhite"

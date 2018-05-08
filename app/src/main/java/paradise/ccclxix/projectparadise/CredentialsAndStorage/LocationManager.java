@@ -5,25 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.util.concurrent.Executor;
-
-import paradise.ccclxix.projectparadise.Attending.JoiningEventActivity;
-import paradise.ccclxix.projectparadise.R;
-
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 public class LocationManager {

@@ -49,9 +49,17 @@ public class EventManager {
         editor.apply();
     }
 
+    public void updateEventName(String eventName){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("eventName", eventName);
+        editor.apply();
+    }
+
     public String getEventID(){
         return  sharedPreferences.getString("eventID", null);
     }
+
+    public String getEventName(){ return  sharedPreferences.getString("eventName", null);}
 
     public long getPersonalTimeIn(){
         return this.sharedPreferences.getLong("personalTimeIn", 0);

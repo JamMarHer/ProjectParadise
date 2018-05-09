@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -164,6 +166,21 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        chatMessageText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chatMessages.scrollToPosition(messagesList.size()-1);
+            }
+        });
+        chatMessageText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){
+                    chatMessages.scrollToPosition(messagesList.size()-1);
+                }
             }
         });
 

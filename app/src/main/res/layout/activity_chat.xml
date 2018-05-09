@@ -50,14 +50,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:nestedScrollingEnabled="true"
-            android:singleLine="false"
+            android:ellipsize="none"
             android:ems="10"
             android:hint="Message"
-            android:ellipsize="none"
+            android:inputType="textPersonName"
             android:maxLines="100"
+            android:nestedScrollingEnabled="true"
             android:scrollHorizontally="false"
-            android:inputType="textPersonName" />
+            android:singleLine="false" />
 
         <Button
             android:id="@+id/chat_send"

@@ -55,7 +55,11 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private ImageView settingsImageView;
     private ImageView infoImageView;
     private ImageView shareWaveImageView;
+    private TextView myNumWaves;
+    private TextView myNumContacts;
+
     private AppModeManager appModeManager;
+
 
     View generalView;
     EventManager eventManager;
@@ -84,6 +88,10 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         settingsImageView = view.findViewById(R.id.settings_Imageview);
         infoImageView = view.findViewById(R.id.info_Imageview);
         shareWaveImageView = view.findViewById(R.id.share_wave);
+        myNumWaves = view.findViewById(R.id.numberWaves);
+        myNumContacts = view.findViewById(R.id.numberContacts);
+        setupNumWavesAndContacts();
+
 
         personalUsername.setText(credentialsManager.getUsername());
 
@@ -183,6 +191,42 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         });
 
         return view;
+    }
+
+    private void setupNumWavesAndContacts(){
+        if(mAuth.getCurrentUser() != null && mAuth.getUid() != null) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference userDBReference = firebaseDatabase.getReference()
+                    .child("users")
+                    .child(mAuth.getUid())
+                    .child("waves")
+                    .child("in");
+            final DatabaseReference contacesDBReference = firebaseDatabase.getReference()
+                    .child("messages")
+                    .child(mAuth.getUid());
+            userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    myNumWaves.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                    contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            myNumContacts.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
 

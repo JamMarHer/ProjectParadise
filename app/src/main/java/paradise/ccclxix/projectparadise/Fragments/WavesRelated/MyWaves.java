@@ -111,13 +111,14 @@ public class MyWaves  extends Fragment {
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    waveList.clear();
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
-                        waveDBReference.addValueEventListener(new ValueEventListener() {
+                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                waveList.clear();
+
                                 int waveAttending = (int)dataSnapshot.child("attending").getChildrenCount();
                                 HashMap<String, String> eventInfo = new HashMap<>();
                                 eventInfo.put("waveID", waveID);

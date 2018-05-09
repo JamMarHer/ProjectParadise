@@ -89,7 +89,7 @@ public class AttendantsInEvent extends Fragment{
 
                         FirebaseDatabase firebaseDatabase =  FirebaseDatabase.getInstance();
                         DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child("users").child(dataSnapshot1.getKey());
-                        userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                        userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String otherUN = dataSnapshot.child("username").getValue().toString();

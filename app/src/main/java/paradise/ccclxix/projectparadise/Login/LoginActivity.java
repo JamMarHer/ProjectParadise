@@ -179,6 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
+                        credentialsManager.updateCredentials();
                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                         mainIntent.putExtra("source", "login");
                         startActivity(mainIntent);

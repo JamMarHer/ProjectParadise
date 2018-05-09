@@ -5,7 +5,7 @@
     <item
         android:id="@+id/navigation_music"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_blobs" />
+        android:title="@string/title_waves" />
 
     <item
         android:id="@+id/navigation_home"

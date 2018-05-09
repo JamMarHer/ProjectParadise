@@ -146,46 +146,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         snackbar.show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.log_out_hosting:
-                appModeManager.setModeToExplore();
-
-                leaveHostEvent();
-                return true;
-            case R.id.log_out_attending:
-                appModeManager.setModeToExplore();
-                leaveAttendantEvent();
-                return true;
-            case R.id.log_out_account:
-                mAuth.signOut();
-                Intent intent = new Intent(this, InitialAcitivity.class);
-                startActivity(intent);
-                finish();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        if (appModeManager.isHostingMode()){
-            getMenuInflater().inflate(R.menu.menu_hosting, menu);
-            return true;
-        }else if(appModeManager.isAttendantMode()){
-            getMenuInflater().inflate(R.menu.menu_attending, menu);
-            return true;
-        }else if(appModeManager.isExploreMode()){
-            getMenuInflater().inflate(R.menu.menu_exploring, menu);
-            return true;
-        }
-        return false;
-    }
-
 
     public void loadExploreMode(){
         homeFragment =  new HomeFragment();

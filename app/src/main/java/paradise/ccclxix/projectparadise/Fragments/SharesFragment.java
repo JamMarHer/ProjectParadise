@@ -73,9 +73,9 @@ public class SharesFragment extends HolderFragment implements EnhancedFragment {
     private void setUpAttending(ViewPager viewPager) {
 
         FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
-        adapter.addFragment(new AttendantsInEvent(), "Attending");
         adapter.addFragment(new OnGoingChats(), "Chats");
-        adapter.addFragment(new EventChat(), "Event Chat");
+        adapter.addFragment(new AttendantsInEvent(), "Waving");
+        adapter.addFragment(new EventChat(), "Wave Chat");
         viewPager.setAdapter(adapter);
 
     }

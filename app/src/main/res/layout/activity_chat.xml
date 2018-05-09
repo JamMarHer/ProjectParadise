@@ -30,7 +30,7 @@
     <LinearLayout
         android:id="@+id/event_chat_functions"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:background="@drawable/circle_holder_white"
         android:orientation="horizontal"
@@ -50,8 +50,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:nestedScrollingEnabled="true"
+            android:singleLine="false"
             android:ems="10"
             android:hint="Message"
+            android:ellipsize="none"
+            android:maxLines="100"
+            android:scrollHorizontally="false"
             android:inputType="textPersonName" />
 
         <Button

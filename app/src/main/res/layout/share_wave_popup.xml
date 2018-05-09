@@ -30,7 +30,7 @@
             android:fontFamily="@font/lobster_regular"
             android:foregroundGravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="Share Wave"
+            android:text="Wave"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -56,6 +56,22 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/circle_holder_white"
             android:src="@drawable/rsz_sad" />
+
+        <Button
+            android:id="@+id/leave_wave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_holder_grey_white"
+            android:gravity="center"
+            android:text="Leave Wave"
+            android:textColor="@color/viewfinder_laser"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/close_share"

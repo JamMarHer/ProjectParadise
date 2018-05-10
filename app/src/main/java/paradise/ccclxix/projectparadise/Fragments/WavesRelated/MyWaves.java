@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +132,6 @@ public class MyWaves  extends Fragment {
         private LayoutInflater inflater;
 
         private List<HashMap<String, String>> waveList;
-
         public WavesAdapter(final Context context){
             waveList = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -140,6 +140,8 @@ public class MyWaves  extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     waveList.clear();
+                    final HashMap<String, Integer> record = new HashMap<>();
+
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
@@ -154,9 +156,18 @@ public class MyWaves  extends Fragment {
                                 // TODO add function (algo) for trending.
                                 eventInfo.put("waveTrend", "trending");
                                 eventInfo.put("waveAttending", String.valueOf(waveAttending));
-                                waveList.add(eventInfo);
-                                if(waveID.equals(eventManager.getEventID())){
-                                    Collections.swap(waveList,0, waveList.size()-1);
+
+                                if(!record.containsKey(waveID)) {
+                                    waveList.add(eventInfo);
+                                    record.put(waveID, waveList.size()-1);
+                                    if(waveID.equals(eventManager.getEventID())){
+                                        int toExchange = waveList.size()-1;
+                                        Collections.swap(waveList,0, toExchange);
+                                        record.put(waveID, 0);
+                                        record.put(waveList.get(toExchange).get("waveID"), waveList.size()-1);
+                                    }
+                                }else {
+                                    waveList.set(record.get(waveID), eventInfo);
                                 }
                                 wavesAdapter.notifyDataSetChanged();
                                 inflater = LayoutInflater.from(context);
@@ -268,7 +279,7 @@ public class MyWaves  extends Fragment {
             leaveWave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    leaveWave();
+                    leaveWave(waveID);
                 }
             });
 
@@ -288,13 +299,13 @@ public class MyWaves  extends Fragment {
         return QRCode.from(eventID).bitmap();
     }
 
-    private void leaveWave(){
+    private void leaveWave(final String waveID){
         if (mAuth.getCurrentUser() != null) {
             credentialsManager.updateCredentials();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
-                    .child(eventManager.getEventID())
+                    .child(waveID)
                     .child("attending")
                     .child(mAuth.getUid());
             // Gets the time the user logged into the wave.
@@ -307,7 +318,7 @@ public class MyWaves  extends Fragment {
                             .child(mAuth.getUid())
                             .child("waves")
                             .child("in")
-                            .child(eventManager.getEventID());
+                            .child(waveID);
                     // Removes the wave from personal waves
                     userDatabaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -318,7 +329,7 @@ public class MyWaves  extends Fragment {
                                         .child(mAuth.getUid())
                                         .child("waves")
                                         .child("out")
-                                        .child(eventManager.getEventID());
+                                        .child(waveID);
                                 final HashMap<String, Long> inoutInfo = new HashMap<>();
                                 inoutInfo.put("in", inTime);
                                 inoutInfo.put("out", System.currentTimeMillis());
@@ -329,7 +340,7 @@ public class MyWaves  extends Fragment {
                                         if (task.isSuccessful()) {
                                             DatabaseReference dbWaves = firebaseDatabase.getReference()
                                                     .child("events_us")
-                                                    .child(eventManager.getEventID())
+                                                    .child(waveID)
                                                     .child("attended")
                                                     .child(mAuth.getUid());
                                             // Updates the wave table of attended.

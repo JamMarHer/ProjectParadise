@@ -54,7 +54,6 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private TextView personalUsername;
     private ImageView settingsImageView;
     private ImageView infoImageView;
-    private ImageView shareWaveImageView;
     private TextView myNumWaves;
     private TextView myNumContacts;
 
@@ -87,7 +86,6 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         personalUsername = view.findViewById(R.id.personal_username);
         settingsImageView = view.findViewById(R.id.settings_Imageview);
         infoImageView = view.findViewById(R.id.info_Imageview);
-        shareWaveImageView = view.findViewById(R.id.share_wave);
         myNumWaves = view.findViewById(R.id.numberWaves);
         myNumContacts = view.findViewById(R.id.numberContacts);
         setupNumWavesAndContacts();
@@ -126,15 +124,6 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
         });
 
-        shareWaveImageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    shareWavePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                }
-                return true;
-            }
-        });
 
         Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
         Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
@@ -207,11 +196,11 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
             userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    myNumWaves.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                    myNumWaves.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
                     contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            myNumContacts.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                            myNumContacts.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
                         }
 
                         @Override

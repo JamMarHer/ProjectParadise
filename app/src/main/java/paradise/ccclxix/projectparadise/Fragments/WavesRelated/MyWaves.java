@@ -203,7 +203,7 @@ public class MyWaves  extends Fragment {
         public void onBindViewHolder(WaveViewHolder holder, int position) {
             final String waveID = waveList.get(position).get("waveID");
             final String waveName = waveList.get(position).get("waveName");
-            final String waveAttending = "Waving: "+waveList.get(position).get("waveAttending");
+            final String waveAttending = waveList.get(position).get("waveAttending");
             final String waveTrend = waveList.get(position).get("waveTrend");
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);

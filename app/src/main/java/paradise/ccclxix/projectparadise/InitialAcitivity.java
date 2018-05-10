@@ -69,17 +69,15 @@ public class InitialAcitivity extends AppCompatActivity {
         logo_welcome = findViewById(R.id.welcome_logo);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
         ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);
-        resizeAnimation.setRepeatCount(Animation.INFINITE);
-        resizeAnimation.setRepeatMode(Animation.REVERSE);
-        resizeAnimation.setDuration(1500);
+        resizeAnimation.setDuration(999);
         logo_welcome.startAnimation(resizeAnimation);
         Thread t = new Thread(){
             @Override
             public void run(){
                 try {
                     long time = System.currentTimeMillis();
-                    while(System.currentTimeMillis()-time <= 1500){
-                        sleep(500);
+                    while(System.currentTimeMillis()-time <= 999){
+                        sleep(498);
                     }
 
                 } catch (InterruptedException e) {

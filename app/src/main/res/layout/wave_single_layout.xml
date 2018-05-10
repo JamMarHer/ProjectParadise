@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/wave_join"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_gravity="end"
         android:layout_marginEnd="3dp"
         android:layout_marginTop="3dp"
@@ -21,8 +21,8 @@
 
     <ImageView
         android:id="@+id/wave_settings"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_gravity="end"
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="3dp"
@@ -37,7 +37,7 @@
         android:layout_height="25dp"
         android:layout_gravity="end"
         android:layout_marginBottom="3dp"
-        android:background="@drawable/circle_holder_second_main_color"
+        android:background="@drawable/circle_holder_gray"
         android:src="@drawable/outline_notifications_white_48"
         app:layout_constraintBottom_toTopOf="@+id/profile_wave_single_layout"
         app:layout_constraintEnd_toEndOf="@+id/profile_wave_single_layout" />
@@ -48,7 +48,7 @@
         android:layout_height="25dp"
         android:layout_gravity="end"
         android:layout_marginBottom="3dp"
-        android:background="@drawable/circle_holder_second_main_color"
+        android:background="@drawable/circle_holder_gray"
         android:src="@drawable/ic_trending_flat_white_24dp"
         app:layout_constraintBottom_toTopOf="@+id/profile_wave_single_layout"
         app:layout_constraintStart_toStartOf="@+id/profile_wave_single_layout" />

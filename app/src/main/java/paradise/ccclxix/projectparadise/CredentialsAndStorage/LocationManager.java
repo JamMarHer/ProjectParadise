@@ -28,7 +28,8 @@ public class LocationManager {
     }
 
     public String getFormatedLocation(){
-        return String.format("%s___%s", sharedPreferences.getString("lat",null), sharedPreferences.getString("lon",null));
+        return String.format("%s___%s", sharedPreferences.getString("lat",null),
+                sharedPreferences.getString("lon",null));
     }
 
     public void  setLocation(String lat, String lon){
@@ -49,7 +50,10 @@ public class LocationManager {
 
     public String getLastFormatedLocation(Context context) {
         this.context = context;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
             return null;
         }
         mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -57,7 +61,6 @@ public class LocationManager {
             public void onSuccess(Location location) {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
-                    System.out.println("Current:  Lat: "+ Double.toString(location.getLatitude())+", Lon: "+Double.toString(location.getLongitude()));
                     setLocation(Double.toString(location.getLatitude()),Double.toString(location.getLongitude()));
 
                 }

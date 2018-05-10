@@ -65,11 +65,6 @@ public class EventManager {
         return this.sharedPreferences.getLong("personalTimeIn", 0);
     }
 
-    public void updateEvent(String eventID){
-        this.updateEventID(eventID);
-        event.clear();
-        this.getEvent();
-    }
 
 
     public boolean addUser(String username, long timeIn){

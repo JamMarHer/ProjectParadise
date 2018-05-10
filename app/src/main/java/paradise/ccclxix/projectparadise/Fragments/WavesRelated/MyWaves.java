@@ -143,7 +143,7 @@ public class MyWaves  extends Fragment {
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
-                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -345,6 +345,7 @@ public class MyWaves  extends Fragment {
                                                                     appModeManager.setModeToExplore();
                                                                     eventManager.updateEventID(null);
                                                                     Intent intent = new Intent(getActivity(), MainActivity.class);
+                                                                    intent.putExtra("source", "logged_in");
                                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                                     startActivity(intent);
                                                                     getActivity().finish();

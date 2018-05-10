@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/navigation_music"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/baseline_waves_black_48"
         android:title="@string/title_waves" />
 
     <item

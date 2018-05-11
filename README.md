@@ -24,7 +24,7 @@ There's no reason why a sloth and conspiracy theories should go together, unless
 
 
 ## Getting Started
-Currently foli is only being developed for Android. So is doesn't matter what OS you are running it Android Studio should work fine.
+Currently foli is only being developed for Android. So is doesn't matter what OS you are running, Android Studio should work fine.
 
 ### Prerequisites
 - [Android Studio](https://developer.android.com/studio/)

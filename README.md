@@ -19,7 +19,7 @@ There's a distinction between a wave and a groupchat. It's not common to have gr
 Waves are more than a fisical group of people, they can also represent ideas and topics.
 
 ## Use case, topics/ideas:
-People generate ideas and when they believe is relevant enough they could share it in the internet. The problem is that some of those ideas might no longer interest us, or simply due to wrong timming we easily dismiss them. It doesn't help that the internet hold such a gigantic amount of information that can overwhelm us, time to time. Now imagine you have two waves: conspiracy theories and sloths.
+People generate ideas and when they believe is relevant enough they tend share it in the internet. The problem is that some of those ideas might no longer interest us, or simply due to wrong timming we easily dismiss them. It doesn't help that the internet hold such a gigantic amount of information that can overwhelm us, time to time. Now imagine you have two waves: conspiracy theories and sloths.
 There's no reason why a sloth and conspiracy theories should go together, unless you decide to make a wave for sloths and conspiracy theories :poop:.
 
 

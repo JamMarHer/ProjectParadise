@@ -25,7 +25,6 @@ import java.util.List;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.R;
 
 public class OnGoingChats extends Fragment{
@@ -50,12 +49,20 @@ public class OnGoingChats extends Fragment{
 
         TextView username;
         ImageView thumpnail;
+
+        ImageView startChat;
+        ImageView sameWave;
+        ImageView notification;
+
         View mView;
 
         public UsersViewHolder(View itemView) {
             super(itemView);
-            username = itemView.findViewById(R.id.username);
-            thumpnail = itemView.findViewById(R.id.profile_image);
+            username = itemView.findViewById(R.id.username_single_user_layout);
+            thumpnail = itemView.findViewById(R.id.profile_image_single_user_layout);
+            startChat = itemView.findViewById(R.id.open_chatsingle_user_layout);
+            sameWave = itemView.findViewById(R.id.user_in_same_wave_single_user_layout);
+            notification = itemView.findViewById(R.id.notification_icon_single_user_layout);
             mView = itemView;
         }
     }

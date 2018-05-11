@@ -23,10 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
-import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
 import paradise.ccclxix.projectparadise.R;
 
 public class AttendantsInEvent extends Fragment{
@@ -58,8 +56,8 @@ public class AttendantsInEvent extends Fragment{
 
         public UsersViewHolder(View itemView) {
             super(itemView);
-            username = itemView.findViewById(R.id.username);
-            thumpnail = itemView.findViewById(R.id.profile_image);
+            username = itemView.findViewById(R.id.username_single_user_layout);
+            thumpnail = itemView.findViewById(R.id.profile_image_single_user_layout);
             mView = itemView;
         }
     }

@@ -12,6 +12,15 @@
     android:elevation="1dp">
 
     <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintStart_toStartOf="@+id/wave_name_single_layout"
+        app:layout_constraintTop_toBottomOf="@+id/wave_name_single_layout"
+        app:srcCompat="@drawable/ic_people_black_24dp" />
+
+    <ImageView
         android:id="@+id/wave_join"
         android:layout_width="36dp"
         android:layout_height="36dp"
@@ -66,11 +75,13 @@
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="9dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="9dp"
         android:src="@drawable/album_example"
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/wave_notification"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="9dp"
         android:layout_marginTop="9dp"
         android:gravity="center_vertical"
         android:text="TextView"
@@ -93,9 +104,11 @@
         android:id="@+id/wave_attending_single_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
         android:layout_marginTop="3dp"
         android:text="1"
-        app:layout_constraintStart_toStartOf="@+id/wave_name_single_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/wave_name_single_layout" />
 
 </android.support.constraint.ConstraintLayout>

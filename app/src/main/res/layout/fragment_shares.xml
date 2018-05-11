@@ -13,7 +13,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:background="@color/colorPrimary"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:contentInsetEnd="0dp"
@@ -24,13 +24,15 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/result_tabs"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+
+                android:layout_height="wrap_content"
                 app:contentInsetEnd="0dp"
                 app:contentInsetLeft="0dp"
                 app:contentInsetRight="0dp"
                 app:contentInsetStart="0dp"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/colorWhite"
+                app:tabTextAppearance="@style/MyCustomTabText"
                 app:tabTextColor="@color/colorWhite" />
         </android.support.design.widget.AppBarLayout>
 

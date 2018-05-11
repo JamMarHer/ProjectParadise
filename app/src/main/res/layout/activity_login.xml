@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:paddingTop="6dp"
-                android:src="@drawable/ic_launcher_logo_4_white" />
+                android:src="@drawable/idaelogo6_full" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

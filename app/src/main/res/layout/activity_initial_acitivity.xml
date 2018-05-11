@@ -21,11 +21,11 @@
 
         <ImageView
             android:id="@+id/welcome_logo"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:layout_gravity="center_vertical"
             android:foregroundGravity="center_vertical"
-            android:src="@drawable/ic_launcher_logo_4_white"
+            android:src="@drawable/idaelogo6_full"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="8dp" />
 

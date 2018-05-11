@@ -4,8 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
-    android:background="@drawable/circle_holder_white">
+    android:layout_marginBottom="3dp"
+    android:layout_marginEnd="3dp"
+    android:layout_marginStart="3dp"
+    android:layout_marginTop="3dp"
+    android:background="@drawable/circle_holder_white"
+    android:elevation="1dp">
 
     <ImageView
         android:id="@+id/wave_join"
@@ -14,7 +18,7 @@
         android:layout_gravity="end"
         android:layout_marginEnd="3dp"
         android:layout_marginTop="3dp"
-        android:background="@drawable/circle_holder_main_colors"
+        android:background="@drawable/circle_holder_main_color"
         android:src="@drawable/baseline_radio_button_unchecked_white_36"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,21 +30,24 @@
         android:layout_gravity="end"
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="3dp"
-        android:background="@drawable/circle_holder_gray"
-        android:src="@drawable/baseline_menu_white_48"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_holder_main_colors"
+        android:src="@drawable/baseline_waves_white_36"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_join" />
 
     <ImageView
         android:id="@+id/wave_notification"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_gravity="end"
-        android:layout_marginBottom="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
         android:background="@drawable/circle_holder_gray"
         android:src="@drawable/outline_notifications_white_48"
-        app:layout_constraintBottom_toTopOf="@+id/profile_wave_single_layout"
-        app:layout_constraintEnd_toEndOf="@+id/profile_wave_single_layout" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/wave_trending_single_layout"
@@ -48,10 +55,11 @@
         android:layout_height="25dp"
         android:layout_gravity="end"
         android:layout_marginBottom="3dp"
+        android:layout_marginStart="3dp"
         android:background="@drawable/circle_holder_gray"
         android:src="@drawable/ic_trending_flat_white_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/profile_wave_single_layout"
-        app:layout_constraintStart_toStartOf="@+id/profile_wave_single_layout" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_wave_single_layout"
@@ -59,11 +67,12 @@
         android:layout_height="66dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/album_example"
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/wave_notification"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/wave_name_single_layout"

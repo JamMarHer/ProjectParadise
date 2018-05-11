@@ -33,7 +33,7 @@ Currently foli is only being developed for Android. So is doesn't matter what OS
 ### Installing
 After having installed Android studio you would have to download the project using the project's github link. Android studio offers an easy integration with github to complete this step.
 Inside Android Studio do the following:
-- Go to **File**->**Few**->**Project from Version Control**->**_GitHub_**.
+- Go to **File**->**New**->**Project from Version Control**->**_GitHub_**.
 - After loggin in, if you have permission (Duh if you are seeing this you do) select ProjectParadise from the URL options (_https://github.com/JamMarHer/ProjectParadise_).
 - Click on Clone.
 

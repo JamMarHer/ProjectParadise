@@ -8,13 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment sharesFragment;
     private AppModeManager appModeManager;
 
-
-    ApiClientFactory apiClientFactory;
 
     EventManager eventManager;
     CredentialsManager credentialsManager;
@@ -117,10 +113,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
 
-        apiClientFactory = new ApiClientFactory();
-
-
-
         loadAllFragments();
         fragmentToShow(homeFragment, musicFragment, sharesFragment);
         navigation.setSelectedItemId(R.id.navigation_home);
@@ -141,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }

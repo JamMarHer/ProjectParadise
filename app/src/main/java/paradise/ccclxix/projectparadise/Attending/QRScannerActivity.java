@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,19 +29,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 import com.google.zxing.Result;
 
 
 import java.util.HashMap;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
-import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
-import paradise.ccclxix.projectparadise.Models.Event;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.Manifest.permission.CAMERA;
@@ -54,11 +49,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
     ValueEventListener valueEventListener;
     DatabaseReference databaseReference;
-
-    ApiClientFactory apiClientFactory;
-
-
-    Event eventAttenEnterResponse;
     CredentialsManager credentialsManager;
     EventManager eventManager;
 
@@ -71,7 +61,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
         mAuth = FirebaseAuth.getInstance();
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
-        apiClientFactory = new ApiClientFactory();
 
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
@@ -290,7 +279,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
         snackbar.setActionTextColor(Color.WHITE);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.parseColor("#27000000"));
-        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }

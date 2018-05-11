@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-import paradise.ccclxix.projectparadise.BackendVals.MessageCodes;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -40,8 +38,6 @@ import paradise.ccclxix.projectparadise.R;
 public class RegistrationActivity extends AppCompatActivity {
 
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    ApiClientFactory apiClientFactory;
 
 
     private View mProgressView;
@@ -62,8 +58,6 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-
-        apiClientFactory = new ApiClientFactory();
 
         credentialsManager = new CredentialsManager(this);
         usernameView = findViewById(R.id.registration_username);

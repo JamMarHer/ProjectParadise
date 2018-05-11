@@ -48,8 +48,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:11.8.0'
     implementation 'com.androidadvance:topsnackbar:1.1.1'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-    implementation files('libs/aws-android-sdk-apigateway-core-2.6.18.jar')
-    implementation files('libs/aws-android-sdk-core-2.6.18.jar')
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -220,7 +220,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
 
     private Bitmap getEventQR(){
-        return QRCode.from((String)eventManager.getEventID()).bitmap();
+        return QRCode.from(eventManager.getEventID()).bitmap();
     }
 
     private void leaveWave(){

@@ -3,7 +3,7 @@
 # foli (Project Paradise)
 
 foli is a mobile application currently in development. The idea behind foli is to transform the current social media model into a more filtered and controllable environment.
-A good analogy to put into perspective our vision is to picture the internet as sea of ideas and trends, some times as you are surfing the web you get hit by a content that you don't want to deal with.
+A good analogy to put into perspective our vision is to picture the internet as sea of ideas and trends, some times as you are surfing the web you get hit by content that you don't want to deal with.
 What if instead of randomly getting with by irrelevant/offensive/random content you could select which **_waves_** of content you want to ride. Hence the concept of waves, a wave represents a profile for 
 the content that you are interested in. 
 

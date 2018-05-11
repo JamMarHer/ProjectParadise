@@ -78,7 +78,7 @@
         android:layout_marginBottom="9dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="9dp"
-        android:src="@drawable/idaelogo_background"
+        android:src="@drawable/icon_sad"
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"

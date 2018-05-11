@@ -54,7 +54,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }else {
 
                 Picasso.with(holder.thumbnail_personal.getContext()).load(messages.getMessage())
-                        .placeholder(R.drawable.album_example).into(holder.messageImage_personal);
+                        .placeholder(R.drawable.idaelogo6_full).into(holder.messageImage_personal);
                 holder.messageText_personal.setVisibility(View.INVISIBLE);
 
             }
@@ -72,7 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }else {
 
                 Picasso.with(holder.thumbnail_other.getContext()).load(messages.getMessage())
-                        .placeholder(R.drawable.album_example).into(holder.messageImage_other);
+                        .placeholder(R.drawable.idaelogo6_full).into(holder.messageImage_other);
                 holder.messageText_other.setVisibility(View.INVISIBLE);
             }
         }

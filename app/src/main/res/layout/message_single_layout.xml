@@ -27,7 +27,7 @@
             android:id="@+id/user_thump_nail_other"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/album_example" />
+            android:src="@drawable/ic_face_black_48dp" />
 
         <ImageView
             android:id="@+id/chat_image_other"
@@ -59,7 +59,7 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/album_example" />
+            android:src="@drawable/ic_face_black_48dp" />
 
         <TextView
             android:id="@+id/user_message_personal"

@@ -1,31 +1,23 @@
 package paradise.ccclxix.projectparadise.Chat;
 
-
-
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +34,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +42,6 @@ import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -106,12 +94,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         credentialsManager = new CredentialsManager(getApplicationContext());
-        /*
-        Toolbar toolbar = findViewById(R.id.)
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowCustomEnabled(true);
-        */
         mauth = FirebaseAuth.getInstance();
         if(mauth.getCurrentUser() != null){
             username = credentialsManager.getUsername();
@@ -134,17 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);
 
-
-
         loadMessages();
-
-
-
-        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View action_bar_view = inflater.inflate(R.layout.chat_custom_bar, null);
-        TextView barUsername = (TextView)action_bar_view.findViewById(R.id.usernameCustomActionBar);
-        barUsername.setText(mChatUserName);
-        //actionBar.setCustomView(action_bar_view);
 
         final DatabaseReference databaseReference = firebaseDatabase.getReference();
         databaseReference.child("chat").child(mauth.getUid()).addValueEventListener(new ValueEventListener() {
@@ -226,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
         snackbar.setIconLeft(R.drawable.fire_emoji, 24);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }

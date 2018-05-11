@@ -10,7 +10,7 @@ Instead of tolerating irrelevant/offensive/random content, what if you could sel
 ## Use case, people:
 Imagine having three different **_waves_**: family, school, and friends.
 - **Family**: This wave contains people that are only part of your family. All of the content being shared here is only relevant to you and to each of the present. Unlike other social media where content isn't sectioned out from your faimly, **_waves_** can give you the advantage of keeping your social platforms _wholesome_ ♥️. 
-- **School**: Whether a user is in high school or in college, there is something good about being part of a group. Let's say one of your school's clubs is having a meetup. Publishing the announcement in the school's **_wave_** can reach a larger audience. This is more likely to reach a larger audience because when students are use their school's wave, they expect what content to engage with; therefore less predisposed to dismiss it. 
+- **School**: Whether a user is in high school or in college, there is something good about being part of a group. Let's say one of your school's clubs is having a meetup. Publishing the announcement in the school's **_wave_** can reach a larger audience. This is more likely to reach a larger audience because when students use their school's wave, they expect what content to engage with; therefore less predisposed to dismiss it. 
 - **friends**: Now here is the were the concept of **_waves_** shine the most. Each person carries a different wavelength when describing personality. Different waves for different group of friends. It's all about the inside jokes.
 
 There's a distinction between a wave and a groupchat. It's not common to have groupchat's with strangers, but in foli, strangers would a ride waves with you (cool strangers).
@@ -40,7 +40,7 @@ After installing, foli should be ready for testing and development.
 ## Running
 
 After clonning the project, give it a run in the emulator. foli is currently being tested with an emulated phone _running on Android P, on a Pixel 2 XL_.
-It is alo being tested on a Samsung Galaxy S9+ running Android P.
+It is also being tested on a Samsung Galaxy S9+ running Android P.
 The Android emulator comes included with Android Studio but if you want more info, [here](https://developer.android.com/studio/run/emulator) is the link.
 
 

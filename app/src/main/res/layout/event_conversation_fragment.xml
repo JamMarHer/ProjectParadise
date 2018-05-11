@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_3"
     tools:context=".Chat.ChatActivity">
 
 
@@ -12,7 +11,6 @@
         android:id="@+id/event_chat_swipe_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/gradient_3"
         app:layout_constraintBottom_toTopOf="@+id/event_chat_functions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,9 +29,8 @@
     <LinearLayout
         android:id="@+id/event_chat_functions"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="3dp"
-        android:background="@drawable/circle_holder_white"
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +46,7 @@
         <EditText
             android:id="@+id/event_chat_message"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Message"

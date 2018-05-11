@@ -39,8 +39,8 @@
             android:id="@+id/viewpager_waves"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/circle_holder_white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+            android:background="@drawable/gradient_3"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         </android.support.v4.view.ViewPager>
 

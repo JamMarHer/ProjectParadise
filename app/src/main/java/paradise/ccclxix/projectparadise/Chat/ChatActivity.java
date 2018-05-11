@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.apigateway.ApiClientFactory;
@@ -97,6 +98,8 @@ public class ChatActivity extends AppCompatActivity {
 
      */
 
+    private ImageView otherThumbnailTitle;
+    private TextView otherUsernameTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,10 @@ public class ChatActivity extends AppCompatActivity {
         }
         mChatUserID = getIntent().getStringExtra("user_id");
         mChatUserName = getIntent().getStringExtra("username_other");
+
+        otherThumbnailTitle = findViewById(R.id.other_thumbnail_title);
+        otherUsernameTitle = findViewById(R.id.other_username_title);
+        otherUsernameTitle.setText(mChatUserName);
 
         chatAddButton = findViewById(R.id.chat_add);
         chatSendButton = findViewById(R.id.chat_send);

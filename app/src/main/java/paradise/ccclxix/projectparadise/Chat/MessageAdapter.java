@@ -19,6 +19,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Messages> messageList;
     public String currentUsername;
+    private boolean personalPrev = false;
+    private boolean otherPrev = false;
 
     public MessageAdapter(List<Messages> messageList, String currentUsername){
         this.messageList = messageList;
@@ -41,6 +43,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         if(from.equals(currentUsername)){
             holder.relativeLayout_other.setVisibility(View.INVISIBLE);
+            if (position-1 >=0 && from.equals(messageList.get(position-1).getFrom())){
+                holder.thumbnail_personal.setVisibility(View.INVISIBLE);
+            }else {
+                holder.thumbnail_personal.setVisibility(View.VISIBLE);
+            }
             if (type.equals("text")){
                 holder.messageText_personal.setText(messages.getMessage());
                 holder.messageImage_personal.setVisibility(View.INVISIBLE);
@@ -53,6 +60,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         }else {
             holder.relativeLayout_personal.setVisibility(View.INVISIBLE);
+
+            if (position-1 >=0 && from.equals(messageList.get(position-1).getFrom())){
+                holder.thumbnail_other.setVisibility(View.INVISIBLE);
+            }else {
+                holder.thumbnail_other.setVisibility(View.VISIBLE);
+            }
             if (type.equals("text")){
                 holder.messageText_other.setText(messages.getMessage());
                 holder.messageImage_other.setVisibility(View.INVISIBLE);
@@ -61,7 +74,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 Picasso.with(holder.thumbnail_other.getContext()).load(messages.getMessage())
                         .placeholder(R.drawable.album_example).into(holder.messageImage_other);
                 holder.messageText_other.setVisibility(View.INVISIBLE);
-
             }
         }
        }

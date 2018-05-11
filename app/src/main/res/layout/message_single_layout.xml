@@ -25,10 +25,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_thump_nail_other"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="3dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@drawable/album_example" />
 
         <ImageView
@@ -53,13 +51,12 @@
     <RelativeLayout
         android:id="@+id/message_layout_personal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="3dp">
+        android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_thump_nail_personal"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/album_example" />

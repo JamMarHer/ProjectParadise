@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_single_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,28 +9,77 @@
     android:layout_marginLeft="3dp"
     android:layout_marginRight="3dp"
     android:layout_marginTop="3dp"
-    android:background="@drawable/circle_holder_grey_white">
+    android:background="@drawable/circle_holder_white"
+    android:elevation="1dp">
+
+    <ImageView
+        android:id="@+id/user_in_same_wave"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="3dp"
+        android:background="@drawable/circle_holder_gray"
+        android:src="@drawable/baseline_waves_white_36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/notification_icon_single"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/circle_holder_gray"
+        android:src="@drawable/outline_notifications_white_48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/open_chat"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle_holder_main_colors"
+        android:src="@drawable/baseline_send_white_36"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="6dp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="9dp"
         android:src="@drawable/album_example"
         app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp" />
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/notification_icon_single"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="6dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:text="TextView"
         android:textColor="@android:color/black"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

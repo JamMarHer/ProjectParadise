@@ -170,13 +170,14 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
             public void onClick(final View view) {
                 if (!TextUtils.isEmpty(messageToPostToWall.getText()) & mAuth.getUid()!= null){
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                    DatabaseReference dbWave = firebaseDatabase.getReference()
+                    DatabaseReference dbPlainReference = firebaseDatabase.getReference();
+                    DatabaseReference dbWave = dbPlainReference
                             .child("events_us")
                             .child(eventManager.getEventID())
                             .child("wall")
                             .child("posts")
                             .child(mAuth.getUid()).push();
-                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + mAuth.getUid();
+                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts";
                     String pushID = dbWave.getKey();
                     Map postMap = new HashMap();
                     postMap.put("message", messageToPostToWall.getText().toString());
@@ -188,7 +189,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
                     Map postUserMap = new HashMap();
                     postUserMap.put(chatUserRef + "/"+ pushID, postMap);
-                    dbWave.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                    dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if(databaseError != null){

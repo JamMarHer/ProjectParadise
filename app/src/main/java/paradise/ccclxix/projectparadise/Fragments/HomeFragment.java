@@ -203,6 +203,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
                                 textView.setTextColor(Color.WHITE);
                                 snackbar.show();
                             }else{
+                                messageToPostToWall.setText("");
                                 createPostPopupWindow.dismiss();
                             }
                         }

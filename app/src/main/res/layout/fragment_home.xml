@@ -8,6 +8,18 @@
     app:layout_constraintBottom_toTopOf="@+id/navigation">
 
 
+    <ImageView
+        android:id="@+id/create_post"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_holder_main_colors"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -161,4 +173,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

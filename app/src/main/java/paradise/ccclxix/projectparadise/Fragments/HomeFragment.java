@@ -11,13 +11,16 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import net.glxn.qrgen.android.QRCode;
@@ -37,7 +41,9 @@ import net.glxn.qrgen.android.QRCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
@@ -54,8 +60,10 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private TextView personalUsername;
     private ImageView settingsImageView;
     private ImageView infoImageView;
+    private ImageView addPostImageView;
     private TextView myNumWaves;
     private TextView myNumContacts;
+
 
     private AppModeManager appModeManager;
 
@@ -64,9 +72,10 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     EventManager eventManager;
 
 
-    private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
     private ViewGroup container;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +97,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         infoImageView = view.findViewById(R.id.info_Imageview);
         myNumWaves = view.findViewById(R.id.numberWaves);
         myNumContacts = view.findViewById(R.id.numberContacts);
+        addPostImageView = view.findViewById(R.id.create_post);
         setupNumWavesAndContacts();
 
 
@@ -96,21 +106,17 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         this.container = container;
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-
-        View shareWavePopupView = inflater.inflate(R.layout.share_wave_popup, null);
-        ImageView qrCode = shareWavePopupView.findViewById(R.id.qrCode);
-        TextView eventname = shareWavePopupView.findViewById(R.id.waveName);
-        if (eventManager.getEventID() != null){
-            qrCode.setImageBitmap(getEventQR());
-            eventname.setText(eventManager.getEventName());
+        final View createPostPopipView = inflater.inflate(R.layout.post_wave_wall, null);
+        if (eventManager.getEventID() == null){
+            addPostImageView.setVisibility(View.INVISIBLE);
         }
 
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
-        final PopupWindow shareWavePopupWindow = new PopupWindow(shareWavePopupView, width,height);
+        final PopupWindow createPostPopupWindow = new PopupWindow(createPostPopipView, width, height);
         settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
-        shareWavePopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+        createPostPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
 
         settingsImageView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -124,12 +130,24 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
         });
 
+        addPostImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    createPostPopupWindow.showAtLocation(view, Gravity.TOP, 0, 0);
+                }
+                return true;
+            }
+        });
 
-        Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
-        Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
-        Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
-        final Button closeShareWave = shareWavePopupView.findViewById(R.id.close_share);
-        final Button leaveWave = shareWavePopupView.findViewById(R.id.leave_wave);
+        // Views inside settings Popup window.
+        final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
+        final Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
+        final Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
+        // Views inside createPost Popup window.
+        final Button postToWall = createPostPopipView.findViewById(R.id.post_to_wall);
+        final Button closePostToWall = createPostPopipView.findViewById(R.id.create_post_close);
+        final EditText messageToPostToWall = createPostPopipView.findViewById(R.id.message_to_post);
 
 
         closeSettings.setOnClickListener(new View.OnClickListener() {
@@ -139,20 +157,59 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
             }
         });
 
-        closeShareWave.setOnClickListener(new View.OnClickListener() {
+        closePostToWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shareWavePopupWindow.dismiss();
+                createPostPopupWindow.dismiss();
             }
         });
-
-        leaveWave.setOnClickListener(new View.OnClickListener() {
+        createPostPopupWindow.setFocusable(true);
+        createPostPopupWindow.update();
+        postToWall.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                leaveWave();
+            public void onClick(final View view) {
+                if (!TextUtils.isEmpty(messageToPostToWall.getText()) & mAuth.getUid()!= null){
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference dbWave = firebaseDatabase.getReference()
+                            .child("events_us")
+                            .child(eventManager.getEventID())
+                            .child("wall")
+                            .child("posts")
+                            .child(mAuth.getUid()).push();
+                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + mAuth.getUid();
+                    String pushID = dbWave.getKey();
+                    Map postMap = new HashMap();
+                    postMap.put("message", messageToPostToWall.getText().toString());
+                    postMap.put("seen", false);
+                    postMap.put("type", "text");
+                    postMap.put("time", ServerValue.TIMESTAMP);
+                    postMap.put("from", mAuth.getUid());
+                    postMap.put("fromUsername", credentialsManager.getUsername());
+
+                    Map postUserMap = new HashMap();
+                    postUserMap.put(chatUserRef + "/"+ pushID, postMap);
+                    dbWave.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if(databaseError != null){
+                                Log.d("POSTING_IN_WAVE", databaseError.getMessage());
+                                TSnackbar snackbar = TSnackbar.make(container, "Something went wrong.", TSnackbar.LENGTH_SHORT);
+                                snackbar.setActionTextColor(Color.WHITE);
+                                snackbar.setIconLeft(R.drawable.poop_icon, 24);
+                                View snackbarView = snackbar.getView();
+                                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+                                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                                textView.setTextColor(Color.WHITE);
+                                snackbar.show();
+                            }else{
+                                createPostPopupWindow.dismiss();
+                            }
+                        }
+                    });
+
+                }
             }
         });
-
 
         updateProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override

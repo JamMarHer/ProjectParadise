@@ -60,9 +60,10 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private TextView personalUsername;
     private ImageView settingsImageView;
     private ImageView infoImageView;
-    private ImageView addPostImageView;
     private TextView myNumWaves;
     private TextView myNumContacts;
+    private Button postToWall;
+    private EditText messageToPostToWall;
 
 
     private AppModeManager appModeManager;
@@ -97,7 +98,8 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         infoImageView = view.findViewById(R.id.info_Imageview);
         myNumWaves = view.findViewById(R.id.numberWaves);
         myNumContacts = view.findViewById(R.id.numberContacts);
-        addPostImageView = view.findViewById(R.id.create_post);
+        postToWall = view.findViewById(R.id.post_to_wall);
+        messageToPostToWall = view.findViewById(R.id.message_to_post);
         setupNumWavesAndContacts();
 
 
@@ -106,17 +108,14 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         this.container = container;
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-        final View createPostPopipView = inflater.inflate(R.layout.post_wave_wall, null);
         if (eventManager.getEventID() == null){
-            addPostImageView.setVisibility(View.INVISIBLE);
+            //TODO
         }
 
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
-        final PopupWindow createPostPopupWindow = new PopupWindow(createPostPopipView, width, height);
         settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
-        createPostPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
 
         settingsImageView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -130,24 +129,11 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
         });
 
-        addPostImageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    createPostPopupWindow.showAtLocation(view, Gravity.TOP, 0, 0);
-                }
-                return true;
-            }
-        });
 
         // Views inside settings Popup window.
         final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
         final Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
         final Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
-        // Views inside createPost Popup window.
-        final Button postToWall = createPostPopipView.findViewById(R.id.post_to_wall);
-        final Button closePostToWall = createPostPopipView.findViewById(R.id.create_post_close);
-        final EditText messageToPostToWall = createPostPopipView.findViewById(R.id.message_to_post);
 
 
         closeSettings.setOnClickListener(new View.OnClickListener() {
@@ -157,18 +143,16 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
             }
         });
 
-        closePostToWall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createPostPopupWindow.dismiss();
-            }
-        });
-        createPostPopupWindow.setFocusable(true);
-        createPostPopupWindow.update();
         postToWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 if (!TextUtils.isEmpty(messageToPostToWall.getText()) & mAuth.getUid()!= null){
+                    ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
+                    resizeAnimation.setDuration(999);
+                    resizeAnimation.setRepeatCount(Animation.INFINITE);
+                    resizeAnimation.setRepeatMode(Animation.REVERSE);
+                    postToWall.setText("lit");
+                    view.startAnimation(resizeAnimation);
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     DatabaseReference dbPlainReference = firebaseDatabase.getReference();
                     DatabaseReference dbWave = dbPlainReference
@@ -202,9 +186,12 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
                                 TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
                                 textView.setTextColor(Color.WHITE);
                                 snackbar.show();
+                                view.clearAnimation();
+                                postToWall.setText("Post");
                             }else{
                                 messageToPostToWall.setText("");
-                                createPostPopupWindow.dismiss();
+                                view.clearAnimation();
+                                postToWall.setText("Post");
                             }
                         }
                     });

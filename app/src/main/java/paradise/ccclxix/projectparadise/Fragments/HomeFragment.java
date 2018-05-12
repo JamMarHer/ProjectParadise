@@ -62,6 +62,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     private ImageView infoImageView;
     private TextView myNumWaves;
     private TextView myNumContacts;
+    private TextView currentWave;
     private Button postToWall;
     private EditText messageToPostToWall;
 
@@ -100,6 +101,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         myNumContacts = view.findViewById(R.id.numberContacts);
         postToWall = view.findViewById(R.id.post_to_wall);
         messageToPostToWall = view.findViewById(R.id.message_to_post);
+        currentWave = view.findViewById(R.id.current_wave);
         setupNumWavesAndContacts();
 
 
@@ -109,7 +111,9 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
         if (eventManager.getEventID() == null){
-            //TODO
+            currentWave.setText("No wave found :/");
+        }else {
+            currentWave.setText(eventManager.getEventName());
         }
 
         int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;

@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void loadAttendantMode(){
-        showSnackbar("  You are now part of the blob", false, true);
         homeFragment =  new HomeFragment();
         musicFragment = new WavesFragment();
         sharesFragment = new SharesFragment();

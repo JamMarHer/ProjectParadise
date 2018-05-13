@@ -3,18 +3,23 @@
 
 
     <item
-        android:id="@+id/navigation_music"
+        android:id="@+id/navigation_personal"
+        android:icon="@drawable/baseline_person_black_24"
+        android:title="@string/title_personal" />
+
+    <item
+        android:id="@+id/navigation_wave"
         android:icon="@drawable/baseline_waves_black_48"
-        android:title="@string/title_waves" />
+        android:title="@string/title_wave" />
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:id="@+id/navigation_explore"
+        android:icon="@drawable/baseline_explore_black_24"
+        android:title="@string/title_explore" />
 
 
     <item
-        android:id="@+id/navigation_shares"
+        android:id="@+id/navigation_chat"
         android:icon="@drawable/ic_chat_black_24dp"
         android:title="@string/title_chat" />
 

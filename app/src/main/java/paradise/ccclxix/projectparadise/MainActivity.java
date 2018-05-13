@@ -26,19 +26,20 @@ import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
-import paradise.ccclxix.projectparadise.Fragments.HomeFragment;
-import paradise.ccclxix.projectparadise.Fragments.WavesFragment;
-import paradise.ccclxix.projectparadise.Fragments.SharesFragment;
+import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
+import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     private static int SPLASH_TIME_OUT = 4000;
-    private HolderFragment currentFragment;
-    private HolderFragment homeFragment;
-    private HolderFragment musicFragment;
-    private HolderFragment sharesFragment;
+    private HolderFragment personalFragment;
+    private HolderFragment waveFragment;
+    private HolderFragment exploreFragment;
+    private HolderFragment chatFragment;
     private AppModeManager appModeManager;
 
 
@@ -114,10 +115,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         eventManager = new EventManager(getApplicationContext());
 
         loadAllFragments();
-        fragmentToShow(homeFragment, musicFragment, sharesFragment);
-        navigation.setSelectedItemId(R.id.navigation_home);
-
-
+        fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
+        navigation.setSelectedItemId(R.id.navigation_personal);
 
     }
 
@@ -140,22 +139,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     public void loadExploreMode(){
-        homeFragment =  new HomeFragment();
-        musicFragment = new WavesFragment();
-        sharesFragment = new SharesFragment();
+        personalFragment =  new PersonalFragment();
+        waveFragment = new WaveFragment();
+        exploreFragment = new ExploreFragment();
+        chatFragment = new ChatFragment();
     }
 
     public void loadHostMode(){
         showSnackbar("  You are now hosting.", true, false);
-        homeFragment =  new HomeFragment();
-        musicFragment = new WavesFragment();
-        sharesFragment = new SharesFragment();
+        personalFragment =  new PersonalFragment();
+        waveFragment = new WaveFragment();
+        exploreFragment = new ExploreFragment();
+        chatFragment = new ChatFragment();
     }
 
     public void loadAttendantMode(){
-        homeFragment =  new HomeFragment();
-        musicFragment = new WavesFragment();
-        sharesFragment = new SharesFragment();
+        personalFragment =  new PersonalFragment();
+        waveFragment = new WaveFragment();
+        exploreFragment = new ExploreFragment();
+        chatFragment = new ChatFragment();
     }
 
     public void createEvent(View view){
@@ -172,19 +174,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void loadAllFragments(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, musicFragment)
-                .add(R.id.fragment_container, homeFragment)
-                .add(R.id.fragment_container, sharesFragment)
+                .add(R.id.fragment_container, personalFragment)
+                .add(R.id.fragment_container, waveFragment)
+                .add(R.id.fragment_container, exploreFragment)
+                .add(R.id.fragment_container, chatFragment)
                 .commit();
     }
 
-    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2){
+    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2, Fragment toHide3){
         if (toShow != null & toHide != null & toHide2 != null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .show(toShow)
                     .hide(toHide)
                     .hide(toHide2)
+                    .hide(toHide3)
                     .commit();
             return true;
         }else{
@@ -197,12 +201,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.navigation_home:
-                return fragmentToShow(homeFragment, sharesFragment, musicFragment);
-            case R.id.navigation_music:
-                return fragmentToShow(musicFragment, homeFragment, sharesFragment);
-            case R.id.navigation_shares:
-                return fragmentToShow(sharesFragment, musicFragment, homeFragment);
+            case R.id.navigation_personal:
+                return fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
+            case R.id.navigation_wave:
+                return fragmentToShow(waveFragment, personalFragment, exploreFragment, chatFragment);
+            case R.id.navigation_explore:
+                return fragmentToShow(exploreFragment, personalFragment, waveFragment, chatFragment);
+            case R.id.navigation_chat:
+                return fragmentToShow(chatFragment, personalFragment, waveFragment, exploreFragment);
         }
         return false;
     }

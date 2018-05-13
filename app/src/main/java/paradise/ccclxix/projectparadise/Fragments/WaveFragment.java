@@ -53,7 +53,7 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
-public class HomeFragment extends HolderFragment implements EnhancedFragment {
+public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
 
     private CredentialsManager credentialsManager;
@@ -85,6 +85,7 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
         mAuth = FirebaseAuth.getInstance();
         eventManager = new EventManager(getContext());
         appModeManager = new AppModeManager(getContext());
+        credentialsManager = new CredentialsManager(getContext());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -92,60 +93,20 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, null);
-        credentialsManager = new CredentialsManager(getContext());
+
         generalView = view;
-        personalUsername = view.findViewById(R.id.personal_username);
-        settingsImageView = view.findViewById(R.id.settings_Imageview);
-        infoImageView = view.findViewById(R.id.info_Imageview);
-        myNumWaves = view.findViewById(R.id.numberWaves);
-        myNumContacts = view.findViewById(R.id.numberContacts);
+
         postToWall = view.findViewById(R.id.post_to_wall);
         messageToPostToWall = view.findViewById(R.id.message_to_post);
         currentWave = view.findViewById(R.id.current_wave);
-        setupNumWavesAndContacts();
 
-
-        personalUsername.setText(credentialsManager.getUsername());
-
-        this.container = container;
-
-        View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-        if (eventManager.getEventID() == null){
-            currentWave.setText("No wave found :/");
-        }else {
+        if (eventManager.getEventID() !=null){
             currentWave.setText(eventManager.getEventName());
+        }else {
+            currentWave.setText("No wave found :/");
         }
 
-        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
-        settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
-
-        settingsImageView.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    settingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                }
-                return true;
-            }
-
-        });
-
-
-        // Views inside settings Popup window.
-        final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
-        final Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
-        final Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
-
-
-        closeSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                settingsPopupWindow.dismiss();
-            }
-        });
+        this.container = container;
 
         postToWall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,69 +165,10 @@ public class HomeFragment extends HolderFragment implements EnhancedFragment {
             }
         });
 
-        updateProfilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TSnackbar snackbar = TSnackbar.make(container, "Not yet, son.", TSnackbar.LENGTH_SHORT);
-                snackbar.setActionTextColor(Color.WHITE);
-                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                Intent intent = new Intent(getContext(), InitialAcitivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
 
         return view;
     }
 
-    private void setupNumWavesAndContacts(){
-        if(mAuth.getCurrentUser() != null && mAuth.getUid() != null) {
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference userDBReference = firebaseDatabase.getReference()
-                    .child("users")
-                    .child(mAuth.getUid())
-                    .child("waves")
-                    .child("in");
-            final DatabaseReference contacesDBReference = firebaseDatabase.getReference()
-                    .child("messages")
-                    .child(mAuth.getUid());
-            userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    myNumWaves.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
-                    contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            myNumContacts.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
 
 
     private Bitmap getEventQR(){

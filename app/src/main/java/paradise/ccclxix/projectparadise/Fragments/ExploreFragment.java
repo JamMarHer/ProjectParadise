@@ -1,4 +1,4 @@
-package paradise.ccclxix.projectparadise.Fragments.WavesRelated;
+package paradise.ccclxix.projectparadise.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
 
-public class ExploreWaves  extends Fragment {
+public class ExploreFragment extends HolderFragment implements EnhancedFragment {
 
     EventManager eventManager;
 
@@ -25,6 +27,11 @@ public class ExploreWaves  extends Fragment {
         eventManager = new EventManager(getContext());
         return inflater1;
 
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
 

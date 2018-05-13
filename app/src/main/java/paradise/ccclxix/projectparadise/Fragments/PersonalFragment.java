@@ -1,4 +1,4 @@
-package paradise.ccclxix.projectparadise.Fragments.WavesRelated;
+package paradise.ccclxix.projectparadise.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -46,34 +47,52 @@ import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
-public class MyWaves  extends Fragment {
+public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
     WavesAdapter wavesAdapter;
     RecyclerView listWaves;
     EventManager eventManager;
     FirebaseAuth mAuth;
 
+    private CredentialsManager credentialsManager;
+    private TextView personalUsername;
+    private ImageView settingsImageView;
+    private ImageView infoImageView;
+    private TextView myNumWaves;
+    private TextView myNumContacts;
+
     Button createWave;
     Button joinWave;
+    View generalView;
 
     private ViewGroup container;
-    CredentialsManager credentialsManager;
     AppModeManager appModeManager;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View inflater1 = inflater.inflate(R.layout.fragment_my_waves, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View inflater1 = inflater.inflate(R.layout.fragment_my_waves, null);
+
         eventManager = new EventManager(getContext());
         credentialsManager = new CredentialsManager(getContext());
         appModeManager = new AppModeManager(getContext());
         mAuth = FirebaseAuth.getInstance();
         this.container = container;
+
+        settingsImageView = inflater1.findViewById(R.id.settings_Imageview);
+        infoImageView = inflater1.findViewById(R.id.info_Imageview);
+
+        myNumWaves = inflater1.findViewById(R.id.numberWaves);
+        myNumContacts = inflater1.findViewById(R.id.numberContacts);
+        personalUsername = inflater1.findViewById(R.id.personal_username);
         // TODO check for user logged in.
         listWaves = inflater1.findViewById(R.id.myWaves);
         wavesAdapter = new WavesAdapter(getContext());
@@ -82,6 +101,7 @@ public class MyWaves  extends Fragment {
 
         createWave = inflater1.findViewById(R.id.createWave);
         joinWave = inflater1.findViewById(R.id.joinWave);
+
 
         createWave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +118,124 @@ public class MyWaves  extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
+
+        credentialsManager = new CredentialsManager(getContext());
+        generalView = inflater1;
+        setupNumWavesAndContacts();
+
+
+        personalUsername.setText(credentialsManager.getUsername());
+
+        this.container = container;
+
+        View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
+        if (eventManager.getEventID() == null){
+            //TODO
+        }
+
+
+        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
+        settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+
+        settingsImageView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    settingsPopupWindow.showAtLocation(container, Gravity.CENTER, 0, 0);
+                }
+                return true;
+            }
+
+        });
+
+        // Views inside settings Popup window.
+        final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
+        final Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
+        final Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
+
+
+
+        updateProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TSnackbar snackbar = TSnackbar.make(container, "Not yet, son.", TSnackbar.LENGTH_SHORT);
+                snackbar.setActionTextColor(Color.WHITE);
+                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                snackbar.show();
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Intent intent = new Intent(getContext(), InitialAcitivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+
+
+
+        closeSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                settingsPopupWindow.dismiss();
+            }
+        });
         return inflater1;
 
+    }
+
+    private void setupNumWavesAndContacts(){
+        if(mAuth.getCurrentUser() != null && mAuth.getUid() != null) {
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference userDBReference = firebaseDatabase.getReference()
+                    .child("users")
+                    .child(mAuth.getUid())
+                    .child("waves")
+                    .child("in");
+            final DatabaseReference contacesDBReference = firebaseDatabase.getReference()
+                    .child("messages")
+                    .child(mAuth.getUid());
+            userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    myNumWaves.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
+                    contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            myNumContacts.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public String getName() {
+        return null;
     }
 
 

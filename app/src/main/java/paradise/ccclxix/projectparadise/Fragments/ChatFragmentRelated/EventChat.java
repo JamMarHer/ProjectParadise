@@ -1,4 +1,4 @@
-package paradise.ccclxix.projectparadise.Fragments.SharesRelated;
+package paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,7 +36,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,6 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.app.Activity.RESULT_OK;
-import static paradise.ccclxix.projectparadise.Chat.ChatActivity.GALLERY_PICK;
 
 public class EventChat extends Fragment{
 

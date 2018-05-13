@@ -1,8 +1,5 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -10,40 +7,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.Inflater;
 
-import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
-import paradise.ccclxix.projectparadise.Fragments.SharesRelated.AttendantsInEvent;
-import paradise.ccclxix.projectparadise.Fragments.SharesRelated.EventChat;
-import paradise.ccclxix.projectparadise.Fragments.SharesRelated.OnGoingChats;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.AttendantsInEvent;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.EventChat;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.OnGoingChats;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Models.EventAttendingItem;
 import paradise.ccclxix.projectparadise.R;
-import paradise.ccclxix.projectparadise.User;
 
-public class SharesFragment extends HolderFragment implements EnhancedFragment {
+public class ChatFragment extends HolderFragment implements EnhancedFragment {
 
     RecyclerView listAttendingUsers;
     AppModeManager appModeManager;

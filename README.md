@@ -27,6 +27,10 @@ Currently the app layout is divided into four fragments:
 - **Explore**: Here is were the user is going to engage with new sources of content. Explore has a **_curated_** list of publi global and local waves available to join. 
 - **Chat**: Holds the chat rooms that the user has engaged in.
 
+## Looking Forward:
+Idea currently being contemplated based on each fragment.
+- **Wave**: With the idea in mind of keeping the user engaged, I'll like to introduce the concept of sub-wave. When the user is inside a wave, it will allow it to swipe through the different sub-waves (topics). Such sub-waves can have temporary life or not. More to expand later. 
+
 ## Getting Started
 Currently, foli is only being developed for Android. So is doesn't matter what OS you are running, Android Studio should work fine.
 

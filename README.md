@@ -20,6 +20,12 @@ Waves are more than a physical collective of people. They can also represent ide
 When people generate ideas and believe its relevance, they tend share it on the internet. The problem is that some of those ideas might no longer interest us, or we may easily dismiss them due to bad timing. It doesn't help that the internet holds such a gigantic amount of information that it overwhelms us from time to time. Now, imagine that you are riding two waves: conspiracy theories and sloths.
 There's no reason why a sloth and conspiracy theories should go together, unless you decide to make a wave for sloths and conspiracy theories :poop:.
 
+## Current State of the App:
+Currently the app layout is divided into four fragments:
+- **Me**: Displays username, numbers of waves, contacts and a list of the waves that the user is part of.
+- **Wave**: Is meant to hold the actual content of the wave. This being posts, etc.
+- **Explore**: Here is were the user is going to engage with new sources of content. Explore has a **_curated_** list of publi global and local waves available to join. 
+- **Chat**: Holds the chat rooms that the user has engaged in.
 
 ## Getting Started
 Currently, foli is only being developed for Android. So is doesn't matter what OS you are running, Android Studio should work fine.

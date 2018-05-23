@@ -343,6 +343,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final String waveTrend = waveList.get(position).get("waveTrend");
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
+
             if (waveTrend.equals("trending")){
                 holder.waveTrending.setImageResource(R.drawable.ic_trending_up_white_24dp);
             }else {

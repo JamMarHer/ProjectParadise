@@ -84,7 +84,7 @@ public class NotificationHelper extends ContextWrapper {
      * @return The small icon resource id
      */
     private int getSmallIcon() {
-        return R.drawable.idaelogoround_low_res;
+        return R.drawable.idaelogo6_fullsmall;
     }
 
     /**

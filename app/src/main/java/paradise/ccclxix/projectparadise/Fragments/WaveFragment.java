@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -159,7 +160,25 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         return view;
     }
 
+    private class WavePostViewHolder extends RecyclerView.ViewHolder{
 
+        TextView wavePostUsername;
+        TextView wavePostMessage;
+        TextView wavePostTime;
+        ImageView wavePostUserThumbnail;
+        ImageView wavePostImage;
+        View mView;
+
+        public WavePostViewHolder(View itemView) {
+            super(itemView);
+            wavePostUsername = itemView.findViewById(R.id.wave_post_username);
+            wavePostMessage = itemView.findViewById(R.id.wave_post_message);
+            wavePostTime = itemView.findViewById(R.id.wave_post_time);
+            wavePostUserThumbnail = itemView.findViewById(R.id.wave_post_thumbnail);
+            wavePostImage = itemView.findViewById(R.id.wave_post_image);
+            mView = itemView;
+        }
+    }
 
     @Override
     public String getName() {

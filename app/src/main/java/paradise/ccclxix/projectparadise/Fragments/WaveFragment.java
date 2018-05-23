@@ -161,11 +161,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
 
 
-    private Bitmap getEventQR(){
-        return QRCode.from(eventManager.getEventID()).bitmap();
-    }
-
-
     @Override
     public String getName() {
         return null;

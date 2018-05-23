@@ -1,22 +1,28 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
@@ -32,7 +38,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import net.glxn.qrgen.android.QRCode;
 
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
@@ -41,7 +53,6 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
@@ -64,6 +75,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     View generalView;
     EventManager eventManager;
 
+    RecyclerView wavePostsList;
+    WavePostAdapter wavePostAdapter;
+
 
     private FirebaseAuth mAuth;
     private ViewGroup container;
@@ -77,7 +91,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         eventManager = new EventManager(getContext());
         appModeManager = new AppModeManager(getContext());
         credentialsManager = new CredentialsManager(getContext());
-    }
+        wavePostAdapter = new WavePostAdapter(getContext());
+   }
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -90,6 +105,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         postToWall = view.findViewById(R.id.post_to_wall);
         messageToPostToWall = view.findViewById(R.id.message_to_post);
         currentWave = view.findViewById(R.id.current_wave);
+        wavePostsList = view.findViewById(R.id.wall_recyclerview);
+
+        wavePostsList.setAdapter(wavePostAdapter);
+        wavePostsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (eventManager.getEventID() !=null){
             currentWave.setText(eventManager.getEventName());
@@ -121,6 +140,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     String pushID = dbWave.getKey();
                     Map postMap = new HashMap();
                     postMap.put("message", messageToPostToWall.getText().toString());
+                    postMap.put("message2", "No Image"); // TODO For now.
                     postMap.put("seen", false);
                     postMap.put("type", "text");
                     postMap.put("time", ServerValue.TIMESTAMP);
@@ -157,6 +177,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         });
 
 
+
+
         return view;
     }
 
@@ -179,6 +201,134 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             mView = itemView;
         }
     }
+
+    private class WavePostAdapter extends RecyclerView.Adapter<WavePostViewHolder>{
+
+        private LayoutInflater inflater;
+
+        private List<HashMap<String, String>> wavePostList;
+        public WavePostAdapter(final Context context){
+            wavePostList = new ArrayList<>();
+            if (eventManager.getEventID() != null){
+
+                final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReference()
+                        .child("events_us")
+                        .child(eventManager.getEventID())
+                        .child("wall")
+                        .child("posts");
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        wavePostList.clear();
+                        final HashMap<String, Integer> record = new HashMap<>();
+
+                        for (final  DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                            final String postIDKey = postSnapshot.getKey();
+                            DatabaseReference waveDBReference = firebaseDatabase.getReference()
+                                    .child("events_us")
+                                    .child(eventManager.getEventID())
+                                    .child("wall")
+                                    .child("posts")
+                                    .child(postIDKey);
+                            waveDBReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChild("from")){
+
+                                        HashMap<String, String> postInfo = new HashMap<>();
+                                        postInfo.put("postID", postIDKey);
+                                        postInfo.put("from", dataSnapshot.child("from").getValue().toString());
+                                        postInfo.put("fromUsername", dataSnapshot.child("fromUsername").getValue().toString());
+
+                                        postInfo.put("message", dataSnapshot.child("message").getValue().toString());
+                                        postInfo.put("message2", dataSnapshot.child("message2").getValue().toString());
+
+                                        postInfo.put("type", dataSnapshot.child("type").getValue().toString());
+                                        postInfo.put("time", dataSnapshot.child("time").getValue().toString());
+
+                                        postInfo.put("seen", dataSnapshot.child("seen").getValue().toString());
+
+                                        if(!record.containsKey(postIDKey)) {
+                                            wavePostList.add(postInfo);
+                                            record.put(postIDKey, wavePostList.size()-1);
+                                            if(postIDKey.equals(eventManager.getEventID())){
+                                                int toExchange = wavePostList.size()-1;
+                                                Collections.swap(wavePostList,0, toExchange);
+                                                record.put(postIDKey, 0);
+                                                record.put(wavePostList.get(toExchange).get("waveID"), wavePostList.size()-1);
+                                            }
+                                        }else {
+                                            wavePostList.set(record.get(postIDKey), postInfo);
+                                        }
+                                        wavePostAdapter.notifyDataSetChanged();
+                                        inflater = LayoutInflater.from(context);
+                                    }
+
+                                }
+
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d("MY_WAVES", databaseError.getMessage());
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("MY_WAVES", databaseError.getMessage());
+
+                    }
+                });
+            }
+        }
+
+
+
+        @Override
+        public WavePostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.wave_single_post, parent, false);
+            WavePostViewHolder holder = new WavePostViewHolder(view);
+            return holder;
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public void onBindViewHolder(WavePostViewHolder holder, int position) {
+            if (wavePostList.isEmpty()){
+                holder.wavePostMessage.setText("This Wave doesn't have any posts. \nWanna be be first one ? ;D");
+            }else {
+                final String postID = wavePostList.get(position).get("postID");
+                final String postUsername = wavePostList.get(position).get("fromUsername");
+                final String postType = wavePostList.get(position).get("type");
+                final String postTime = wavePostList.get(position).get("time");
+                final String postMessage = wavePostList.get(position).get("message");
+                final String postMessage2 = wavePostList.get(position).get("message2");
+                holder.wavePostUsername.setText(postUsername);
+                holder.wavePostMessage.setText(postMessage);
+                SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");
+                java.sql.Timestamp timestamp  = new java.sql.Timestamp(Long.valueOf(postTime));
+                try{
+                    holder.wavePostTime.setText(formatedDate.format(timestamp));
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+
+                if (postType.equals("text")){
+                    holder.wavePostImage.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return wavePostList.size();
+        }
+    }
+
 
     @Override
     public String getName() {

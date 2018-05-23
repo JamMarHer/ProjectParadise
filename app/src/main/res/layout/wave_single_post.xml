@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="360dp">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp"
+    android:background="@android:color/background_light"
+    android:elevation="1dp">
 
     <TextView
         android:id="@+id/wave_post_message"
@@ -33,7 +36,7 @@
     <ImageView
         android:id="@+id/wave_post_image"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="12dp"
         android:layout_marginTop="12dp"
         android:maxHeight="250dp"
@@ -49,13 +52,11 @@
         android:layout_width="33dp"
         android:layout_height="33dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="9dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="9dp"
         android:src="@drawable/icon_sad"
         app:civ_border_color="#FF000000"
         app:civ_border_width="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,8 +66,8 @@
         android:layout_height="18dp"
         android:layout_marginStart="8dp"
         android:text="TextView"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_post_thumbnail"
         app:layout_constraintStart_toEndOf="@+id/wave_post_thumbnail"
         app:layout_constraintTop_toTopOf="@+id/wave_post_thumbnail" />
 

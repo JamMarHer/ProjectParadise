@@ -3,9 +3,13 @@
 #### User Flow
 * How are users onboarded to the platform?
 * Are users given an overview to the platform?
+  * Then the user first creates an account, a light and concise tutorial should be presented. Similar to scrolling through fragments.
 * Are users subscribed to waves at default?
+  * A good way to introduce the user into the concept of waves is to present to them (maybe in the tutorial) a list of trending waves that they can start riding. 
 * How should users find the waves they want to ride?
+  * The explore fragment should take care of that. More about it below.
 * How are users retained on the platform?
+  * Chats & the idea of groups. Making chats & groups a key idea of waves is expected to make the user want to return. Chats & groups are key because sharing waves of interests or/and content in the same plataform helps build a better relation with the "brand".
 
 #### Waves
 * What should be important to the users on this app?

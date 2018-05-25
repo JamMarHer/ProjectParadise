@@ -150,6 +150,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     postMap.put("message", messageToPostToWall.getText().toString());
                     postMap.put("message2", "No Image"); // TODO For now.
                     postMap.put("seen", false);
+                    postMap.put("numEchos", 0);
                     postMap.put("type", "text");
                     postMap.put("time", ServerValue.TIMESTAMP);
                     postMap.put("from", mAuth.getUid());
@@ -210,30 +211,35 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         TextView wavePostUsername;
         TextView wavePostMessage;
+        TextView wavePostEchos;
         TextView wavePostTime;
         ImageView wavePostUserThumbnail;
         ImageView wavePostImage;
+        ImageView wavePostEcho;
         View mView;
 
         public WavePostViewHolder(View itemView) {
             super(itemView);
             wavePostUsername = itemView.findViewById(R.id.wave_post_username);
             wavePostMessage = itemView.findViewById(R.id.wave_post_message);
+            wavePostEchos = itemView.findViewById(R.id.wave_post_num_echos);
             wavePostTime = itemView.findViewById(R.id.wave_post_time);
             wavePostUserThumbnail = itemView.findViewById(R.id.wave_post_thumbnail);
             wavePostImage = itemView.findViewById(R.id.wave_post_image);
+            wavePostEcho = itemView.findViewById(R.id.echoPost);
             mView = itemView;
         }
     }
 
-    private class WavePostAdapter extends RecyclerView.Adapter<WavePostViewHolder>{
+    private class WavePostAdapter extends RecyclerView.Adapter<WavePostViewHolder> {
 
         private LayoutInflater inflater;
 
         private List<HashMap<String, String>> wavePostList;
-        public WavePostAdapter(final Context context){
+
+        public WavePostAdapter(final Context context) {
             wavePostList = new ArrayList<>();
-            if (eventManager.getEventID() != null){
+            if (eventManager.getEventID() != null) {
 
                 final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = firebaseDatabase.getReference()
@@ -247,7 +253,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         wavePostList.clear();
                         final HashMap<String, Integer> record = new HashMap<>();
 
-                        for (final  DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                        for (final DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             final String postIDKey = postSnapshot.getKey();
                             DatabaseReference waveDBReference = firebaseDatabase.getReference()
                                     .child("events_us")
@@ -258,7 +264,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             waveDBReference.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.hasChild("from")){
+                                    if (dataSnapshot.hasChild("from")) {
 
                                         HashMap<String, String> postInfo = new HashMap<>();
                                         postInfo.put("postID", postIDKey);
@@ -267,22 +273,23 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                                         postInfo.put("message", dataSnapshot.child("message").getValue().toString());
                                         postInfo.put("message2", dataSnapshot.child("message2").getValue().toString());
+                                        postInfo.put("numEchos", String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
 
                                         postInfo.put("type", dataSnapshot.child("type").getValue().toString());
                                         postInfo.put("time", dataSnapshot.child("time").getValue().toString());
 
                                         postInfo.put("seen", dataSnapshot.child("seen").getValue().toString());
 
-                                        if(!record.containsKey(postIDKey)) {
+                                        if (!record.containsKey(postIDKey)) {
                                             wavePostList.add(postInfo);
-                                            record.put(postIDKey, wavePostList.size()-1);
-                                            if(postIDKey.equals(eventManager.getEventID())){
-                                                int toExchange = wavePostList.size()-1;
-                                                Collections.swap(wavePostList,0, toExchange);
+                                            record.put(postIDKey, wavePostList.size() - 1);
+                                            if (postIDKey.equals(eventManager.getEventID())) {
+                                                int toExchange = wavePostList.size() - 1;
+                                                Collections.swap(wavePostList, 0, toExchange);
                                                 record.put(postIDKey, 0);
-                                                record.put(wavePostList.get(toExchange).get("waveID"), wavePostList.size()-1);
+                                                record.put(wavePostList.get(toExchange).get("waveID"), wavePostList.size() - 1);
                                             }
-                                        }else {
+                                        } else {
                                             wavePostList.set(record.get(postIDKey), postInfo);
                                         }
                                         wavePostAdapter.notifyDataSetChanged();
@@ -310,7 +317,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         }
 
 
-
         @Override
         public WavePostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = inflater.inflate(R.layout.wave_single_post, parent, false);
@@ -320,33 +326,150 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(WavePostViewHolder holder, int position) {
-            if (wavePostList.isEmpty()){
+        public void onBindViewHolder(final WavePostViewHolder holder, int position) {
+            if (wavePostList.isEmpty()) {
                 holder.wavePostMessage.setText("This Wave doesn't have any posts. \nWanna be be first one ? ;D");
-            }else {
-                int listSize = wavePostList.size()-1;
+            } else {
+                int listSize = wavePostList.size() - 1;
                 final String postID = wavePostList.get(listSize - position).get("postID");
                 final String postUsername = wavePostList.get(listSize - position).get("fromUsername");
                 final String postType = wavePostList.get(listSize - position).get("type");
+                final String postNumEchos = wavePostList.get(listSize - position).get("numEchos");
                 final String postTime = wavePostList.get(listSize - position).get("time");
                 final String postMessage = wavePostList.get(listSize - position).get("message");
                 final String postMessage2 = wavePostList.get(listSize - position).get("message2");
                 holder.wavePostUsername.setText(postUsername);
                 holder.wavePostMessage.setText(postMessage);
+                holder.wavePostEchos.setText(String.format("%s echos", postNumEchos));
                 SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");
-                java.sql.Timestamp timestamp  = new java.sql.Timestamp(Long.valueOf(postTime));
-                try{
+                java.sql.Timestamp timestamp = new java.sql.Timestamp(Long.valueOf(postTime));
+                try {
                     holder.wavePostTime.setText(formatedDate.format(timestamp));
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
 
-                if (postType.equals("text")){
+                if (postType.equals("text")) {
                     holder.wavePostImage.setVisibility(View.INVISIBLE);
                 }
-            }
-        }
+                holder.wavePostEcho.setOnClickListener(new View.OnClickListener() {
 
+                    @Override
+                    public void onClick(View view) {
+                        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        final DatabaseReference dbPlainReference = firebaseDatabase.getReference();
+
+                        DatabaseReference personalTableGet = dbPlainReference
+                                .child("users")
+                                .child(mAuth.getUid())
+                                .child("echos")
+                                .child(eventManager.getEventID());
+                        personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot mainDataSnapshot) {
+                                if (!mainDataSnapshot.hasChild(postID)) {
+
+                                    DatabaseReference dbWave = dbPlainReference
+                                            .child("events_us")
+                                            .child(eventManager.getEventID())
+                                            .child("wall")
+                                            .child("posts")
+                                            .child(postID)
+                                            .child("echos")
+                                            .child(mAuth.getUid()).push();
+                                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + postID + "/echos";
+                                    final String pushID = dbWave.getKey();
+                                    Map postMap = new HashMap();
+                                    postMap.put("from", mAuth.getUid());
+                                    postMap.put("pushID", pushID);
+                                    postMap.put("fromUsername", credentialsManager.getUsername()); // TODO For now.
+                                    postMap.put("time", ServerValue.TIMESTAMP);
+
+                                    Map postUserMap = new HashMap();
+                                    postUserMap.put(chatUserRef + "/" + pushID, postMap);
+                                    dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            if (databaseError == null) {
+                                                DatabaseReference personalTable = dbPlainReference
+                                                        .child("users")
+                                                        .child(mAuth.getUid())
+                                                        .child("echos")
+                                                        .child(eventManager.getEventID())
+                                                        .child(postID);
+                                                Map input = new HashMap<>();
+                                                input.put("pushID", pushID);
+                                                input.put("time", ServerValue.TIMESTAMP);
+                                                personalTable.setValue(input).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (!task.isSuccessful()) {
+                                                            Log.d("ADING_ECHO", task.getException().getMessage());
+                                                        } else {
+                                                            holder.wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_like_white));
+
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                } else {
+
+                                    final String postPushId = mainDataSnapshot
+                                            .child(postID).child("pushID").getValue().toString();
+                                    final DatabaseReference deleteFromUserEcho = dbPlainReference
+                                            .child("users")
+                                            .child(mAuth.getUid())
+                                            .child("echos")
+                                            .child(eventManager.getEventID())
+                                            .child(postID);
+                                    deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+
+                                                DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
+                                                        .child("events_us")
+                                                        .child(eventManager.getEventID())
+                                                        .child("wall")
+                                                        .child("posts")
+                                                        .child(postID)
+                                                        .child("echos")
+                                                        .child(postPushId);
+
+
+                                                deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (!task.isSuccessful()) {
+                                                            Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
+                                                        } else {
+                                                            holder.wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_not_like_white));
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
+                                            }
+
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                });
+            }
+
+        }
 
         @Override
         public int getItemCount() {

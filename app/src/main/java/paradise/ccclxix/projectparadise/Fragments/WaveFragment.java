@@ -18,10 +18,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -55,18 +59,20 @@ import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
 
+import static paradise.ccclxix.projectparadise.R.drawable.baseline_minimize_white_24;
+
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
 
     private CredentialsManager credentialsManager;
-    private TextView personalUsername;
-    private ImageView settingsImageView;
-    private ImageView infoImageView;
-    private TextView myNumWaves;
-    private TextView myNumContacts;
+
     private TextView currentWave;
     private Button postToWall;
     private EditText messageToPostToWall;
+    private LinearLayout wavePostModule;
+    private ConstraintLayout wavePostModuleButtons;
+
+    private ImageView waveShowPost;
 
 
     private AppModeManager appModeManager;
@@ -77,7 +83,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
     RecyclerView wavePostsList;
     WavePostAdapter wavePostAdapter;
-
+    boolean showing = false;
 
     private FirebaseAuth mAuth;
     private ViewGroup container;
@@ -94,7 +100,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         wavePostAdapter = new WavePostAdapter(getContext());
    }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -106,6 +111,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         messageToPostToWall = view.findViewById(R.id.message_to_post);
         currentWave = view.findViewById(R.id.current_wave);
         wavePostsList = view.findViewById(R.id.wall_recyclerview);
+        waveShowPost = view.findViewById(R.id.waveAddPostShow);
+        wavePostModule = view.findViewById(R.id.wavePostModule);
+        wavePostModuleButtons = view.findViewById(R.id.wavePostModuleButtons);
 
         wavePostsList.setAdapter(wavePostAdapter);
         wavePostsList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -175,9 +183,25 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             }
         });
+        wavePostModule.setVisibility(View.INVISIBLE);
+        wavePostModuleButtons.setVisibility(View.INVISIBLE);
+        waveShowPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
 
+                if(!showing){
+                    showing = true;
+                    wavePostModule.setVisibility(View.VISIBLE);
+                    wavePostModuleButtons.setVisibility(View.VISIBLE);
+                    waveShowPost.setImageDrawable(getResources().getDrawable(R.drawable.baseline_minimize_white_24));
 
-
+                }else {
+                    showing = false;
+                    wavePostModule.setVisibility(View.INVISIBLE);
+                    wavePostModuleButtons.setVisibility(View.INVISIBLE);
+                    waveShowPost.setImageDrawable(getResources().getDrawable(R.drawable.baseline_add_circle_outline_white_36));
+                }
+        }});
 
         return view;
     }

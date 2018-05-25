@@ -7,42 +7,75 @@
     app:layout_constraintBottom_toTopOf="@+id/navigation">
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout6"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorPrimary"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageView"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:foregroundGravity="center_vertical"
+            android:src="@drawable/baseline_waves_white_36"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/current_wave"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="TextView"
-            android:textColor="@color/colorWhite" />
-    </LinearLayout>
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
+            app:layout_constraintStart_toEndOf="@+id/circleImageView"
+            app:layout_constraintTop_toTopOf="@+id/circleImageView" />
+
+        <ImageView
+            android:id="@+id/waveAddPostShow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle_holder_second_main_color"
+            android:clickable="true"
+            android:elevation="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/wall_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/wavePostModule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/wavePostModuleButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -74,7 +107,7 @@
     </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/wavePostModuleButtons"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:background="@android:color/background_light"

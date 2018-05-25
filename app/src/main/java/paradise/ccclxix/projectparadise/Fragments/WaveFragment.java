@@ -101,8 +101,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         waveShowPost = view.findViewById(R.id.waveAddPostShow);
         wavePostModule = view.findViewById(R.id.wavePostModule);
         wavePostModuleButtons = view.findViewById(R.id.wavePostModuleButtons);
-
+        wavePostsList.getItemAnimator().setAddDuration(0);
+        wavePostAdapter.setHasStableIds(true);
         wavePostsList.setAdapter(wavePostAdapter);
+        wavePostsList.setHasFixedSize(false);
+
         wavePostsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (eventManager.getEventID() !=null){
@@ -337,6 +340,30 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 if (postType.equals("text")) {
                     holder.wavePostImage.setVisibility(View.INVISIBLE);
                 }
+                final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference dbPlainReference = firebaseDatabase.getReference();
+
+                DatabaseReference personalTableGet = dbPlainReference
+                        .child("users")
+                        .child(mAuth.getUid())
+                        .child("echos")
+                        .child(eventManager.getEventID());
+                personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot mainDataSnapshot) {
+                        if (mainDataSnapshot.hasChild(postID)) {
+                            holder.wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_like_white));
+                        }else {
+                            holder.wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_not_like_white));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 holder.wavePostEcho.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -454,6 +481,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         @Override
         public int getItemCount() {
             return wavePostList.size();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return super.getItemId(position);
         }
     }
 

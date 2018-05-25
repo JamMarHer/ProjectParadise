@@ -268,6 +268,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private LayoutInflater inflater;
 
         private List<HashMap<String, String>> waveList;
+        private HashMap<String, Integer> record;
         public WavesAdapter(final Context context){
             waveList = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -276,7 +277,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     waveList.clear();
-                    final HashMap<String, Integer> record = new HashMap<>();
+                    record = new HashMap<>();
 
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
@@ -336,7 +337,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(WaveViewHolder holder, int position) {
+        public void onBindViewHolder(WaveViewHolder holder, final int position) {
             final String waveID = waveList.get(position).get("waveID");
             final String waveName = waveList.get(position).get("waveName");
             final String waveAttending = waveList.get(position).get("waveAttending");
@@ -416,6 +417,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             leaveWave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    record.remove(waveID);
                     leaveWave(waveID);
                 }
             });

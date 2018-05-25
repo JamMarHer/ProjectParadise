@@ -234,7 +234,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private class WavePostAdapter extends RecyclerView.Adapter<WavePostViewHolder> {
 
         private LayoutInflater inflater;
-
         private List<HashMap<String, String>> wavePostList;
 
         public WavePostAdapter(final Context context) {
@@ -310,7 +309,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.d("MY_WAVES", databaseError.getMessage());
-
                     }
                 });
             }
@@ -452,23 +450,18 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                             } else {
                                                 Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
                                             }
-
                                         }
                                     });
-
                                 }
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
                         });
-
                     }
                 });
             }
-
         }
 
         @Override

@@ -300,12 +300,13 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             if (wavePostList.isEmpty()){
                 holder.wavePostMessage.setText("This Wave doesn't have any posts. \nWanna be be first one ? ;D");
             }else {
-                final String postID = wavePostList.get(position).get("postID");
-                final String postUsername = wavePostList.get(position).get("fromUsername");
-                final String postType = wavePostList.get(position).get("type");
-                final String postTime = wavePostList.get(position).get("time");
-                final String postMessage = wavePostList.get(position).get("message");
-                final String postMessage2 = wavePostList.get(position).get("message2");
+                int listSize = wavePostList.size()-1;
+                final String postID = wavePostList.get(listSize - position).get("postID");
+                final String postUsername = wavePostList.get(listSize - position).get("fromUsername");
+                final String postType = wavePostList.get(listSize - position).get("type");
+                final String postTime = wavePostList.get(listSize - position).get("time");
+                final String postMessage = wavePostList.get(listSize - position).get("message");
+                final String postMessage2 = wavePostList.get(listSize - position).get("message2");
                 holder.wavePostUsername.setText(postUsername);
                 holder.wavePostMessage.setText(postMessage);
                 SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");

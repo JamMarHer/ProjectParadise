@@ -48,10 +48,8 @@ import paradise.ccclxix.projectparadise.R;
 public class CreateEventActivity extends AppCompatActivity {
 
     EditText eventCreateName;
-    Switch eventCreateSwitchPrivate;
-    CheckBox eventCreateCheckboxAll;
-    CheckBox eventCreateCheckbox18;
-    CheckBox eventCreateCheckbox21;
+    Switch createWaveMode; // Mode is private or public.
+    Switch createWaveLocation;
     TextView eventCreateTextPublic;
     TextView eventCreateTextPrivate;
     Button eventCreateButtonLaunch;
@@ -80,10 +78,8 @@ public class CreateEventActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         eventCreateName =               findViewById(R.id.createEventName);
-        eventCreateSwitchPrivate =      findViewById(R.id.createEventPrivate);
-        eventCreateCheckboxAll =         findViewById(R.id.createEventAll);
-        eventCreateCheckbox18 =          findViewById(R.id.createEvent18);
-        eventCreateCheckbox21 =          findViewById(R.id.createEvent21);
+        createWaveMode =                findViewById(R.id.createEventPrivate);
+        createWaveLocation =            findViewById(R.id.createWaveLocation);
         eventCreateTextPublic =         findViewById(R.id.createEventTextPublic);
         eventCreateTextPrivate =        findViewById(R.id.createEventTextPrivate);
         eventCreateButtonLaunch =       findViewById(R.id.createEventButtonLaunch);
@@ -110,53 +106,20 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        eventCreateCheckboxAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                eventCreateCheckbox18.setChecked(false);
-                eventCreateCheckbox21.setChecked(false);
-                if (b){
-                    eventCreateCheckboxAll.setChecked(true);
-                }
-            }
-        });
-        eventCreateCheckbox18.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                eventCreateCheckboxAll.setChecked(false);
-                eventCreateCheckbox21.setChecked(false);
-                if (b){
-                    eventCreateCheckbox18.setChecked(true);
-                }
-            }
-        });
-        eventCreateCheckbox21.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                eventCreateCheckbox18.setChecked(false);
-                eventCreateCheckboxAll.setChecked(false);
-                if (b){
-                    eventCreateCheckbox21.setChecked(true);
-                }
-            }
-        });
     }
 
-    private String getAgeTarget(){
-        if (eventCreateCheckboxAll.isChecked()){
-            return "all";
-        }
-        if (eventCreateCheckbox18.isChecked()){
-            return "18";
-        }
-        if (eventCreateCheckbox21.isChecked()){
-            return "21";
-        }
-        return "all";
-    }
 
+    // TODO This is low key bad.
     private String getPrivacy(){
-        if (eventCreateSwitchPrivate.isChecked()){
+        if (createWaveMode.isChecked()){
+            return "false";
+        }else {
+            return "true";
+        }
+    }
+
+    private String getLocationSetting(){
+        if (createWaveLocation.isChecked()){
             return "false";
         }else {
             return "true";
@@ -178,10 +141,15 @@ public class CreateEventActivity extends AppCompatActivity {
             eventMap.put("name_event", eventCreateName.getText().toString());
             eventMap.put("event_id", eventID);
             eventMap.put("privacy", getPrivacy());
-            eventMap.put("latitude", locationManager.getLastLatitude(getApplicationContext()));
-            eventMap.put("longitude", locationManager.getLastLongitude(getApplicationContext()));
+            eventMap.put("location_based", getLocationSetting());
+            if (getLocationSetting().equals("true")){
+                eventMap.put("latitude", locationManager.getLastLatitude(getApplicationContext()));
+                eventMap.put("longitude", locationManager.getLastLongitude(getApplicationContext()));
+            }else{
+                eventMap.put("latitude", "not set");
+                eventMap.put("longitude", "not set");
+            }
             eventMap.put("active", "true");
-            eventMap.put("age_target", getAgeTarget());
             eventDatabaseReference.setValue(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -255,9 +223,6 @@ public class CreateEventActivity extends AppCompatActivity {
         if (!checkName()){
             eventCreateName.requestFocus();
             eventCreateName.setError("Missing name for the event.");
-            return false;
-        }else if (!eventCreateCheckboxAll.isChecked() && !eventCreateCheckbox18.isChecked() && !eventCreateCheckbox21.isChecked()){
-            showSnackbar("Please select a age target.");
             return false;
         }
         return  true;

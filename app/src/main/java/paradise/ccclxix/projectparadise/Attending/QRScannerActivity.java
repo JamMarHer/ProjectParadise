@@ -165,7 +165,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
                     event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
                     event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
-                    event.put("age_target", dataSnapshot.child("age_target").getValue().toString());
                     HashMap<String, HashMap<String, Long>> attending = new HashMap<>();
                     HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.child("attending").getChildren()) {
@@ -229,7 +228,11 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 eventManager.updateEventID(eventID);
                 eventManager.updateEventName((String)event.get("event_name"));
-                DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(mAuth.getUid());
+                DatabaseReference eventDatabaseReference = database.getReference()
+                        .child("events_us")
+                        .child(eventID)
+                        .child("attending")
+                        .child(mAuth.getUid());
                 HashMap<String, Long> in = new HashMap<>();
                 final long timeIn = System.currentTimeMillis();
                 in.put("in", timeIn);
@@ -244,9 +247,10 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                                     databaseReference.removeEventListener(valueEventListener);
                                     final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtra("source", "qr_code_scanned");
                                     dialogInterface.dismiss();
+
                                     eventManager.updatePersonalTimein(timeIn);
 
                                     finish();
@@ -262,13 +266,8 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 });
             }
         });
-        String ageTarget = (String)event.get("age_target");
-        if(ageTarget.equals("all")){
-            builder.setMessage("Hit that join button!");
-        }else {
-            builder.setMessage(String.format("This event is intended for %s+ years old. \nIf you are %s+" +
-                    " years old and want to join hit that join button!", ageTarget,ageTarget));
-        }
+
+        builder.setMessage("Are you sure you want to join?");
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         

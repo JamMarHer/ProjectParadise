@@ -131,6 +131,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             postInfo.putString("message2", post.child("message2").getValue().toString());
                             postInfo.putString("time", post.child("time").getValue().toString());
                             postInfo.putString("type", post.child("type").getValue().toString());
+                            postInfo.putString("numEchos", String.valueOf(post.child("echos").getChildrenCount()));
+                            postInfo.putString("numComments", String.valueOf(post.child("comments").getChildrenCount()));
                             record.add(post.getKey());
                             WavePost wavePost = new WavePost();
                             wavePost.setArguments(postInfo);

@@ -1,13 +1,13 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,8 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,9 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +40,10 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePost;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.VerticalViewPager;
 
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
@@ -69,7 +67,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     EventManager eventManager;
 
     RecyclerView wavePostsList;
-    WavePostAdapter wavePostAdapter;
     boolean showing = false;
 
     private FirebaseAuth mAuth;
@@ -84,7 +81,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         eventManager = new EventManager(getContext());
         appModeManager = new AppModeManager(getContext());
         credentialsManager = new CredentialsManager(getContext());
-        wavePostAdapter = new WavePostAdapter(getContext());
    }
 
     @Nullable
@@ -97,16 +93,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         postToWall = view.findViewById(R.id.post_to_wall);
         messageToPostToWall = view.findViewById(R.id.message_to_post);
         currentWave = view.findViewById(R.id.current_wave);
-        wavePostsList = view.findViewById(R.id.wall_recyclerview);
         waveShowPost = view.findViewById(R.id.waveAddPostShow);
         wavePostModule = view.findViewById(R.id.wavePostModule);
         wavePostModuleButtons = view.findViewById(R.id.wavePostModuleButtons);
-        wavePostsList.getItemAnimator().setAddDuration(0);
-        wavePostAdapter.setHasStableIds(true);
-        wavePostsList.setAdapter(wavePostAdapter);
-        wavePostsList.setHasFixedSize(false);
 
-        wavePostsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (eventManager.getEventID() !=null){
             currentWave.setText(eventManager.getEventName());
@@ -115,6 +105,50 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         }
 
         this.container = container;
+
+
+        final VerticalViewPager verticalViewPager = view.findViewById(R.id.wave_post_viewpager);
+        final FragmentAdapter fragmentAdapter = new FragmentAdapter(getChildFragmentManager());
+
+        final ArrayList<String> record = new ArrayList<>();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference dbPostsReference = firebaseDatabase.getReference()
+                .child("events_us")
+                .child(eventManager.getEventID())
+                .child("wall")
+                .child("posts");
+        dbPostsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    for (final DataSnapshot post :dataSnapshot.getChildren()){
+                        if(!record.contains(post.getKey())){
+                            Bundle postInfo = new Bundle();
+                            postInfo.putString("postID", post.getKey());
+                            postInfo.putString("username", post.child("fromUsername").getValue().toString());
+                            postInfo.putString("from", post.child("from").getValue().toString());
+                            postInfo.putString("message", post.child("message").getValue().toString());
+                            postInfo.putString("message2", post.child("message2").getValue().toString());
+                            postInfo.putString("time", post.child("time").getValue().toString());
+                            postInfo.putString("type", post.child("type").getValue().toString());
+                            record.add(post.getKey());
+                            WavePost wavePost = new WavePost();
+                            wavePost.setArguments(postInfo);
+                            fragmentAdapter.addFragment(wavePost);
+                        }
+                    }
+                    verticalViewPager.setAdapter(fragmentAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         postToWall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +231,31 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         return view;
     }
 
+    static class FragmentAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+
+        public FragmentAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(mFragmentList.size() -1 - position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment) {
+            mFragmentList.add(fragment);
+        }
+    }
+
+
+
+/*
     private class WavePostViewHolder extends RecyclerView.ViewHolder{
 
         TextView wavePostUsername;
@@ -307,7 +366,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         @Override
         public WavePostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_single_post, parent, false);
+            View view = inflater.inflate(R.layout.fragment_post, parent, false);
             WavePostViewHolder holder = new WavePostViewHolder(view);
             return holder;
         }
@@ -488,6 +547,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             return super.getItemId(position);
         }
     }
+    */
 
 
     @Override

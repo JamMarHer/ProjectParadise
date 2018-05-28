@@ -35,6 +35,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/circle_holder_second_main_color"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
@@ -46,6 +47,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/circle"
+        android:clickable="true"
         android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +83,7 @@
         android:layout_marginLeft="9dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/common_google_signin_btn_text_light_pressed"
         android:textSize="15dp"
         app:layout_constraintStart_toEndOf="@+id/wave_add_post_thumbnail"
         app:layout_constraintTop_toTopOf="@+id/wave_add_post_thumbnail" />

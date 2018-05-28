@@ -192,7 +192,6 @@ public class EventChat extends Fragment{
                 startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"), GALLERY_PICK);
             }
         });
-        System.out.println("CREATINGVIEW");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference().child("events_us").child(eventManager.getEventID()).child("messages");
         messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);

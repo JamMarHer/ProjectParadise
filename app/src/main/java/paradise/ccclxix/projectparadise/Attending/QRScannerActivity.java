@@ -246,15 +246,15 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                 public void onComplete(@NonNull Task<Void> task) {
 
                                     databaseReference.removeEventListener(valueEventListener);
-                                    final Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    final Intent intent = new Intent(QRScannerActivity.this, MainActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtra("source", "qr_code_scanned");
+                                    intent.putExtra("source", "joined_event");
                                     dialogInterface.dismiss();
 
                                     eventManager.updatePersonalTimein(timeIn);
 
-                                    finish();
                                     QRScannerActivity.this.startActivity(intent);
+                                    finish();
                                 }
                             });
                         }else{

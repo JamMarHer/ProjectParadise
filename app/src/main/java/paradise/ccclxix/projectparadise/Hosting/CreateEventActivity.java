@@ -184,7 +184,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                                                 eventManager.updateEventID(eventID);
                                                 eventManager.updatePersonalTimein(timeStamp);
-
+                                                eventManager.updateEventName(eventCreateName.getText().toString());
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
                                                 finish();

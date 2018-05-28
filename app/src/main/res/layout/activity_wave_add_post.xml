@@ -20,7 +20,6 @@
         android:hint="Write something memorable..."
         android:textSize="15sp"
         android:inputType="textMultiLine"
-        android:lines="8"
         android:minLines="3"
         android:gravity="top|left"
         android:maxLines="6"

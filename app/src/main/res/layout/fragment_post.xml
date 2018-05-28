@@ -38,8 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
+            android:inputType="textMultiLine"
+            android:minLines="1"
+            android:gravity="top|left"
+            android:maxLines="3"
+            android:scrollbars="vertical"
             android:hint="Comment..."
-            android:inputType="textPersonName"
             android:textSize="12sp" />
 
         <ImageView

@@ -57,9 +57,8 @@ public class WavePost extends Fragment {
     TextView wavePostNumEchos;
     TextView wavePostNumComments;
 
-    EditText wavePostAddCommentMessage;
 
-    ImageView wavePostAddCommentSend;
+    ImageView wavePostOpenComments;
     ImageView wavePostImage;
     ImageView wavePostEcho;
 
@@ -73,8 +72,7 @@ public class WavePost extends Fragment {
     String time;
     String type;
 
-    WavePostCommentsAdapter wavesPostCommentsAdapter;
-    RecyclerView wavePostListComments;
+
 
     FirebaseAuth mAuth;
 
@@ -96,16 +94,14 @@ public class WavePost extends Fragment {
         wavePostNumEchos = inflater1.findViewById(R.id.wave_post_num_echos);
         wavePostTime = inflater1.findViewById(R.id.wave_post_time);
         wavePostNumComments = inflater1.findViewById(R.id.wave_post_num_comments);
-        wavePostAddCommentMessage = inflater1.findViewById(R.id.wave_post_add_message);
-        wavePostAddCommentSend = inflater1.findViewById(R.id.wave_post_add_send);
         wavePostImage = inflater1.findViewById(R.id.wave_post_image);
-        wavePostEcho = inflater1.findViewById(R.id.echoPost);
-        wavePostListComments = inflater1.findViewById(R.id.wave_post_comments_recyclerView);
+        wavePostEcho = inflater1.findViewById(R.id.wave_post_echo);
+        wavePostOpenComments = inflater1.findViewById(R.id.wave_post_open_comments);
 
 
         Bundle postInfo = getArguments();
 
-        this.postID = postInfo.getString("postID");
+        postID = postInfo.getString("postID");
         this.username = postInfo.getString("username");
         this.message = postInfo.getString("message");
         this.message2 = postInfo.getString("message2");
@@ -117,9 +113,6 @@ public class WavePost extends Fragment {
         wavePostUsername.setText(username);
         wavePostMessage.setText(message);
 
-        wavesPostCommentsAdapter = new WavePostCommentsAdapter(getContext());
-        wavePostListComments.setAdapter(wavesPostCommentsAdapter);
-        wavePostListComments.setLayoutManager(new LinearLayoutManager(getContext()));
 
         SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");
         java.sql.Timestamp timestamp = new java.sql.Timestamp(Long.valueOf(this.time));
@@ -149,14 +142,14 @@ public class WavePost extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("echos").getChildrenCount() == 1)
-                    wavePostNumEchos.setText(String.format("%s echo", 1));
+                    wavePostNumEchos.setText("1");
                 else
-                    wavePostNumEchos.setText(String.format("%s echos", dataSnapshot.child("echos").getChildrenCount()));
+                    wavePostNumEchos.setText(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
 
                 if (dataSnapshot.child("comments").getChildrenCount() == 1)
-                    wavePostNumComments.setText(String.format("%s comment", 1));
+                    wavePostNumComments.setText("1");
                 else
-                    wavePostNumComments.setText(String.format("%s comments", dataSnapshot.child("comments").getChildrenCount()));
+                    wavePostNumComments.setText(String.valueOf(dataSnapshot.child("comments").getChildrenCount()));
             }
 
             @Override
@@ -174,9 +167,9 @@ public class WavePost extends Fragment {
             @Override
             public void onDataChange(DataSnapshot mainDataSnapshot) {
                 if (mainDataSnapshot.hasChild(postID)) {
-                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_like_white));
+                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
                 }else {
-                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_not_like_white));
+                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
                 }
             }
 
@@ -240,7 +233,7 @@ public class WavePost extends Fragment {
                                                 if (!task.isSuccessful()) {
                                                     Log.d("ADING_ECHO", task.getException().getMessage());
                                                 } else {
-                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_like_white));
+                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
 
                                                 }
                                             }
@@ -279,7 +272,7 @@ public class WavePost extends Fragment {
                                                 if (!task.isSuccessful()) {
                                                     Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
                                                 } else {
-                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.heart_not_like_white));
+                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
                                                 }
                                             }
                                         });
@@ -298,158 +291,22 @@ public class WavePost extends Fragment {
             }
         });
 
-        wavePostAddCommentSend.setOnClickListener(new View.OnClickListener() {
+
+        wavePostOpenComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(wavePostAddCommentMessage.getText())){
-                    DatabaseReference dbAddCommentPlain = firebaseDatabase.getReference();
-                    DatabaseReference dbAddComment = dbAddCommentPlain
-                            .child("events_us")
-                            .child(eventManager.getEventID())
-                            .child("wall")
-                            .child("posts")
-                            .child(postID)
-                            .child("comments")
-                            .child(mAuth.getUid()).push();
-                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/"+postID
-                            +"/comments";
-                    String pushID = dbAddComment.getKey();
-                    Map postMap = new HashMap();
-                    postMap.put("message", wavePostAddCommentMessage.getText().toString());
-                    postMap.put("seen", false);
-                    postMap.put("type", "text");
-                    postMap.put("time", ServerValue.TIMESTAMP);
-                    postMap.put("from", mAuth.getUid());
-                    postMap.put("fromUsername", credentialsManager.getUsername());
-
-                    Map postUserMap = new HashMap();
-                    postUserMap.put(chatUserRef + "/"+ pushID, postMap);
-                    dbAddCommentPlain.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (databaseError != null){
-                                Log.d("ADDING_COMMENT", databaseError.getMessage());
-                                TSnackbar snackbar = TSnackbar.make(inflater1.getRootView().findViewById(android.R.id.content), "There was a problem adding comment.", TSnackbar.LENGTH_SHORT);
-                                snackbar.setActionTextColor(Color.WHITE);
-                                snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                                View snackbarView = snackbar.getView();
-                                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                                textView.setTextColor(Color.WHITE);
-                                snackbar.show();
-                            }else {
-                                wavePostAddCommentMessage.setText("");
-                            }
-                        }
-                    });
-                }
+                Intent intent = new Intent(getActivity(), WavePostCommentsActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("postID", postID);
+                intent.putExtras(extras);
+                getActivity().startActivity(intent);
             }
         });
+
 
         return inflater1;
 
     }
 
-
-    private class WavePostCommentsViewHolder extends RecyclerView.ViewHolder{
-
-        TextView wavePostCommentUsername;
-        TextView wavePostCommentMessage;
-        ImageView wavePostCommentThumbnail;
-        View mView;
-
-        public WavePostCommentsViewHolder(View itemView) {
-            super(itemView);
-            wavePostCommentUsername = itemView.findViewById(R.id.wave_post_comment_username);
-            wavePostCommentMessage = itemView.findViewById(R.id.wave_post_comment_message);
-            wavePostCommentThumbnail = itemView.findViewById(R.id.wave_post_comment_thumbnail);
-
-            mView = itemView;
-        }
-    }
-
-    private class WavePostCommentsAdapter extends RecyclerView.Adapter<WavePostCommentsViewHolder>{
-
-        private LayoutInflater inflater;
-
-        private List<HashMap<String, String>> waveList;
-        private HashMap<String, Integer> record;
-        public WavePostCommentsAdapter(final Context context){
-            waveList = new ArrayList<>();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(eventManager.getEventID())
-                    .child("wall")
-                    .child("posts")
-                    .child(postID)
-                    .child("comments");
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    waveList.clear();
-                    record = new HashMap<>();
-
-                    for (final  DataSnapshot comment: dataSnapshot.getChildren()){
-                        final String commentID = comment.getKey();
-                        HashMap<String, String> eventInfo = new HashMap<>();
-                        eventInfo.put("commentID", commentID);
-                        eventInfo.put("commentUsername", comment.child("fromUsername").getValue().toString());
-                        // TODO add function (algo) for trending.
-                        eventInfo.put("commentMessage", comment.child("message").getValue().toString());
-
-                        if(!record.containsKey(commentID)) {
-                            waveList.add(eventInfo);
-                            record.put(commentID, waveList.size()-1);
-                            if(commentID.equals(eventManager.getEventID())){
-                                int toExchange = waveList.size()-1;
-                                Collections.swap(waveList,0, toExchange);
-                                record.put(commentID, 0);
-                                record.put(waveList.get(toExchange).get("commentID"), waveList.size()-1);
-                            }
-                        }else {
-                            waveList.set(record.get(commentID), eventInfo);
-                        }
-                        wavesPostCommentsAdapter.notifyDataSetChanged();
-                        inflater = LayoutInflater.from(context);
-                    }
-
-                    }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("MY_WAVES", databaseError.getMessage());
-
-                }
-            });
-        }
-
-
-
-        @Override
-        public WavePostCommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_post_single_comment, parent, false);
-            WavePostCommentsViewHolder holder = new WavePostCommentsViewHolder(view);
-            return holder;
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public void onBindViewHolder(WavePostCommentsViewHolder holder, final int position) {
-            final String commentID = waveList.get(position).get("commentID");
-            final String commentUsername = waveList.get(position).get("commentUsername");
-            final String commentMessage = waveList.get(position).get("commentMessage");
-            holder.wavePostCommentUsername.setText(commentUsername);
-            holder.wavePostCommentMessage.setText(commentMessage);
-
-
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return waveList.size();
-        }
-    }
 
 }

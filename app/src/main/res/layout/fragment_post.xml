@@ -10,115 +10,91 @@
 
     <View
         android:id="@+id/view2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/wave_post_time"
+        app:layout_constraintStart_toStartOf="@+id/wave_post_time"
         app:layout_constraintTop_toBottomOf="@+id/wave_post_num_comments" />
 
-    <LinearLayout
-        android:id="@+id/commentLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/circle_holder_grey_white"
-        android:elevation="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/wave_post_add_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="top|left"
-            android:hint="Comment..."
-            android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:minLines="1"
-            android:scrollbars="vertical"
-            android:textSize="12sp" />
-
-        <ImageView
-            android:id="@+id/wave_post_add_send"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_send_black_24dp" />
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/wave_post_comments_recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="6dp"
+        android:layout_height="9dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="3dp"
-        app:layout_constraintBottom_toTopOf="@+id/commentLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view2" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
+        app:layout_constraintStart_toEndOf="@+id/wave_post_num_echos"
+        app:layout_constraintTop_toTopOf="@+id/wave_post_echo"
+        app:srcCompat="@drawable/circle_holder_main_colors" />
 
     <TextView
         android:id="@+id/wave_post_num_comments"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="3dp"
         android:elevation="1dp"
-        android:text="6 comments"
+        android:gravity="center_vertical"
+        android:text="6"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="11sp"
+        android:textSize="15sp"
         android:textStyle="normal|bold"
-        app:layout_constraintStart_toEndOf="@+id/wave_post_num_echos"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
+        app:layout_constraintStart_toEndOf="@+id/wave_post_open_comments"
+        app:layout_constraintTop_toTopOf="@+id/wave_post_open_comments" />
 
     <TextView
         android:id="@+id/wave_post_num_echos"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="3dp"
         android:elevation="1dp"
-        android:text="12 echos"
+        android:gravity="center_vertical"
+        android:text="12"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="11sp"
+        android:textSize="15sp"
         android:textStyle="normal|bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
+        app:layout_constraintStart_toEndOf="@+id/wave_post_echo"
+        app:layout_constraintTop_toTopOf="@+id/wave_post_echo" />
 
     <ImageView
-        android:id="@+id/echoPost"
-        android:layout_width="0dp"
-        android:layout_height="33dp"
+        android:id="@+id/wave_post_echo"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="3dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:background="@drawable/circle_holder_main_color"
+        android:background="@drawable/circle"
         android:elevation="1dp"
-        android:src="@drawable/heart_not_like_white"
+        android:src="@drawable/baseline_panorama_fish_eye_black_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/wave_post_open_comments"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/circle"
+        android:elevation="1dp"
+        android:foregroundGravity="center_vertical"
+        android:src="@drawable/baseline_add_comment_black_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView5" />
 
     <TextView
         android:id="@+id/wave_post_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="3dp"
         android:foregroundGravity="left"
         android:gravity="start"
         android:text="TextView"
         android:textColor="@color/common_google_signin_btn_text_light_pressed"
-        app:layout_constraintEnd_toEndOf="@+id/wave_post_time"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/wave_post_username"
         app:layout_constraintTop_toBottomOf="@+id/wave_post_username" />
 
@@ -127,23 +103,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:elevation="1dp"
         android:text="TextView"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="11sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/view2"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wave_post_num_comments" />
 
     <ImageView
         android:id="@+id/wave_post_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
         android:elevation="0dp"
         android:maxHeight="250dp"
         android:maxWidth="250dp"
-        app:layout_constraintEnd_toEndOf="@+id/wave_post_time"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_post_message" />
 
@@ -170,17 +151,5 @@
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/wave_post_thumbnail"
         app:layout_constraintTop_toTopOf="@+id/wave_post_thumbnail" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/echoPost"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

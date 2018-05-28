@@ -27,6 +27,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/circle_holder_grey_white"
+        android:elevation="1dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,12 +39,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textMultiLine"
-            android:minLines="1"
             android:gravity="top|left"
-            android:maxLines="3"
-            android:scrollbars="vertical"
             android:hint="Comment..."
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:minLines="1"
+            android:scrollbars="vertical"
             android:textSize="12sp" />
 
         <ImageView
@@ -102,6 +103,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/circle_holder_main_color"
+        android:elevation="1dp"
         android:src="@drawable/heart_not_like_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,8 +113,7 @@
         android:id="@+id/wave_post_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="3dp"
         android:foregroundGravity="left"
         android:gravity="start"
         android:text="TextView"
@@ -136,11 +137,14 @@
         android:id="@+id/wave_post_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:elevation="0dp"
         android:maxHeight="250dp"
         android:maxWidth="250dp"
         app:layout_constraintEnd_toEndOf="@+id/wave_post_time"
-        app:layout_constraintStart_toStartOf="@+id/wave_post_username"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_post_message" />
 
     <de.hdodenhof.circleimageview.CircleImageView

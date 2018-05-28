@@ -116,7 +116,6 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                                 snackbar.show();
                             }else {
                                 wavePostAddCommentMessage.setText("");
-                                finish();
                             }
                         }
                     });

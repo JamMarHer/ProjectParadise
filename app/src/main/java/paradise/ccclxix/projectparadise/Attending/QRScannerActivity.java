@@ -10,12 +10,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +61,18 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        scannerView = new ZXingScannerView(this);
-        setContentView(scannerView);
+        setContentView(R.layout.activity_qrscanner);
+        scannerView = (ZXingScannerView) findViewById(R.id.zxscan);
+
+
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());

@@ -8,13 +8,29 @@
     android:background="@android:color/background_light"
     android:elevation="1dp">
 
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_post_num_comments" />
+
     <LinearLayout
         android:id="@+id/commentLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/circle_holder_grey_white"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/wave_post_add_message"
@@ -35,24 +51,25 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/wave_post_comments_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="3dp"
         app:layout_constraintBottom_toTopOf="@+id/commentLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.957" />
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <TextView
         android:id="@+id/wave_post_num_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:elevation="1dp"
         android:text="6 comments"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="11sp"
@@ -65,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:elevation="1dp"
         android:text="12 echos"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="11sp"
@@ -75,14 +92,16 @@
 
     <ImageView
         android:id="@+id/echoPost"
-        android:layout_width="33dp"
+        android:layout_width="0dp"
         android:layout_height="33dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginStart="8dp"
         android:background="@drawable/circle_holder_main_color"
         android:src="@drawable/heart_not_like_white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/wave_post_message"
@@ -93,7 +112,8 @@
         android:foregroundGravity="left"
         android:gravity="start"
         android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/echoPost"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="@+id/wave_post_time"
         app:layout_constraintStart_toStartOf="@+id/wave_post_username"
         app:layout_constraintTop_toBottomOf="@+id/wave_post_username" />
 
@@ -102,11 +122,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:elevation="1dp"
         android:text="TextView"
         android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image" />
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/wave_post_image"
@@ -147,12 +167,12 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/echoPost"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_time" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -112,104 +112,109 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         final ArrayList<String> record = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference dbPostsReference = firebaseDatabase.getReference()
-                .child("events_us")
-                .child(eventManager.getEventID())
-                .child("wall")
-                .child("posts");
-        dbPostsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()){
-                    for (final DataSnapshot post :dataSnapshot.getChildren()){
-                        if(!record.contains(post.getKey())){
-                            Bundle postInfo = new Bundle();
-                            postInfo.putString("postID", post.getKey());
-                            postInfo.putString("username", post.child("fromUsername").getValue().toString());
-                            postInfo.putString("from", post.child("from").getValue().toString());
-                            postInfo.putString("message", post.child("message").getValue().toString());
-                            postInfo.putString("message2", post.child("message2").getValue().toString());
-                            postInfo.putString("time", post.child("time").getValue().toString());
-                            postInfo.putString("type", post.child("type").getValue().toString());
-                            postInfo.putString("numEchos", String.valueOf(post.child("echos").getChildrenCount()));
-                            postInfo.putString("numComments", String.valueOf(post.child("comments").getChildrenCount()));
-                            record.add(post.getKey());
-                            WavePost wavePost = new WavePost();
-                            wavePost.setArguments(postInfo);
-                            fragmentAdapter.addFragment(wavePost);
-                        }
-                    }
-                    verticalViewPager.setAdapter(fragmentAdapter);
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        if (eventManager.getEventID() != null){
 
-            }
-        });
-
-
-
-
-        postToWall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (!TextUtils.isEmpty(messageToPostToWall.getText()) & mAuth.getUid()!= null){
-                    ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
-                    resizeAnimation.setDuration(999);
-                    resizeAnimation.setRepeatCount(Animation.INFINITE);
-                    resizeAnimation.setRepeatMode(Animation.REVERSE);
-                    postToWall.setText("lit");
-                    view.startAnimation(resizeAnimation);
-                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                    DatabaseReference dbPlainReference = firebaseDatabase.getReference();
-                    DatabaseReference dbWave = dbPlainReference
-                            .child("events_us")
-                            .child(eventManager.getEventID())
-                            .child("wall")
-                            .child("posts")
-                            .child(mAuth.getUid()).push();
-                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts";
-                    String pushID = dbWave.getKey();
-                    Map postMap = new HashMap();
-                    postMap.put("message", messageToPostToWall.getText().toString());
-                    postMap.put("message2", "No Image"); // TODO For now.
-                    postMap.put("seen", false);
-                    postMap.put("numEchos", 0);
-                    postMap.put("type", "text");
-                    postMap.put("time", ServerValue.TIMESTAMP);
-                    postMap.put("from", mAuth.getUid());
-                    postMap.put("fromUsername", credentialsManager.getUsername());
-
-                    Map postUserMap = new HashMap();
-                    postUserMap.put(chatUserRef + "/"+ pushID, postMap);
-                    dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if(databaseError != null){
-                                Log.d("POSTING_IN_WAVE", databaseError.getMessage());
-                                TSnackbar snackbar = TSnackbar.make(container, "Something went wrong.", TSnackbar.LENGTH_SHORT);
-                                snackbar.setActionTextColor(Color.WHITE);
-                                snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                                View snackbarView = snackbar.getView();
-                                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                                textView.setTextColor(Color.WHITE);
-                                snackbar.show();
-                                view.clearAnimation();
-                                postToWall.setText("Post");
-                            }else{
-                                messageToPostToWall.setText("");
-                                view.clearAnimation();
-                                postToWall.setText("Post");
+            DatabaseReference dbPostsReference = firebaseDatabase.getReference()
+                    .child("events_us")
+                    .child(eventManager.getEventID())
+                    .child("wall")
+                    .child("posts");
+            dbPostsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChildren()){
+                        for (final DataSnapshot post :dataSnapshot.getChildren()){
+                            if(!record.contains(post.getKey())){
+                                Bundle postInfo = new Bundle();
+                                postInfo.putString("postID", post.getKey());
+                                postInfo.putString("username", post.child("fromUsername").getValue().toString());
+                                postInfo.putString("from", post.child("from").getValue().toString());
+                                postInfo.putString("message", post.child("message").getValue().toString());
+                                postInfo.putString("message2", post.child("message2").getValue().toString());
+                                postInfo.putString("time", post.child("time").getValue().toString());
+                                postInfo.putString("type", post.child("type").getValue().toString());
+                                postInfo.putString("numEchos", String.valueOf(post.child("echos").getChildrenCount()));
+                                postInfo.putString("numComments", String.valueOf(post.child("comments").getChildrenCount()));
+                                record.add(post.getKey());
+                                WavePost wavePost = new WavePost();
+                                wavePost.setArguments(postInfo);
+                                fragmentAdapter.addFragment(wavePost);
                             }
                         }
-                    });
+                        verticalViewPager.setAdapter(fragmentAdapter);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
-        });
+            });
+
+
+
+
+            postToWall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    if (!TextUtils.isEmpty(messageToPostToWall.getText()) & mAuth.getUid()!= null){
+                        ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
+                        resizeAnimation.setDuration(999);
+                        resizeAnimation.setRepeatCount(Animation.INFINITE);
+                        resizeAnimation.setRepeatMode(Animation.REVERSE);
+                        postToWall.setText("lit");
+                        view.startAnimation(resizeAnimation);
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference dbPlainReference = firebaseDatabase.getReference();
+                        DatabaseReference dbWave = dbPlainReference
+                                .child("events_us")
+                                .child(eventManager.getEventID())
+                                .child("wall")
+                                .child("posts")
+                                .child(mAuth.getUid()).push();
+                        String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts";
+                        String pushID = dbWave.getKey();
+                        Map postMap = new HashMap();
+                        postMap.put("message", messageToPostToWall.getText().toString());
+                        postMap.put("message2", "No Image"); // TODO For now.
+                        postMap.put("seen", false);
+                        postMap.put("numEchos", 0);
+                        postMap.put("type", "text");
+                        postMap.put("time", ServerValue.TIMESTAMP);
+                        postMap.put("from", mAuth.getUid());
+                        postMap.put("fromUsername", credentialsManager.getUsername());
+
+                        Map postUserMap = new HashMap();
+                        postUserMap.put(chatUserRef + "/"+ pushID, postMap);
+                        dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if(databaseError != null){
+                                    Log.d("POSTING_IN_WAVE", databaseError.getMessage());
+                                    TSnackbar snackbar = TSnackbar.make(container, "Something went wrong.", TSnackbar.LENGTH_SHORT);
+                                    snackbar.setActionTextColor(Color.WHITE);
+                                    snackbar.setIconLeft(R.drawable.poop_icon, 24);
+                                    View snackbarView = snackbar.getView();
+                                    snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+                                    TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                                    textView.setTextColor(Color.WHITE);
+                                    snackbar.show();
+                                    view.clearAnimation();
+                                    postToWall.setText("Post");
+                                }else{
+                                    messageToPostToWall.setText("");
+                                    view.clearAnimation();
+                                    postToWall.setText("Post");
+                                }
+                            }
+                        });
+
+                    }
+                }
+            });
+        }
+
         wavePostModule.setVisibility(View.INVISIBLE);
         wavePostModuleButtons.setVisibility(View.INVISIBLE);
         waveShowPost.setOnClickListener(new View.OnClickListener() {

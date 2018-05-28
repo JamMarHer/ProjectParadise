@@ -22,6 +22,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import paradise.ccclxix.projectparadise.R;
 
@@ -38,6 +40,7 @@ public class NotificationHelper extends ContextWrapper {
      *
      * @param ctx The application context
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public NotificationHelper(Context ctx) {
         super(ctx);
 
@@ -59,6 +62,7 @@ public class NotificationHelper extends ContextWrapper {
      * @param body the body text for the notification
      * @return the builder as it keeps a reference to the notification (since API 24)
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public Notification.Builder getMessageNotification(String title, String body) {
         return new Notification.Builder(getApplicationContext(), PRIMARY_CHANNEL)
                 .setContentTitle(title)

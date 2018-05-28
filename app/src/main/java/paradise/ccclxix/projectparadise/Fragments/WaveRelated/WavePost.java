@@ -61,6 +61,7 @@ public class WavePost extends Fragment {
     ImageView wavePostOpenComments;
     ImageView wavePostImage;
     ImageView wavePostEcho;
+    ImageView wavePostViewComments;
 
 
     String postID;
@@ -97,6 +98,7 @@ public class WavePost extends Fragment {
         wavePostImage = inflater1.findViewById(R.id.wave_post_image);
         wavePostEcho = inflater1.findViewById(R.id.wave_post_echo);
         wavePostOpenComments = inflater1.findViewById(R.id.wave_post_open_comments);
+        wavePostViewComments = inflater1.findViewById(R.id.wave_post_view_comments);
 
 
         Bundle postInfo = getArguments();
@@ -293,6 +295,19 @@ public class WavePost extends Fragment {
 
 
         wavePostOpenComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), WavePostCommentsActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("postID", postID);
+                intent.putExtras(extras);
+                getActivity().startActivity(intent);
+            }
+        });
+
+
+
+        wavePostViewComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), WavePostCommentsActivity.class);

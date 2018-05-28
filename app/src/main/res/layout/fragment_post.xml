@@ -48,7 +48,7 @@
             tools:layout_editor_absoluteX="56dp" />
 
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/wave_post_view_comments"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,6 +65,16 @@ public class WaveAddPostActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         eventManager = new EventManager(getApplicationContext());
         credentialsManager = new CredentialsManager(getApplicationContext());
+
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         waveAddPostUsername = findViewById(R.id.wave_add_post_username);
         waveAddPostWave = findViewById(R.id.wave_add_post_wave);
@@ -238,8 +250,6 @@ public class WaveAddPostActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {

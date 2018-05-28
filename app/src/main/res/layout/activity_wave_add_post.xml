@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.WaveRelated.WaveAddPostActivity">
 
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout" />
+
+
+    </android.support.design.widget.AppBarLayout>
     <EditText
         android:id="@+id/wave_add_post_message"
         android:layout_width="0dp"
@@ -74,7 +86,7 @@
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_face_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <TextView
         android:id="@+id/wave_add_post_username"

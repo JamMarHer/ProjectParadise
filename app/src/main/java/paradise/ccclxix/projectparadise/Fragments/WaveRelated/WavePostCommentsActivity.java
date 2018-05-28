@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -70,6 +71,15 @@ public class WavePostCommentsActivity extends AppCompatActivity {
         wavePostListComments.setAdapter(wavesPostCommentsAdapter);
         wavePostListComments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();

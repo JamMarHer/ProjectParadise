@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.WaveRelated.WavePostCommentsActivity">
 
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
         android:id="@+id/commentLayout"
         android:layout_width="0dp"

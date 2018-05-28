@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#fe7f019b</color>
     <color name="colorPrimaryDark">#27000000</color>
-    <color name="colorAccent">#292929</color>
+    <color name="colorAccent">#31747474</color>
     <color name="colorGray">#b9ffffff</color>
     <color name="colorWhite">#ddffffff</color>
+    <color name="CommentSeparator">#27000000</color>
 </resources>

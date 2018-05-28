@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.WaveRelated.WaveAddPostActivity">
 
+    <EditText
+        android:id="@+id/wave_add_post_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/circle_holder_white"
+        android:ellipsize="none"
+        android:ems="10"
+        android:hint="Write something memorable..."
+        android:textSize="15sp"
+        android:inputType="textMultiLine"
+        android:lines="8"
+        android:minLines="3"
+        android:gravity="top|left"
+        android:maxLines="6"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+
     <ImageView
         android:id="@+id/wave_add_post_send"
         android:layout_width="45dp"
@@ -21,7 +44,7 @@
         android:id="@+id/wave_add_post_insert_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
@@ -40,10 +63,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_add_wave" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_wave" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/wave_post_add_thumbnail"
+        android:id="@+id/wave_add_post_thumbnail"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
@@ -61,11 +84,11 @@
         android:text="TextView"
         android:textColor="@color/colorAccent"
         android:textSize="15dp"
-        app:layout_constraintStart_toEndOf="@+id/wave_post_add_thumbnail"
-        app:layout_constraintTop_toTopOf="@+id/wave_post_add_thumbnail" />
+        app:layout_constraintStart_toEndOf="@+id/wave_add_post_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/wave_add_post_thumbnail" />
 
     <TextView
-        android:id="@+id/wave_post_add_wave"
+        android:id="@+id/wave_add_post_wave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -74,33 +97,17 @@
         app:layout_constraintStart_toStartOf="@+id/wave_add_post_username"
         app:layout_constraintTop_toBottomOf="@+id/wave_add_post_username" />
 
-    <EditText
-        android:id="@+id/editTwave_post_add_messsage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/circle_holder_white"
-        android:ems="10"
-        android:hint="Write something memorable..."
-        android:inputType="textPersonName"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
     <ImageView
-        android:id="@+id/wave_post_add_image"
+        android:id="@+id/wave_add_post_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/wave_add_post_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTwave_post_add_messsage" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
 </android.support.constraint.ConstraintLayout>

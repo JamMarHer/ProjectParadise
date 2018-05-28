@@ -1,5 +1,6 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePost;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
@@ -52,10 +54,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private CredentialsManager credentialsManager;
 
     private TextView currentWave;
-    private Button postToWall;
-    private EditText messageToPostToWall;
-    private LinearLayout wavePostModule;
-    private ConstraintLayout wavePostModuleButtons;
 
     private ImageView waveShowPost;
 
@@ -66,8 +64,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     View generalView;
     EventManager eventManager;
 
-    RecyclerView wavePostsList;
-    boolean showing = false;
 
     private FirebaseAuth mAuth;
     private ViewGroup container;
@@ -90,12 +86,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         generalView = view;
 
-        postToWall = view.findViewById(R.id.post_to_wall);
-        messageToPostToWall = view.findViewById(R.id.message_to_post);
         currentWave = view.findViewById(R.id.current_wave);
         waveShowPost = view.findViewById(R.id.waveAddPostShow);
-        wavePostModule = view.findViewById(R.id.wavePostModule);
-        wavePostModuleButtons = view.findViewById(R.id.wavePostModuleButtons);
 
 
         if (eventManager.getEventID() !=null){
@@ -153,7 +145,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             });
 
 
-
+/*
 
             postToWall.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -213,26 +205,13 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     }
                 }
             });
+            */
         }
-
-        wavePostModule.setVisibility(View.INVISIBLE);
-        wavePostModuleButtons.setVisibility(View.INVISIBLE);
         waveShowPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-
-                if(!showing){
-                    showing = true;
-                    wavePostModule.setVisibility(View.VISIBLE);
-                    wavePostModuleButtons.setVisibility(View.VISIBLE);
-                    waveShowPost.setImageDrawable(getResources().getDrawable(R.drawable.baseline_minimize_white_24));
-
-                }else {
-                    showing = false;
-                    wavePostModule.setVisibility(View.INVISIBLE);
-                    wavePostModuleButtons.setVisibility(View.INVISIBLE);
-                    waveShowPost.setImageDrawable(getResources().getDrawable(R.drawable.baseline_add_circle_outline_white_36));
-                }
+                Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
+                getActivity().startActivity(intent);
         }});
 
         return view;

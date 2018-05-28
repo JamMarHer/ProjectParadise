@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -90,6 +92,16 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         eventCreateButtonLaunch.setOnClickListener(new View.OnClickListener() {
             @Override

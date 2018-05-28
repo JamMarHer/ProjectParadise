@@ -76,7 +76,6 @@ public class OnGoingChats extends Fragment{
 
         public UsersAdapter(final Context context){
             if (mAuth.getUid() == null){
-                System.out.println("hbere");
                 return;
             }
             userIdsList = new ArrayList<>();

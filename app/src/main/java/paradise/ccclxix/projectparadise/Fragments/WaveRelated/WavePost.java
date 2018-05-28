@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -126,6 +127,11 @@ public class WavePost extends Fragment {
             wavePostTime.setText(formatedDate.format(timestamp));
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+
+        if (type.equals("image")){
+            Picasso.with(wavePostImage.getContext()).load(message2)
+                    .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 
 

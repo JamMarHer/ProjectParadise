@@ -57,8 +57,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
 
+        credentialsManager = new CredentialsManager(getApplicationContext());
+        eventManager = new EventManager(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
         appModeManager = new AppModeManager(getApplicationContext());
+
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(this);
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
@@ -107,16 +113,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
             showSnackbar("Server didn't respond. Trying to communicate.", false, false);
         }
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(this);
 
-
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
-
-        loadAllFragments();
-        fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
-        navigation.setSelectedItemId(R.id.navigation_personal);
+        if(source.equals("postAdded")){
+            loadAttendantMode();
+            loadAllFragments();
+            fragmentToShow(waveFragment, personalFragment, exploreFragment, chatFragment);
+            navigation.setSelectedItemId(R.id.navigation_wave);
+        }else {
+            loadAllFragments();
+            fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
+            navigation.setSelectedItemId(R.id.navigation_personal);
+        }
 
     }
 

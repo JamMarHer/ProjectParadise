@@ -72,6 +72,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
         waveAddPostImage = findViewById(R.id.wave_add_post_image);
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
 
+        if(eventManager.getEventID() != null){
+            waveAddPostUsername.setText(credentialsManager.getUsername());
+            waveAddPostWave.setText(eventManager.getEventName());
+        }
+
 
         waveAddPostInsertImage.setOnClickListener(new View.OnClickListener() {
             @Override

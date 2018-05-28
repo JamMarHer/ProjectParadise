@@ -15,7 +15,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
         android:elevation=".5dp"
         android:foregroundGravity="center_horizontal"
         android:orientation="horizontal"

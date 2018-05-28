@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:background="@drawable/circle_holder_grey_white"
+        android:background="@drawable/circle"
         android:elevation="1dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:backgroundTint="@android:color/darker_gray"
             android:ems="10"
             android:gravity="top|left"
             android:hint="Comment..."
@@ -45,6 +46,9 @@
             android:maxLines="3"
             android:minLines="1"
             android:scrollbars="vertical"
+            android:shadowColor="@color/common_google_signin_btn_text_light_pressed"
+            android:textColorHighlight="@color/common_google_signin_btn_text_light_pressed"
+            android:textColorLink="@color/common_google_signin_btn_text_light_pressed"
             android:textSize="12sp" />
 
         <ImageView
@@ -60,12 +64,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/commentLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 </android.support.constraint.ConstraintLayout>

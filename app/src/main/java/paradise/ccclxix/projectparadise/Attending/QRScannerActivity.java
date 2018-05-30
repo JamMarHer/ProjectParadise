@@ -172,11 +172,13 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
             valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    // AC: nit make a helper function to reuse get.Value().toString()
                     event.put("name_event", dataSnapshot.child("name_event").getValue().toString());
                     event.put("event_id", eventManager.getEventID());
                     event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
                     event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
                     event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
+                    // AC: Instantiate hashmaps properly pls
                     HashMap<String, HashMap<String, Long>> attending = new HashMap<>();
                     HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.child("attending").getChildren()) {
@@ -252,6 +254,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
+                            // AC: Don't understand what's happening here.
                             DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("waves").child("in").child(eventID);
                             userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     @Override
+    // AC: Break this method down pls
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void showSnackbar(final String message, boolean fireEmoji, boolean coolEmoji) {
         TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);
+        // AC: Use enums for emojis
         if (fireEmoji) {
             snackbar.setIconLeft(R.drawable.fire_emoji, 24);
         }

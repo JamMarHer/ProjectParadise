@@ -84,6 +84,7 @@ public class RegistrationActivity extends AppCompatActivity {
         attemptRegistration();
     }
 
+    // AC: Break this method down into something like loginValidation() and processLogin.
     public void attemptRegistration(){
         if (running){
             return;

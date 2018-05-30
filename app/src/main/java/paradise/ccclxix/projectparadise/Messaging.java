@@ -35,6 +35,7 @@ public class Messaging extends FirebaseMessagingService {
 
     private void showNotifications(String title, String msg) {
         ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+        // AC: What exactly is happening in this method? What is the parsing doing?
         List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
         String[] currentActivityArr = taskInfo.get(0).topActivity.getClassName().split("\\.");
         String currentActivity = currentActivityArr[currentActivityArr.length-1];

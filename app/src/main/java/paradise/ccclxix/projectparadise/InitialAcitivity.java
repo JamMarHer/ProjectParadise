@@ -47,6 +47,7 @@ public class InitialAcitivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         final FirebaseUser currentUser = mAuth.getCurrentUser();
+        // AC: Put logo instantiation and animation in its own function.
         logo_welcome = findViewById(R.id.welcome_logo);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
         ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);
@@ -72,6 +73,7 @@ public class InitialAcitivity extends AppCompatActivity {
                             if (currentUser == null){
                                 loginRegisterLayout.setVisibility(View.VISIBLE);
                             }else {
+                                // AC: What is intent? It's unclear to me what this if/else statement is doing
                                 Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
                                 intent.putExtra("source", "logged_in");
                                 startActivity(intent);
@@ -99,7 +101,7 @@ public class InitialAcitivity extends AppCompatActivity {
     }
 
 
-
+    //AC: showSnackbar appears in many different files. Is there a way to keep it in its class as a helper or a util?
     private void showSnackbar(final String message) {
         TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);

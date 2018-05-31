@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,6 +46,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
@@ -88,7 +88,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mAuth = FirebaseAuth.getInstance();
         this.container = container;
 
-        settingsImageView = inflater1.findViewById(R.id.settings_Imageview);
+        settingsImageView = inflater1.findViewById(R.id.edit_profile);
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         myNumContacts = inflater1.findViewById(R.id.numberContacts);
@@ -157,7 +157,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                getActivity().startActivity(intent);
+                startActivity(intent);
             }
         });
 
@@ -176,22 +176,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
 
-        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow settingsPopupWindow = new PopupWindow(settingsPopupView, width, height);
-        settingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
-
-        settingsImageView.setOnTouchListener(new View.OnTouchListener() {
-
+        settingsImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    settingsPopupWindow.showAtLocation(container, Gravity.CENTER, 0, 0);
-                }
-                return true;
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                getActivity().startActivity(intent);
             }
-
         });
+
+
 
         // Views inside settings Popup window.
         final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
@@ -227,13 +220,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-
-        closeSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                settingsPopupWindow.dismiss();
-            }
-        });
         return inflater1;
 
     }

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -65,6 +66,20 @@ public class EditProfileActivity extends AppCompatActivity {
         status = findViewById(R.id.status_editable);
         profilePicture = findViewById(R.id.editable_profile_picture);
         done = findViewById(R.id.done_editable);
+
+
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        ImageView mainInfo = toolbar.getRootView().findViewById(R.id.main_info);
+        ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
+        mainSettings.setVisibility(View.INVISIBLE);
+        mainInfo.setVisibility(View.INVISIBLE);
 
         credentialsManager = new CredentialsManager(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();

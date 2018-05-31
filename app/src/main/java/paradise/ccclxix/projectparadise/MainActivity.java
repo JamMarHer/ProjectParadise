@@ -224,47 +224,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
-    private void leaveHostEvent(){
-        if (mAuth.getCurrentUser() != null){
-            credentialsManager.updateCredentials();
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(eventManager.getEventID())
-                    .child("attending")
-                    .child(mAuth.getUid());
-            databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        DatabaseReference databaseReference =firebaseDatabase.getReference()
-                                .child("events_us")
-                                .child(eventManager.getEventID())
-                                .child("attendend")
-                                .child(mAuth.getUid());
-                        HashMap<String, Long>  inOut= new HashMap<>();
-                        inOut.put("in", eventManager.getPersonalTimeIn());
-                        inOut.put("out", System.currentTimeMillis());
-                        databaseReference.setValue(inOut).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    appModeManager.setModeToExplore();
-                                    Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-                    }else {
-                        showSnackbar("Something went wrong", Icons.POOP);
-                    }
-                }
-            });
-        }
-    }
 
 
 }

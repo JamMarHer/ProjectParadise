@@ -101,7 +101,7 @@ public class CredentialsManager {
 
     public void updateProfilePic(String picURL){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        editor.putString("profile_picture", null);
+        editor.putString("profile_picture", picURL);
         editor.apply();
     }
 

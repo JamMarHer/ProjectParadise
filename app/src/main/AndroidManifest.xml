@@ -61,7 +61,8 @@
         <activity android:name=".Fragments.WaveRelated.WavePostCommentsActivity" />
         <activity
             android:name=".Settings.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".Fragments.PersonalRelated.EditProfileActivity"></activity>
     </application>
 
 </manifest>

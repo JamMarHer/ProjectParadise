@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -286,8 +287,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         TextView waveName;
         TextView waveAttending;
         ImageView waveThumbnail;
-        ImageView waveTrending;
-        ImageView waveSettings;
         ImageView waveJoin;
         View mView;
 
@@ -296,8 +295,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             waveName = itemView.findViewById(R.id.wave_name_single_layout);
             waveThumbnail = itemView.findViewById(R.id.profile_wave_single_layout);
             waveAttending = itemView.findViewById(R.id.wave_attending_single_layout);
-            waveTrending = itemView.findViewById(R.id.wave_trending_single_layout);
-            waveSettings = itemView.findViewById(R.id.wave_settings);
             waveJoin = itemView.findViewById(R.id.wave_join);
 
 
@@ -387,14 +384,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
 
-            if (waveTrend.equals("trending")){
-                holder.waveTrending.setImageResource(R.drawable.ic_trending_up_white_24dp);
-            }else {
-                holder.waveTrending.setImageResource(R.drawable.ic_trending_flat_white_24dp);
-            }
 
             if (waveID.equals(eventManager.getEventID())){
                 holder.waveJoin.setImageResource(R.drawable.baseline_radio_button_checked_white_36);
+                final int sdk = android.os.Build.VERSION.SDK_INT;
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.waveJoin.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors) );
+                } else {
+                    holder.waveJoin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors));
+                }
             }
             holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -427,7 +425,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final PopupWindow waveSettingsPopupWindow = new PopupWindow(waveSettignsPopupView, width,height);
             waveSettingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
 
-            holder.waveSettings.setOnTouchListener(new View.OnTouchListener() {
+            holder.waveName.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){

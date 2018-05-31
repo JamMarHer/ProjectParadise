@@ -252,11 +252,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    myNumWaves.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
+                    myNumWaves.setText(String.format("%s", String.valueOf(dataSnapshot.getChildrenCount())));
                     contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            myNumContacts.setText(String.format(": %s", String.valueOf(dataSnapshot.getChildrenCount())));
+                            myNumContacts.setText(String.format("%s", String.valueOf(dataSnapshot.getChildrenCount())));
                         }
 
                         @Override

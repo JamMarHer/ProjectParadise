@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,6 +51,7 @@ import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
@@ -99,7 +101,24 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 Collections.swap(waveList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
                 wavesAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+
                 return true;
+            }
+
+            @Override
+            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
+                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+                if (toPos == 0){
+
+                    eventManager.updateEventID(waveList.get(toPos).get("waveID"));
+                    eventManager.updateEventName(waveList.get(toPos).get("waveName"));
+
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.putExtra("source", "joined_event");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
             }
 
             @Override
@@ -381,14 +400,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (waveID.equals(eventManager.getEventID())){
-                        TSnackbar snackbar = TSnackbar.make(container, "You are already riding this wave.", TSnackbar.LENGTH_SHORT);
-                        snackbar.setActionTextColor(Color.WHITE);
-                        snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                        View snackbarView = snackbar.getView();
-                        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                        textView.setTextColor(Color.WHITE);
-                        snackbar.show();
+                        showTopSnackBar(container, "You are already riding this wave.", Icons.POOP);
                     }else {
                         eventManager.updateEventID(waveID);
                         eventManager.updateEventName(waveName);
@@ -557,5 +569,18 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             });
         }
 
+    }
+
+
+
+    public void showTopSnackBar(View view, String message, int icon){
+        TSnackbar snackbar = TSnackbar.make(view, "You are already riding this wave.", TSnackbar.LENGTH_SHORT);
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.setIconLeft(icon, 24);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
     }
 }

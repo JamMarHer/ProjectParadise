@@ -50,6 +50,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WavePost extends Fragment {
 
@@ -128,28 +129,7 @@ public class WavePost extends Fragment {
 
         if (type.equals("image")){
 
-            Transformation transformation = new Transformation() {
-
-                @Override
-                public Bitmap transform(Bitmap source) {
-                    int targetWidth = wavePostImage.getWidth();
-
-                    double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
-                    int targetHeight = (int) (targetWidth * aspectRatio);
-                    Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
-                    if (result != source) {
-                        // Same bitmap is returned if sizes are the same
-                        source.recycle();
-                    }
-                    return result;
-                }
-
-                @Override
-                public String key() {
-                    return "transformation" + " desiredWidth";
-                }
-            };
-            Picasso.with(wavePostImage.getContext()).load(message2).transform(transformation)
+            Picasso.with(wavePostImage.getContext()).load(message2).transform(Transformations.getScaleDown(wavePostImage))
                     .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 

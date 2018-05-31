@@ -55,6 +55,7 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
@@ -256,31 +257,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        Transformation transformation = new Transformation() {
-
-                            @Override
-                            public Bitmap transform(Bitmap source) {
-                                int targetWidth = profilePicture.getWidth();
-
-                                double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
-                                int targetHeight = (int) (targetWidth * aspectRatio);
-                                Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
-                                if (result != source) {
-                                    // Same bitmap is returned if sizes are the same
-                                    source.recycle();
-                                }
-                                return result;
-                            }
-
-                            @Override
-                            public String key() {
-                                return "transformation" + " desiredWidth";
-                            }
-                        };
-
-
                         credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
-                        Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString()).transform(transformation)
+                        Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
+                                .transform(Transformations.getScaleDown(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
                     }
                 }
@@ -295,7 +274,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     }
 
 
-    @Override
+    @OverrideFixed a bug that instead of updating the profile picture url it inserted null.
     public String getName() {
         return null;
     }

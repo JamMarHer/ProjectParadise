@@ -36,6 +36,7 @@ import java.io.InputStream;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -96,6 +97,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         if (credentialsManager.getProfilePic() != null){
             Picasso.with(profilePicture.getContext()).load(credentialsManager.getProfilePic())
+                    .transform(Transformations.getScaleDown(profilePicture))
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
         }
 

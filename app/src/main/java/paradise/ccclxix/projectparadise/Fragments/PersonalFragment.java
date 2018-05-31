@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +19,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -37,13 +36,11 @@ import com.google.firebase.database.ValueEventListener;
 import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
-import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
@@ -67,6 +64,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private ImageView infoImageView;
     private TextView myNumWaves;
     private TextView myNumContacts;
+    private List<HashMap<String, String>> waveList;
 
     Button createWave;
     Button joinWave;
@@ -95,6 +93,31 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         personalUsername = inflater1.findViewById(R.id.personal_username);
         // TODO check for user logged in.
         listWaves = inflater1.findViewById(R.id.myWaves);
+
+
+        ItemTouchHelper.Callback itemTouchHelperCB = new ItemTouchHelper.Callback() {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                Collections.swap(waveList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                wavesAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                //TODO
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCB);
+
+        itemTouchHelper.attachToRecyclerView(listWaves);
+
         wavesAdapter = new WavesAdapter(getContext());
         listWaves.setAdapter(wavesAdapter);
         listWaves.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -267,7 +290,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         private LayoutInflater inflater;
 
-        private List<HashMap<String, String>> waveList;
+
         private HashMap<String, Integer> record;
         public WavesAdapter(final Context context){
             waveList = new ArrayList<>();

@@ -5,14 +5,20 @@ import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
@@ -34,6 +40,7 @@ import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
+import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.Icons;
 
 
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
+
+
 
 
 
@@ -131,6 +140,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
             navigation.setSelectedItemId(R.id.navigation_personal);
         }
+
+
+
+
+
+        toolbar.findViewById(R.id.main_settings).setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
+                    MainActivity.this.startActivity(intent1);
+                }
+                return true;
+            }
+
+        });
 
     }
 

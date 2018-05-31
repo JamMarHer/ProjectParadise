@@ -58,7 +58,10 @@
             android:name=".Chat.ChatActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".Fragments.WaveRelated.WaveAddPostActivity" />
-        <activity android:name=".Fragments.WaveRelated.WavePostCommentsActivity"></activity>
+        <activity android:name=".Fragments.WaveRelated.WavePostCommentsActivity" />
+        <activity
+            android:name=".Settings.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

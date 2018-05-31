@@ -74,7 +74,10 @@ public class WaveAddPostActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        ImageView mainInfo = toolbar.getRootView().findViewById(R.id.main_info);
+        ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
+        mainSettings.setVisibility(View.INVISIBLE);
+        mainInfo.setVisibility(View.INVISIBLE);
 
         waveAddPostUsername = findViewById(R.id.wave_add_post_username);
         waveAddPostWave = findViewById(R.id.wave_add_post_wave);

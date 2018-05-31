@@ -89,7 +89,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         this.container = container;
 
         settingsImageView = inflater1.findViewById(R.id.settings_Imageview);
-        infoImageView = inflater1.findViewById(R.id.info_Imageview);
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         myNumContacts = inflater1.findViewById(R.id.numberContacts);

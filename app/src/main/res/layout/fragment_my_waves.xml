@@ -50,7 +50,7 @@
         </LinearLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/personal_thumbnail"
+            android:id="@+id/profile_picture_personal"
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:layout_marginBottom="3dp"
@@ -69,9 +69,9 @@
             android:clickable="true"
             android:elevation="2dp"
             android:src="@drawable/baseline_edit_black_24"
-            app:layout_constraintBottom_toBottomOf="@+id/personal_thumbnail"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/personal_thumbnail" />
+            app:layout_constraintTop_toTopOf="@+id/profile_picture_personal" />
 
         <TextView
             android:id="@+id/personal_username"
@@ -86,7 +86,7 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/personal_thumbnail" />
+            app:layout_constraintTop_toTopOf="@+id/profile_picture_personal" />
 
         <LinearLayout
             android:id="@+id/linearLayout4"
@@ -139,7 +139,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/personal_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/profile_picture_personal"
             app:layout_constraintTop_toBottomOf="@+id/personal_username">
 
             <ImageView

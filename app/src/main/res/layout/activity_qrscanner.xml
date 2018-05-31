@@ -16,7 +16,6 @@
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout" />
 
-
     </android.support.design.widget.AppBarLayout>
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView

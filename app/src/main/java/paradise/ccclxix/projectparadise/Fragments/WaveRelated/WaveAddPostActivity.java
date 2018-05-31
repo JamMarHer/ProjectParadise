@@ -105,38 +105,6 @@ public class WaveAddPostActivity extends AppCompatActivity {
         });
 
 
-        waveAddPostCreatePost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                if (!TextUtils.isEmpty(waveAddPostMessage.getText()) && mAuth.getUid()!= null && imageUriGeneral != null){
-
-
-
-                    final String currentUser = "events_us/"+eventManager.getEventID()+"/wall/posts" + credentialsManager.getUsername();
-
-                    String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),credentialsManager.getUsername());
-
-
-                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                    final DatabaseReference databaseReference = firebaseDatabase.getReference();
-                    StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-                    StorageReference filePath = imageStorage.child("message_images").child(imageName);
-                    filePath.putFile(imageUriGeneral).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()){
-                                String downloadURL = task.getResult().getDownloadUrl().toString();
-
-                            }
-                        }
-                    });
-
-
-
-
-                }
-            }
-        });
 
 
 

@@ -77,6 +77,12 @@ public class CredentialsManager {
         return sharedPreferences.getString("username",null);
     }
 
+    public String getName(){return  sharedPreferences.getString("name", null);}
+
+    public String getStatus(){return  sharedPreferences.getString("bio", null);}
+
+    public String getProfilePic(){return  sharedPreferences.getString("profile_picture", null);}
+
     public String getEmail(){
         return sharedPreferences.getString("email",null);
     }
@@ -93,6 +99,24 @@ public class CredentialsManager {
         editor.apply();
     }
 
+    public void updateProfilePic(String picURL){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("profile_picture", null);
+        editor.apply();
+    }
+
+    public void updateName(String name){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("name", name);
+        editor.apply();
+    }
+
+    public void updateStatus(String bio){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("bio", bio);
+        editor.apply();
+    }
+
     public void updateEmail(String email){
         SharedPreferences.Editor editor= sharedPreferences.edit();
         editor.putString("email", email);
@@ -104,5 +128,7 @@ public class CredentialsManager {
         editor.putString("token", token);
         editor.apply();
     }
+
+
 }
 

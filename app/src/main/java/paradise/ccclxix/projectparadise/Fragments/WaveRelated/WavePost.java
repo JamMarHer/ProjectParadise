@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -125,7 +127,29 @@ public class WavePost extends Fragment {
         }
 
         if (type.equals("image")){
-            Picasso.with(wavePostImage.getContext()).load(message2)
+
+            Transformation transformation = new Transformation() {
+
+                @Override
+                public Bitmap transform(Bitmap source) {
+                    int targetWidth = wavePostImage.getWidth();
+
+                    double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
+                    int targetHeight = (int) (targetWidth * aspectRatio);
+                    Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+                    if (result != source) {
+                        // Same bitmap is returned if sizes are the same
+                        source.recycle();
+                    }
+                    return result;
+                }
+
+                @Override
+                public String key() {
+                    return "transformation" + " desiredWidth";
+                }
+            };
+            Picasso.with(wavePostImage.getContext()).load(message2).transform(transformation)
                     .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 

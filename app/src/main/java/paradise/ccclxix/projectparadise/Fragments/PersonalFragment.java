@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -64,7 +66,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private CredentialsManager credentialsManager;
     private TextView personalUsername;
     private ImageView settingsImageView;
-    private ImageView infoImageView;
+    private ImageView profilePicture;
     private TextView myNumWaves;
     private TextView myNumContacts;
     private List<HashMap<String, String>> waveList;
@@ -93,6 +95,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         myNumContacts = inflater1.findViewById(R.id.numberContacts);
         personalUsername = inflater1.findViewById(R.id.personal_username);
+        profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         // TODO check for user logged in.
         listWaves = inflater1.findViewById(R.id.myWaves);
 
@@ -188,24 +191,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         // Views inside settings Popup window.
         final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
-        final Button updateProfilePicture = settingsPopupView.findViewById(R.id.updateProfilePicture);
-        final Button closeSettings = settingsPopupView.findViewById(R.id.close_settings);
 
 
-
-        updateProfilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TSnackbar snackbar = TSnackbar.make(container, "Not yet, son.", TSnackbar.LENGTH_SHORT);
-                snackbar.setActionTextColor(Color.WHITE);
-                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
-            }
-        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,6 +211,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     }
 
+
+    // TODO This can be highly optimized.
     private void setupNumWavesAndContacts(){
         if(mAuth.getCurrentUser() != null && mAuth.getUid() != null) {
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -257,6 +246,51 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase1.getReference()
+                    .child("users")
+                    .child(mAuth.getUid())
+                    .child("profile_picture");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null){
+
+                        Transformation transformation = new Transformation() {
+
+                            @Override
+                            public Bitmap transform(Bitmap source) {
+                                int targetWidth = profilePicture.getWidth();
+
+                                double aspectRatio = (double) source.getHeight() / (double) source.getWidth();
+                                int targetHeight = (int) (targetWidth * aspectRatio);
+                                Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+                                if (result != source) {
+                                    // Same bitmap is returned if sizes are the same
+                                    source.recycle();
+                                }
+                                return result;
+                            }
+
+                            @Override
+                            public String key() {
+                                return "transformation" + " desiredWidth";
+                            }
+                        };
+
+
+                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                        Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString()).transform(transformation)
+                                .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
         }
     }
 

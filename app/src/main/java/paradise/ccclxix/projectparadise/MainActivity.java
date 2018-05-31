@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -33,6 +34,7 @@ import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
+import paradise.ccclxix.projectparadise.utils.Icons;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
             appModeManager.setModeToExplore();
-            showSnackbar("Welcome fam :)", false, false);
+            showSnackbar("Welcome fam :)", Icons.COOL);
             loadExploreMode();
         }else if (source.equals("event_created")) {
             appModeManager.setModeToHost();
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Working without internet. Trying to reconnect.", false, false);
+            showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appModeManager.getMode().equals("host")){
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadExploreMode();
             }
-            showSnackbar("Server didn't respond. Trying to communicate.", false, false);
+            showSnackbar("Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
         if(source.equals("postAdded")){
@@ -133,15 +135,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    private void showSnackbar(final String message, boolean fireEmoji, boolean coolEmoji) {
+    private void showSnackbar(final String message, int icon) {
         TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);
-        if (fireEmoji) {
-            snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-        }
-        else if (coolEmoji) {
-            snackbar.setIconLeft(R.drawable.cool, 24);
-        }
+        snackbar.setIconLeft(icon, 24);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
         TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void loadHostMode(){
-        showSnackbar("  You are now hosting.", true, false);
+        showSnackbar("  You are now hosting.", Icons.FIRE);
         personalFragment =  new PersonalFragment();
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();
@@ -170,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();
         chatFragment = new ChatFragment();
+
+        showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
     }
 
     public void createEvent(View view){
@@ -260,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             }
                         });
                     }else {
-                        showSnackbar("Something went wrong", false, false);
+                        showSnackbar("Something went wrong", Icons.POOP);
                     }
                 }
             });

@@ -10,6 +10,18 @@
     android:elevation="1dp">
 
     <ImageView
+        android:id="@+id/wave_drag"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_drag_indicator_black_24" />
+
+    <ImageView
         android:id="@+id/imageView2"
         android:layout_width="18dp"
         android:layout_height="18dp"
@@ -40,18 +52,18 @@
         android:layout_marginStart="3dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circle_holder_second_main_color"
-        android:src="@drawable/outline_notifications_white_48"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_wave_single_layout"
+        android:src="@drawable/outline_notifications_active_white_48"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profile_wave_single_layout" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_wave_single_layout"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="9dp"
-        android:layout_marginStart="9dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="3dp"
         android:layout_marginTop="3dp"
         android:src="@drawable/icon_sad"
         app:civ_border_color="#FF000000"
@@ -66,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="9dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:text="TextView"
         android:textColor="@color/common_google_signin_btn_text_light_pressed"

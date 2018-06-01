@@ -49,6 +49,12 @@ public class EventManager {
         editor.apply();
     }
 
+    public void updateWavePosts(String wave, Long numPosts){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(wave, numPosts);
+        editor.apply();
+    }
+
     public void updateEventName(String eventName){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("eventName", eventName);
@@ -60,6 +66,8 @@ public class EventManager {
     }
 
     public String getEventName(){ return  sharedPreferences.getString("eventName", null);}
+
+    public Long getWavePosts(String wave){ return  sharedPreferences.getLong(wave, -1);}
 
     public long getPersonalTimeIn(){
         return this.sharedPreferences.getLong("personalTimeIn", 0);

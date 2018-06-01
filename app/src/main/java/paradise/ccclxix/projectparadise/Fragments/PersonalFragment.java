@@ -116,9 +116,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
                 if (toPos == 0){
-
-                    eventManager.updateEventID(waveList.get(toPos).get("waveID"));
+                    String waveID = waveList.get(toPos).get("waveID");
+                    eventManager.updateEventID(waveID);
                     eventManager.updateEventName(waveList.get(toPos).get("waveName"));
+                    eventManager.updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
+
 
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     intent.putExtra("source", "joined_event");
@@ -139,8 +141,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCB);
+
 
         itemTouchHelper.attachToRecyclerView(listWaves);
 
@@ -306,6 +308,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         TextView waveAttending;
         ImageView waveThumbnail;
         ImageView waveJoin;
+        ImageView waveDrag;
+        ImageView waveNotification;
         View mView;
 
         public WaveViewHolder(View itemView) {
@@ -313,6 +317,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             waveName = itemView.findViewById(R.id.wave_name_single_layout);
             waveThumbnail = itemView.findViewById(R.id.profile_wave_single_layout);
             waveAttending = itemView.findViewById(R.id.wave_attending_single_layout);
+            waveNotification = itemView.findViewById(R.id.wave_notification);
+            waveDrag = itemView.findViewById(R.id.wave_drag);
             waveJoin = itemView.findViewById(R.id.wave_join);
 
 
@@ -349,6 +355,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                 eventInfo.put("waveName", dataSnapshot.child("name_event").getValue().toString());
                                 // TODO add function (algo) for trending.
                                 eventInfo.put("waveTrend", "trending");
+                                eventInfo.put("wavePosts", String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount()));
                                 eventInfo.put("waveAttending", String.valueOf(waveAttending));
 
                                 if(!record.containsKey(waveID)) {
@@ -399,8 +406,19 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final String waveName = waveList.get(position).get("waveName");
             final String waveAttending = waveList.get(position).get("waveAttending");
             final String waveTrend = waveList.get(position).get("waveTrend");
+            final long currentWavePostsNum  = Long.valueOf(waveList.get(position).get("wavePosts"));
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
+
+            if (eventManager.getWavePosts(waveID) != -1){
+                if (eventManager.getWavePosts(waveID) != currentWavePostsNum){
+                    holder.waveNotification.setVisibility(View.VISIBLE);
+                }else {
+                    holder.waveNotification.setVisibility(View.INVISIBLE);
+                }
+            }else {
+                eventManager.updateWavePosts(waveID, currentWavePostsNum);
+            }
 
 
             if (waveID.equals(eventManager.getEventID())){
@@ -411,6 +429,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 } else {
                     holder.waveJoin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors));
                 }
+                holder.waveDrag.setVisibility(View.INVISIBLE);
+            }else {
+                holder.waveJoin.setVisibility(View.INVISIBLE);
             }
             holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
                 @Override

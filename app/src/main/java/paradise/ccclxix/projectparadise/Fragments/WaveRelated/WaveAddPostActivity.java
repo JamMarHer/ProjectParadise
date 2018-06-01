@@ -20,13 +20,16 @@ import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -36,6 +39,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WaveAddPostActivity extends AppCompatActivity {
 
@@ -220,6 +224,33 @@ public class WaveAddPostActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+
+        if (mAuth.getUid() != null){
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase1.getReference()
+                    .child("users")
+                    .child(mAuth.getUid());
+            databaseReference.child("profile_picture").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null){
+
+                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                        Picasso.with(waveAddPostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                                .transform(Transformations.getScaleDownWithView(waveAddPostThumbnail))
+                                .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostThumbnail);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     @Override

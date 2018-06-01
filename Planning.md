@@ -13,17 +13,28 @@
 
 #### Waves
 * What should be important to the users on this app?
+  * Their content is sectioned by topic/group of people. Therefore the approach add an extra layer of privacy. 
 * Are waves managed by admins or are they decentralized?
+  * Decentralized.
 * Is it importatnt for users to be a part of many waves or have more engagement to waves?
 * Is there a chatroom for each wave?
+  * Yes, and this adds the problem of scalability.
 * What's the difference between using the chat and the wave?
+  * Waves are extreamly sectioned, to the degree that each post has its own fragment. 
 * How do you create content in a wave?
+  * Hit that + button next to the name of the wave.
 * What if a content belongs to multiple waves?
+  * No big deal as long as the content represents the likings of the participants.
 * Will content be available on multiple waves?
+  * Something to look into. 
 * Will users see content multiple times if it is shared in multiple waves?
+  * Yes.
 * What would be a use case of sub-waves?
+  * Working on it. 
 * Are waves exclusive? Meaning there are waves that are private, secret, or public?
+  * Yes. Private waves cannot be accessed from the explore feature. 
 * Will there be a notification feature for each wave?
+  * Not per post, but maybe add a notification after certain number of posts are made. 
 
 #### Explore
 * How are waves curated on the explore feature? Specically, what kind of metrics will you collect to curate the explore feature?

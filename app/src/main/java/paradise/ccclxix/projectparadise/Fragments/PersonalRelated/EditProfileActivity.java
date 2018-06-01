@@ -97,7 +97,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         if (credentialsManager.getProfilePic() != null){
             Picasso.with(profilePicture.getContext()).load(credentialsManager.getProfilePic())
-                    .transform(Transformations.getScaleDown(profilePicture))
+                    .transform(Transformations.getScaleDownWithView(profilePicture))
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
         }
 

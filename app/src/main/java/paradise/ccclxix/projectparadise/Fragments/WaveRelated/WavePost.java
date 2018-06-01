@@ -61,14 +61,16 @@ public class WavePost extends Fragment {
     TextView wavePostNumComments;
 
 
+    ImageView wavePostThumbnail;
     ImageView wavePostOpenComments;
     ImageView wavePostImage;
     ImageView wavePostEcho;
     ImageView wavePostViewComments;
 
 
-    String postID;
-    String username;
+    String postID;      // ID of the post.
+    String username;    // Username of the user that posted.
+    String from;        // UserID ...^
     String message;
     String message2;
     String numEchos;
@@ -97,6 +99,7 @@ public class WavePost extends Fragment {
         wavePostMessage = inflater1.findViewById(R.id.wave_post_message);
         wavePostNumEchos = inflater1.findViewById(R.id.wave_post_num_echos);
         wavePostTime = inflater1.findViewById(R.id.wave_post_time);
+        wavePostThumbnail = inflater1.findViewById(R.id.wave_post_thumbnail);
         wavePostNumComments = inflater1.findViewById(R.id.wave_post_num_comments);
         wavePostImage = inflater1.findViewById(R.id.wave_post_image);
         wavePostEcho = inflater1.findViewById(R.id.wave_post_echo);
@@ -114,6 +117,9 @@ public class WavePost extends Fragment {
         this.numComments = postInfo.getString("numComments");
         this.time = postInfo.getString("time");
         this.type = postInfo.getString("type");
+        this.from = postInfo.getString("from");
+
+
 
         wavePostUsername.setText(username);
         wavePostMessage.setText(message);
@@ -129,7 +135,8 @@ public class WavePost extends Fragment {
 
         if (type.equals("image")){
 
-            Picasso.with(wavePostImage.getContext()).load(message2).transform(Transformations.getScaleDown(wavePostImage))
+            Picasso.with(wavePostImage.getContext()).load(message2)
+                    .transform(Transformations.getScaleDownWithMaxWidthDP(getContext()))
                     .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 
@@ -319,6 +326,29 @@ public class WavePost extends Fragment {
                 extras.putString("postID", postID);
                 intent.putExtras(extras);
                 getActivity().startActivity(intent);
+            }
+        });
+
+        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase1.getReference()
+                .child("users")
+                .child(this.from)
+                .child("profile_picture");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null){
+
+                    credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                    Picasso.with(wavePostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                            .transform(Transformations.getScaleDownWithView(wavePostThumbnail))
+                            .placeholder(R.drawable.baseline_person_black_24).into(wavePostThumbnail);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 

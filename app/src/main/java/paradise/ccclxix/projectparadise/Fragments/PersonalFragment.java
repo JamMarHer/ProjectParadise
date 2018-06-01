@@ -259,7 +259,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                         credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
                         Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDown(profilePicture))
+                                .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
                     }
                 }
@@ -274,7 +274,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     }
 
 
-    @OverrideFixed a bug that instead of updating the profile picture url it inserted null.
+    @Override
     public String getName() {
         return null;
     }

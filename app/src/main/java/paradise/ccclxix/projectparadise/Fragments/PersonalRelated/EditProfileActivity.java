@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -141,7 +142,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                             updated[0] = true;
                                             credentialsManager.updateUsername(username.getText().toString());
                                                 if (allSet()){
+                                                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                     Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                     Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    intent.putExtra("source", "logged_in");
                                                     finish();
+                                                    getApplication().startActivity(intent);
                                                 }
                                         }
                                     });
@@ -162,7 +169,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                 updated[1] = true;
                                 credentialsManager.updateStatus(status.getText().toString());
                                 if (allSet()){
+                                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra("source", "logged_in");
                                     finish();
+                                    getApplication().startActivity(intent);
                                 }
                             }
                         });
@@ -175,7 +188,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                 updated[2] = true;
                                 credentialsManager.updateName(name.getText().toString());
                                 if (allSet()){
+                                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra("source", "logged_in");
                                     finish();
+                                    getApplication().startActivity(intent);
                                 }
 
 
@@ -209,7 +228,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                                 credentialsManager.updateProfilePic(downloadURL);
                                             }
                                             if (allSet()){
+                                                Intent intent = new Intent(getApplication(), MainActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                intent.putExtra("source", "logged_in");
                                                 finish();
+                                                getApplication().startActivity(intent);
                                             }
                                         }
                                     });

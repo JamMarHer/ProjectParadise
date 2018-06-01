@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }else if (source.equals("joined_event")) {
             appModeManager.setModeToAttendant();
             loadAttendantMode();
+            showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
         }else if (source.equals("login")){
             appModeManager.setModeToExplore();
             loadExploreMode();
@@ -193,8 +194,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();
         chatFragment = new ChatFragment();
-
-        showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
     }
 
     public void createEvent(View view){

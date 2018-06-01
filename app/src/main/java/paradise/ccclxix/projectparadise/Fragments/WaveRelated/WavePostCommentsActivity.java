@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ import java.util.Map;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WavePostCommentsActivity extends AppCompatActivity {
 
@@ -183,6 +185,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                         HashMap<String, String> eventInfo = new HashMap<>();
                         eventInfo.put("commentID", commentID);
                         eventInfo.put("commentUsername", comment.child("fromUsername").getValue().toString());
+                        eventInfo.put("commentFrom", comment.child("from").getValue().toString());
                         // TODO add function (algo) for trending.
                         eventInfo.put("commentMessage", comment.child("message").getValue().toString());
 
@@ -223,13 +226,34 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(WavePostCommentsViewHolder holder, final int position) {
+        public void onBindViewHolder(final WavePostCommentsViewHolder holder, final int position) {
             final String commentID = waveList.get(position).get("commentID");
             final String commentUsername = waveList.get(position).get("commentUsername");
             final String commentMessage = waveList.get(position).get("commentMessage");
+            final String commentFrom = waveList.get(position).get("commentFrom");
             holder.wavePostCommentUsername.setText(commentUsername);
             holder.wavePostCommentMessage.setText(commentMessage);
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference = firebaseDatabase1.getReference()
+                    .child("users")
+                    .child(commentFrom);
+            databaseReference.child("profile_picture").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null){
 
+                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                        Picasso.with(holder.wavePostCommentThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                                .transform(Transformations.getScaleDownWithView(holder.wavePostCommentThumbnail))
+                                .placeholder(R.drawable.baseline_person_black_24).into(holder.wavePostCommentThumbnail);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         }
 

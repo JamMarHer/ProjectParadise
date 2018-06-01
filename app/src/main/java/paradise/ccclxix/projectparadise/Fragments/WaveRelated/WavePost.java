@@ -78,6 +78,7 @@ public class WavePost extends Fragment {
     String time;
     String type;
 
+    boolean working = false;
 
 
     FirebaseAuth mAuth;
@@ -190,115 +191,123 @@ public class WavePost extends Fragment {
             }
         });
 
+
         wavePostEcho.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference dbPlainReference = firebaseDatabase.getReference();
+                if(!working) {
+                    working = true;
 
-                DatabaseReference personalTableGet = dbPlainReference
-                        .child("users")
-                        .child(mAuth.getUid())
-                        .child("echos")
-                        .child(eventManager.getEventID());
-                personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot mainDataSnapshot) {
-                        if (!mainDataSnapshot.hasChild(postID)) {
+                    final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    final DatabaseReference dbPlainReference = firebaseDatabase.getReference();
 
-                            DatabaseReference dbWave = dbPlainReference
-                                    .child("events_us")
-                                    .child(eventManager.getEventID())
-                                    .child("wall")
-                                    .child("posts")
-                                    .child(postID)
-                                    .child("echos")
-                                    .child(mAuth.getUid()).push();
-                            String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + postID + "/echos";
-                            final String pushID = dbWave.getKey();
-                            Map postMap = new HashMap();
-                            postMap.put("from", mAuth.getUid());
-                            postMap.put("pushID", pushID);
-                            postMap.put("fromUsername", credentialsManager.getUsername()); // TODO For now.
-                            postMap.put("time", ServerValue.TIMESTAMP);
+                    DatabaseReference personalTableGet = dbPlainReference
+                            .child("users")
+                            .child(mAuth.getUid())
+                            .child("echos")
+                            .child(eventManager.getEventID());
+                    personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot mainDataSnapshot) {
+                            if (!mainDataSnapshot.hasChild(postID)) {
 
-                            Map postUserMap = new HashMap();
-                            postUserMap.put(chatUserRef + "/" + pushID, postMap);
-                            dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-                                        DatabaseReference personalTable = dbPlainReference
-                                                .child("users")
-                                                .child(mAuth.getUid())
-                                                .child("echos")
-                                                .child(eventManager.getEventID())
-                                                .child(postID);
-                                        Map input = new HashMap<>();
-                                        input.put("pushID", pushID);
-                                        input.put("time", ServerValue.TIMESTAMP);
-                                        personalTable.setValue(input).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
-                                                    Log.d("ADING_ECHO", task.getException().getMessage());
-                                                } else {
-                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                                DatabaseReference dbWave = dbPlainReference
+                                        .child("events_us")
+                                        .child(eventManager.getEventID())
+                                        .child("wall")
+                                        .child("posts")
+                                        .child(postID)
+                                        .child("echos")
+                                        .child(mAuth.getUid()).push();
+                                String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + postID + "/echos";
+                                final String pushID = dbWave.getKey();
+                                Map postMap = new HashMap();
+                                postMap.put("from", mAuth.getUid());
+                                postMap.put("pushID", pushID);
+                                postMap.put("fromUsername", credentialsManager.getUsername()); // TODO For now.
+                                postMap.put("time", ServerValue.TIMESTAMP);
 
+                                Map postUserMap = new HashMap();
+                                postUserMap.put(chatUserRef + "/" + pushID, postMap);
+                                dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError == null) {
+                                            DatabaseReference personalTable = dbPlainReference
+                                                    .child("users")
+                                                    .child(mAuth.getUid())
+                                                    .child("echos")
+                                                    .child(eventManager.getEventID())
+                                                    .child(postID);
+                                            Map input = new HashMap<>();
+                                            input.put("pushID", pushID);
+                                            input.put("time", ServerValue.TIMESTAMP);
+                                            personalTable.setValue(input).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        Log.d("ADING_ECHO", task.getException().getMessage());
+                                                    } else {
+                                                        working = false;
+                                                        wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
-                                }
-                            });
-                        } else {
+                                });
+                            } else {
 
-                            final String postPushId = mainDataSnapshot
-                                    .child(postID).child("pushID").getValue().toString();
-                            final DatabaseReference deleteFromUserEcho = dbPlainReference
-                                    .child("users")
-                                    .child(mAuth.getUid())
-                                    .child("echos")
-                                    .child(eventManager.getEventID())
-                                    .child(postID);
-                            deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
+                                final String postPushId = mainDataSnapshot
+                                        .child(postID).child("pushID").getValue().toString();
+                                final DatabaseReference deleteFromUserEcho = dbPlainReference
+                                        .child("users")
+                                        .child(mAuth.getUid())
+                                        .child("echos")
+                                        .child(eventManager.getEventID())
+                                        .child(postID);
+                                deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
 
-                                        DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
-                                                .child("events_us")
-                                                .child(eventManager.getEventID())
-                                                .child("wall")
-                                                .child("posts")
-                                                .child(postID)
-                                                .child("echos")
-                                                .child(postPushId);
+                                            DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
+                                                    .child("events_us")
+                                                    .child(eventManager.getEventID())
+                                                    .child("wall")
+                                                    .child("posts")
+                                                    .child(postID)
+                                                    .child("echos")
+                                                    .child(postPushId);
 
 
-                                        deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
-                                                    Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
-                                                } else {
-                                                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                                            deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
+                                                    } else {
+                                                        working = false;
+                                                        wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    } else {
-                                        Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
+                                            });
+                                        } else {
+                                            Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
         });
 

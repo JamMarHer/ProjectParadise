@@ -121,7 +121,6 @@ public class WavePost extends Fragment {
 
 
 
-        wavePostUsername.setText(username);
         wavePostMessage.setText(message);
 
 
@@ -331,9 +330,8 @@ public class WavePost extends Fragment {
         FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase1.getReference()
                 .child("users")
-                .child(this.from)
-                .child("profile_picture");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(this.from);
+        databaseReference.child("profile_picture").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
@@ -342,6 +340,20 @@ public class WavePost extends Fragment {
                     Picasso.with(wavePostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
                             .transform(Transformations.getScaleDownWithView(wavePostThumbnail))
                             .placeholder(R.drawable.baseline_person_black_24).into(wavePostThumbnail);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference.child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null){
+                    wavePostUsername.setText(dataSnapshot.getValue().toString());
                 }
             }
 

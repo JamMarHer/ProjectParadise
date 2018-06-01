@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -70,6 +71,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private ImageView profilePicture;
     private TextView myNumWaves;
     private TextView myNumContacts;
+    private TextView mStatus;
     private List<HashMap<String, String>> waveList;
 
     Button createWave;
@@ -97,6 +99,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         myNumContacts = inflater1.findViewById(R.id.numberContacts);
         personalUsername = inflater1.findViewById(R.id.personal_username);
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
+        mStatus = inflater1.findViewById(R.id.personal_status);
         // TODO check for user logged in.
         listWaves = inflater1.findViewById(R.id.myWaves);
 
@@ -261,6 +264,23 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            databaseReference = firebaseDatabase1.getReference()
+                    .child("users")
+                    .child(mAuth.getUid())
+                    .child("status");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null){
+                        mStatus.setText(dataSnapshot.getValue().toString());
                     }
                 }
 

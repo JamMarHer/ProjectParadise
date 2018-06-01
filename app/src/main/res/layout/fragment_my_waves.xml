@@ -89,7 +89,24 @@
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/profile_picture_personal" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/personal_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|start"
+            android:maxLength="60"
+            android:text="lacking status..."
+            android:textColor="@color/common_google_signin_btn_text_light_default"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/personal_username"
+            app:layout_constraintTop_toBottomOf="@+id/personal_username" />
 
         <LinearLayout
             android:id="@+id/linearLayout4"
@@ -143,7 +160,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/profile_picture_personal"
-            app:layout_constraintTop_toBottomOf="@+id/personal_username">
+            app:layout_constraintTop_toBottomOf="@+id/personal_status">
 
             <ImageView
                 android:id="@+id/textView2"

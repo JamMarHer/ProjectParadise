@@ -81,7 +81,7 @@
             android:foregroundGravity="center_vertical"
             android:src="@drawable/baseline_timelapse_black_24"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView6" />
+            app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch" />
 
         <TextView
             android:id="@+id/wave_post_time_to_live"

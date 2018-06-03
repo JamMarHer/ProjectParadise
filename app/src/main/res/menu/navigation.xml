@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/navigation_wave"
-        android:icon="@drawable/baseline_waves_black_48"
+        android:icon="@drawable/waves_low"
         android:title="@string/title_wave" />
 
     <item

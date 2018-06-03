@@ -61,6 +61,12 @@ public class EventManager {
         editor.apply();
     }
 
+    public void updateWaveLastUpdate(Long time){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putLong("time", time);
+        editor.apply();
+    }
+
     public String getEventID(){
         return  sharedPreferences.getString("eventID", null);
     }
@@ -73,6 +79,7 @@ public class EventManager {
         return this.sharedPreferences.getLong("personalTimeIn", 0);
     }
 
+    public long getWaveUpdateTime(String wave) { return  sharedPreferences.getLong(wave, -1);}
 
 
     public boolean addUser(String username, long timeIn){

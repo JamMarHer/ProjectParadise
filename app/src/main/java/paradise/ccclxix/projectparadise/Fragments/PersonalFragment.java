@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -72,6 +74,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView myNumContacts;
     private TextView mStatus;
     private RecyclerView mPinnedWavesRecyclerV;
+    private RecyclerView mHightlightedPostsRecyclerV;
 
     Button createWave;
     Button joinWave;
@@ -80,7 +83,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     AppModeManager appModeManager;
 
     List<HashMap<String, String >> wavePinned;
+    List<HashMap<String, String>> highlightPosts;
     WaveCardPinnedAdapter pinnedWavesAdapter;
+    HighlightedPostsAdapter highlightedPostsAdapter;
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -102,6 +107,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         mStatus = inflater1.findViewById(R.id.personal_status);
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
+        mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
         // TODO check for user logged in.
 
 
@@ -167,9 +173,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         });
 
         pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext());
+        highlightedPostsAdapter = new HighlightedPostsAdapter(getContext());
         mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
+        mHightlightedPostsRecyclerV.setAdapter(highlightedPostsAdapter);
         LinearLayoutManager layoutManager= new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
         mPinnedWavesRecyclerV.setLayoutManager(layoutManager);
+        mHightlightedPostsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return inflater1;
 
@@ -276,8 +285,204 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
     }
 
+    private class HighlightPostViewHolder extends  RecyclerView.ViewHolder{
+        TextView waveName;
+        TextView postMessage;
+        TextView postEchos;
+        TextView postComments;
+        TextView postTTL;
 
-    private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
+        ImageView postImage;
+        ImageView postLaunch;
+        ImageView postWaveThumbnail;
+        ImageView postFromThumbnail;
+
+        ConstraintLayout briefConstraintL;
+
+        public HighlightPostViewHolder(View itemView){
+            super(itemView);
+            waveName = itemView.findViewById(R.id.wave_single_brief_name);
+            postMessage = itemView.findViewById(R.id.wave_single_brief_message);
+            postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
+            postComments = itemView.findViewById(R.id.wave_single_brief_comments);
+            postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live);
+            postImage = itemView.findViewById(R.id.wave_single_brief_image);
+            postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
+            briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
+            postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);
+        }
+
+    }
+
+
+
+
+    private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
+
+        private LayoutInflater inflater;
+
+
+        private HashMap<String, Integer> record;
+        public HighlightedPostsAdapter(final Context context){
+            highlightPosts = new ArrayList<>();
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(mAuth.getUid()).child("waves").child("in");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    highlightPosts.clear();
+                    record = new HashMap<>();
+
+                    for (final  DataSnapshot wave: dataSnapshot.getChildren()){
+                        final String waveID = wave.getKey();
+
+                        DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
+                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChildren()){
+                                    final String waveName = dataSnapshot.child("name_event").getValue().toString();
+
+                                    Query lastQuery = firebaseDatabase.getReference().child("events_us")
+                                            .child(waveID)
+                                            .child("wall")
+                                            .child("posts").orderByKey().limitToLast(1);
+                                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot2) {
+                                            HashMap<String, String> postInfo = new HashMap<>();
+                                            if (dataSnapshot2.hasChildren()){
+
+                                                String postID = dataSnapshot2.getChildren().iterator().next().getKey();
+                                                dataSnapshot2 = dataSnapshot2.child(postID);
+                                                postInfo.put("waveName", waveName);
+                                                postInfo.put("waveID", waveID);
+                                                postInfo.put("postID", postID);
+                                                postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
+                                                postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
+                                                postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
+                                                postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
+                                                postInfo.put("postEchos", dataSnapshot2.child("numEchos").getValue().toString());
+                                                postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
+                                                postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
+                                                postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
+
+                                                highlightPosts.add(postInfo);
+                                                highlightedPostsAdapter.notifyDataSetChanged();
+                                                inflater = LayoutInflater.from(context);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d("MY_WAVES", databaseError.getMessage());
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("MY_WAVES", databaseError.getMessage());
+
+                }
+            });
+        }
+
+
+
+        @Override
+        public HighlightPostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.wave_single_brief, parent, false);
+            HighlightPostViewHolder holder = new HighlightPostViewHolder(view);
+            return holder;
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public void onBindViewHolder(final HighlightPostViewHolder holder, int position) {
+            position = highlightPosts.size()-1 -position;
+            final String postID = highlightPosts.get(position).get("postID");
+            final String postFromUsername = highlightPosts.get(position).get("postFromUsername");
+            final String postMessage = highlightPosts.get(position).get("postMessage");
+            final String postMessage2 = highlightPosts.get(position).get("postMessage2");
+            final String waveName = highlightPosts.get(position).get("waveName");
+            final String waveID = highlightPosts.get(position).get("waveID");
+            final String postNumEchos = highlightPosts.get(position).get("postEchos");
+            final String postNumComments = highlightPosts.get(position).get("postComments");
+            final String postFrom = highlightPosts.get(position).get("postFrom");
+            final String postType = highlightPosts.get(position).get("postType");
+            final String postTime = highlightPosts.get(position).get("postTime");
+
+            holder.waveName.setText(waveName);
+            holder.postMessage.setText(postMessage);
+            holder.postEchos.setText(postNumEchos);
+            holder.postComments.setText(postNumComments);
+
+            if (postType.equals("image")) {
+                Picasso.with(holder.postImage.getContext()).load(postMessage2)
+                        .transform(Transformations.getScaleDownWithView(holder.postImage))
+                        .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
+
+            }else {
+                holder.postImage.setVisibility(View.INVISIBLE);
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(holder.briefConstraintL);
+                constraintSet.connect(holder.postMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,ConstraintSet.END, 0);
+                constraintSet.connect(holder.postLaunch.getId(), ConstraintSet.TOP, holder.postMessage.getId(), ConstraintSet.BOTTOM, 3);
+                constraintSet.applyTo(holder.briefConstraintL);
+
+            }
+
+
+
+
+
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+
+
+            DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
+                    .child("events_us")
+                    .child(waveID)
+                    .child("image_url");
+            databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null){
+                        Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
+                                .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+
+        }
+        @Override
+        public int getItemCount () {
+            return highlightPosts.size();
+        }
+    }
+
+        private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
 
         private LayoutInflater inflater;
 

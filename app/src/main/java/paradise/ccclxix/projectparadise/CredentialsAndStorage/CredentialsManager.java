@@ -92,12 +92,12 @@ public class CredentialsManager {
     }
 
 
-
     public void updateUsername(String username){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         editor.putString("username", username);
         editor.apply();
     }
+
 
     public void updateProfilePic(String picURL){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();

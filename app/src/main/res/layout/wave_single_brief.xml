@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wave_single_brief"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="1dp"
+    android:layout_marginRight="1dp"
+    android:layout_marginTop="2dp"
+    android:background="@drawable/circle">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/wave_single_brief_wave_thumbnail"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/waves_low"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/wave_single_brief_launch"
+        android:layout_width="66dp"
+        android:layout_height="33dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_image"
+        app:srcCompat="@drawable/baseline_launch_black_24" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:elevation=".5dp"
+        android:foregroundGravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_launch"
+        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch">
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="left|center_vertical|start"
+            android:foregroundGravity="left"
+            app:srcCompat="@drawable/baseline_lens_black_24" />
+
+        <TextView
+            android:id="@+id/wave_single_brief_echos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:elevation="1dp"
+            android:gravity="center_vertical"
+            android:text="12"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="15sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_echo"
+            tools:layout_editor_absoluteX="56dp" />
+
+        <ImageView
+            android:id="@+id/wave_post_view_comments"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="21dp"
+            app:srcCompat="@drawable/baseline_comment_black_24" />
+
+        <TextView
+            android:id="@+id/wave_single_brief_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:elevation="1dp"
+            android:gravity="center_vertical"
+            android:text="6"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="15sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_open_comments"
+            tools:layout_editor_absoluteX="140dp" />
+
+        <ImageView
+            android:id="@+id/wave_post_time_to_live_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="21dp"
+            android:elevation="1dp"
+            android:foregroundGravity="center_vertical"
+            android:src="@drawable/baseline_timelapse_black_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch" />
+
+        <TextView
+            android:id="@+id/wave_single_brief_time_to_live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:elevation="1dp"
+            android:foregroundGravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:text="6"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="15sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
+            app:layout_constraintStart_toEndOf="@+id/wave_post_time_to_live_icon"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_open_comments" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/wave_single_brief_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="1dp"
+        android:text="TextView"
+        android:textColor="@color/common_google_signin_btn_text_light_focused"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_wave_thumbnail"
+        app:layout_constraintStart_toEndOf="@+id/wave_single_brief_wave_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_wave_thumbnail" />
+
+    <ImageView
+        android:id="@+id/wave_single_brief_image"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:maxHeight="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_wave_thumbnail" />
+
+    <TextView
+        android:id="@+id/wave_single_brief_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toStartOf="@+id/wave_single_brief_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_wave_thumbnail" />
+</android.support.constraint.ConstraintLayout>

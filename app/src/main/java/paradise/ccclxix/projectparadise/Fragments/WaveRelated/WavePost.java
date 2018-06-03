@@ -135,7 +135,7 @@ public class WavePost extends Fragment {
 
         if (type.equals("image")){
 
-            Picasso.with(wavePostImage.getContext()).load(message2)
+            Picasso.with(wavePostImage.getContext()).load(message2).transform(Transformations.getScaleDownWithMaxWidthDP(getContext()))
                     .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 

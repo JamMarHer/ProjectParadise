@@ -60,8 +60,7 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
-    WavesAdapter wavesAdapter;
-    RecyclerView listWaves;
+
     EventManager eventManager;
     FirebaseAuth mAuth;
 
@@ -72,13 +71,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView myNumWaves;
     private TextView myNumContacts;
     private TextView mStatus;
-    private List<HashMap<String, String>> waveList;
 
     Button createWave;
     Button joinWave;
     View generalView;
 
-    private ViewGroup container;
     AppModeManager appModeManager;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -91,7 +88,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         credentialsManager = new CredentialsManager(getContext());
         appModeManager = new AppModeManager(getContext());
         mAuth = FirebaseAuth.getInstance();
-        this.container = container;
 
         settingsImageView = inflater1.findViewById(R.id.edit_profile);
 
@@ -101,54 +97,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         mStatus = inflater1.findViewById(R.id.personal_status);
         // TODO check for user logged in.
-        listWaves = inflater1.findViewById(R.id.myWaves);
 
 
-        ItemTouchHelper.Callback itemTouchHelperCB = new ItemTouchHelper.Callback() {
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                Collections.swap(waveList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                wavesAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-
-                return true;
-            }
-
-            @Override
-            public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
-                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
-                if (toPos == 0){
-                    String waveID = waveList.get(toPos).get("waveID");
-                    eventManager.updateEventID(waveID);
-                    eventManager.updateEventName(waveList.get(toPos).get("waveName"));
-                    eventManager.updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
-
-
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.putExtra("source", "joined_event");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    getActivity().finish();
-                }
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                //TODO
-            }
-
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCB);
-
-
-        itemTouchHelper.attachToRecyclerView(listWaves);
-
-        wavesAdapter = new WavesAdapter(getContext());
-        listWaves.setAdapter(wavesAdapter);
-        listWaves.setLayoutManager(new LinearLayoutManager(getContext()));
 
         createWave = inflater1.findViewById(R.id.createWave);
         joinWave = inflater1.findViewById(R.id.joinWave);
@@ -177,7 +127,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         personalUsername.setText(credentialsManager.getUsername());
 
-        this.container = container;
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
         if (eventManager.getEventID() == null){
@@ -301,312 +250,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         return null;
     }
 
-
-    private class WaveViewHolder extends RecyclerView.ViewHolder{
-
-        TextView waveName;
-        TextView waveAttending;
-        ImageView waveThumbnail;
-        ImageView waveJoin;
-        ImageView waveDrag;
-        ImageView waveNotification;
-        View mView;
-
-        public WaveViewHolder(View itemView) {
-            super(itemView);
-            waveName = itemView.findViewById(R.id.wave_name_single_layout);
-            waveThumbnail = itemView.findViewById(R.id.profile_wave_single_layout);
-            waveAttending = itemView.findViewById(R.id.wave_attending_single_layout);
-            waveNotification = itemView.findViewById(R.id.wave_notification);
-            waveDrag = itemView.findViewById(R.id.wave_drag);
-            waveJoin = itemView.findViewById(R.id.wave_join);
-
-
-            mView = itemView;
-        }
-    }
-
-    private class WavesAdapter extends RecyclerView.Adapter<WaveViewHolder>{
-
-        private LayoutInflater inflater;
-
-
-        private HashMap<String, Integer> record;
-        public WavesAdapter(final Context context){
-            waveList = new ArrayList<>();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(mAuth.getUid()).child("waves").child("in");
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    waveList.clear();
-                    record = new HashMap<>();
-
-                    for (final  DataSnapshot wave: dataSnapshot.getChildren()){
-                        final String waveID = wave.getKey();
-                        DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
-                        waveDBReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                int waveAttending = (int)dataSnapshot.child("attending").getChildrenCount();
-                                HashMap<String, String> eventInfo = new HashMap<>();
-                                eventInfo.put("waveID", waveID);
-                                eventInfo.put("waveName", dataSnapshot.child("name_event").getValue().toString());
-                                // TODO add function (algo) for trending.
-                                eventInfo.put("waveTrend", "trending");
-                                eventInfo.put("wavePosts", String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount()));
-                                eventInfo.put("waveAttending", String.valueOf(waveAttending));
-
-                                if(!record.containsKey(waveID)) {
-                                    waveList.add(eventInfo);
-                                    record.put(waveID, waveList.size()-1);
-                                    if(waveID.equals(eventManager.getEventID())){
-                                        int toExchange = waveList.size()-1;
-                                        Collections.swap(waveList,0, toExchange);
-                                        record.put(waveID, 0);
-                                        record.put(waveList.get(toExchange).get("waveID"), waveList.size()-1);
-                                    }
-                                }else {
-                                    waveList.set(record.get(waveID), eventInfo);
-                                }
-                                wavesAdapter.notifyDataSetChanged();
-                                inflater = LayoutInflater.from(context);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.d("MY_WAVES", databaseError.getMessage());
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("MY_WAVES", databaseError.getMessage());
-
-                }
-            });
-        }
-
-
-
-        @Override
-        public WaveViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_single_layout, parent, false);
-            WaveViewHolder holder = new WaveViewHolder(view);
-            return holder;
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public void onBindViewHolder(WaveViewHolder holder, final int position) {
-            final String waveID = waveList.get(position).get("waveID");
-            final String waveName = waveList.get(position).get("waveName");
-            final String waveAttending = waveList.get(position).get("waveAttending");
-            final String waveTrend = waveList.get(position).get("waveTrend");
-            final long currentWavePostsNum  = Long.valueOf(waveList.get(position).get("wavePosts"));
-            holder.waveName.setText(waveName);
-            holder.waveAttending.setText(waveAttending);
-
-            if (eventManager.getWavePosts(waveID) != -1){
-                if (eventManager.getWavePosts(waveID) != currentWavePostsNum){
-                    holder.waveNotification.setVisibility(View.VISIBLE);
-                }else {
-                    holder.waveNotification.setVisibility(View.INVISIBLE);
-                }
-            }else {
-                eventManager.updateWavePosts(waveID, currentWavePostsNum);
-            }
-
-
-            if (waveID.equals(eventManager.getEventID())){
-                holder.waveJoin.setImageResource(R.drawable.baseline_radio_button_checked_white_36);
-                final int sdk = android.os.Build.VERSION.SDK_INT;
-                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    holder.waveJoin.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors) );
-                } else {
-                    holder.waveJoin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors));
-                }
-                holder.waveDrag.setVisibility(View.INVISIBLE);
-            }else {
-                holder.waveJoin.setVisibility(View.INVISIBLE);
-            }
-            holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (waveID.equals(eventManager.getEventID())){
-                        showTopSnackBar(container, "You are already riding this wave.", Icons.POOP);
-                    }else {
-                        eventManager.updateEventID(waveID);
-                        eventManager.updateEventName(waveName);
-
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.putExtra("source", "joined_event");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                    return true;
-                }
-            });
-
-            View waveSettignsPopupView = inflater.inflate(R.layout.share_wave_popup, null);
-            ImageView qrCode = waveSettignsPopupView.findViewById(R.id.qrCode);
-            TextView eventname = waveSettignsPopupView.findViewById(R.id.waveName);
-            qrCode.setImageBitmap(getEventQR(waveID));
-            eventname.setText(waveName);
-
-
-            int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-            int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-            final PopupWindow waveSettingsPopupWindow = new PopupWindow(waveSettignsPopupView, width,height);
-            waveSettingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
-
-            holder.waveName.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                        waveSettingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-                    }
-                    return true;
-                }
-            });
-
-            final Button closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
-            final Button leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
-
-
-
-            closeWaveSettings.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    waveSettingsPopupWindow.dismiss();
-                }
-            });
-
-            leaveWave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    record.remove(waveID);
-                    leaveWave(waveID);
-                }
-            });
-
-
-
-        }
-
-
-        @Override
-        public int getItemCount() {
-            return waveList.size();
-        }
-    }
-
-
-    private Bitmap getEventQR(String eventID){
-        return QRCode.from(eventID).bitmap();
-    }
-
-    private void leaveWave(final String waveID){
-        if (mAuth.getCurrentUser() != null) {
-            credentialsManager.updateCredentials();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(waveID)
-                    .child("attending")
-                    .child(mAuth.getUid());
-            // Gets the time the user logged into the wave.
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final long inTime = Long.valueOf(dataSnapshot.child("in").getValue().toString());
-                    final DatabaseReference userDatabaseReference = firebaseDatabase.getReference()
-                            .child("users")
-                            .child(mAuth.getUid())
-                            .child("waves")
-                            .child("in")
-                            .child(waveID);
-                    // Removes the wave from personal waves
-                    userDatabaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                DatabaseReference dbFUsers = firebaseDatabase.getReference()
-                                        .child("users")
-                                        .child(mAuth.getUid())
-                                        .child("waves")
-                                        .child("out")
-                                        .child(waveID);
-                                final HashMap<String, Long> inoutInfo = new HashMap<>();
-                                inoutInfo.put("in", inTime);
-                                inoutInfo.put("out", System.currentTimeMillis());
-                                // Updates the attended record in user table.
-                                dbFUsers.setValue(inoutInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            DatabaseReference dbWaves = firebaseDatabase.getReference()
-                                                    .child("events_us")
-                                                    .child(waveID)
-                                                    .child("attended")
-                                                    .child(mAuth.getUid());
-                                            // Updates the wave table of attended.
-                                            dbWaves.setValue(inoutInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // Removes the user from the wave table attending.
-                                                        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    appModeManager.setModeToExplore();
-                                                                    eventManager.updateEventID(null);
-                                                                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                                                                    intent.putExtra("source", "logged_in");
-                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                                    startActivity(intent);
-                                                                    getActivity().finish();
-                                                                }
-                                                            }
-                                                        });
-                                                    }else {
-                                                        Log.d("LEAVING_WAVE", task.getException().getMessage());
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            Log.d("LEAVING_WAVE", task.getException().getMessage());
-                                        }
-                                    }
-                                });
-                            } else {
-                                Log.d("LEAVING_WAVE", task.getException().getMessage());
-                            }
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    TSnackbar snackbar = TSnackbar.make(container, "Something went wrong.", TSnackbar.LENGTH_SHORT);
-                    snackbar.setActionTextColor(Color.WHITE);
-                    snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                    TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                    textView.setTextColor(Color.WHITE);
-                    snackbar.show();
-                }
-            });
-        }
-
-    }
 
 
 

@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pinned_waves_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_main_colors"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -25,7 +36,7 @@
             app:layout_constraintTop_toTopOf="@+id/linearLayout4">
 
             <ImageView
-                android:id="@+id/textView9"
+                android:id="@+id/textView99"
                 android:layout_width="33dp"
                 android:layout_height="match_parent"
                 android:elevation="1dp"

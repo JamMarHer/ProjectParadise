@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivit
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePost;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
 import paradise.ccclxix.projectparadise.utils.VerticalViewPager;
 
 
@@ -56,6 +58,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private TextView currentWave;
 
     private ImageView waveShowPost;
+    private ImageView currentWaveThumbnail;
 
 
     private AppModeManager appModeManager;
@@ -87,6 +90,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         generalView = view;
 
         currentWave = view.findViewById(R.id.current_wave);
+        currentWaveThumbnail = view.findViewById(R.id.current_wave_thumbnail);
         waveShowPost = view.findViewById(R.id.waveAddPostShow);
 
 
@@ -151,6 +155,30 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
                 getActivity().startActivity(intent);
         }});
+
+
+        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+
+
+        DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
+                .child("events_us")
+                .child(eventManager.getEventID())
+                .child("image_url");
+        databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null){
+                    Picasso.with(currentWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                            .transform(Transformations.getScaleDownWithView(currentWaveThumbnail))
+                            .placeholder(R.drawable.idaelogo6_full).into(currentWaveThumbnail);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         return view;
     }

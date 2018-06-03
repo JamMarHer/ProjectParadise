@@ -3,32 +3,23 @@ package paradise.ccclxix.projectparadise.Fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,9 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-
-import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -279,7 +267,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
-            waveThumbnail = itemView.findViewById(R.id.wave_single_card_thumbnail);
+            waveThumbnail = itemView.findViewById(R.id.current_wave_thumbnail);
 
             mView = itemView;
         }
@@ -444,8 +432,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 constraintSet.applyTo(holder.briefConstraintL);
 
             }
-
-
 
 
 

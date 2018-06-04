@@ -267,7 +267,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
-            waveThumbnail = itemView.findViewById(R.id.current_wave_thumbnail);
+            waveThumbnail = itemView.findViewById(R.id.wave_overview_thumbnail);
 
             mView = itemView;
         }
@@ -294,7 +294,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
             postComments = itemView.findViewById(R.id.wave_single_brief_comments);
             postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live);
-            postImage = itemView.findViewById(R.id.wave_single_brief_image);
+            postImage = itemView.findViewById(R.id.wave_post_image);
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
             briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);

@@ -42,7 +42,9 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.GeneralWaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveOverview;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePost;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.R;
@@ -89,19 +91,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         generalView = view;
 
-        currentWave = view.findViewById(R.id.current_wave);
-        currentWaveThumbnail = view.findViewById(R.id.current_wave_thumbnail);
-        waveShowPost = view.findViewById(R.id.waveAddPostShow);
 
-
-        if (eventManager.getEventID() !=null){
-            currentWave.setText(eventManager.getEventName());
-        }else {
-            currentWave.setText("No wave found :/");
-        }
 
         this.container = container;
-
 
         final VerticalViewPager verticalViewPager = view.findViewById(R.id.wave_post_viewpager);
         final FragmentAdapter fragmentAdapter = new FragmentAdapter(getChildFragmentManager());
@@ -109,6 +101,40 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final ArrayList<String> record = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
+        final String waveID = eventManager.getEventID();
+
+        final DatabaseReference databaseReference = firebaseDatabase.getReference()
+                .child("events_us")
+                .child(waveID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    String members = String.valueOf(dataSnapshot.child("attending").getChildrenCount());
+                    String posts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
+                    String thumbnail = null;
+                    String points = null;
+                    String waveName = dataSnapshot.child("name_event").getValue().toString();
+                    if (dataSnapshot.hasChild("image_url")){
+                        thumbnail = dataSnapshot.child("image_url").getValue().toString();
+                    }
+                    if (dataSnapshot.hasChild("points")){
+                        points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
+                    }
+                    fragmentAdapter.addFragment(GeneralWaveFragment.newInstance(waveID, waveName, thumbnail));
+
+                    fragmentAdapter.addFragment(WaveOverview.newInstance(waveID,
+                            waveName, members, posts, points, thumbnail));
+                    verticalViewPager.setAdapter(fragmentAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+/*
         if (eventManager.getEventID() != null){
 
             DatabaseReference dbPostsReference = firebaseDatabase.getReference()
@@ -149,36 +175,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             });
 
         }
-        waveShowPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
-                getActivity().startActivity(intent);
-        }});
+        */
 
-
-        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-
-
-        DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
-                .child("events_us")
-                .child(eventManager.getEventID())
-                .child("image_url");
-        databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null){
-                    Picasso.with(currentWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
-                            .transform(Transformations.getScaleDownWithView(currentWaveThumbnail))
-                            .placeholder(R.drawable.idaelogo6_full).into(currentWaveThumbnail);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         return view;
     }

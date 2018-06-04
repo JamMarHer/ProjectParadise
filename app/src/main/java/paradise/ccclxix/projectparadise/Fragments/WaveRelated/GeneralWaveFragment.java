@@ -1,0 +1,355 @@
+package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Transformations;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link GeneralWaveFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link GeneralWaveFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class GeneralWaveFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_ID = "param1";
+    private static final String ARG_NAME = "param2";
+    private static final String ARG_IMAGE = "param3";
+
+    // TODO: Rename and change types of parameters
+    private String mWaveID;
+    private String mWaveName;
+    private String mWaveImage;
+
+    private FirebaseAuth mAuth;
+    private CredentialsManager credentialsManager;
+    private EventManager eventManager;
+
+    private OnFragmentInteractionListener mListener;
+
+
+    private TextView waveName;
+    private ImageView waveThumbnail;
+    private ImageView waveAddPost;
+
+    PostsAdapter postsAdapter;
+    RecyclerView postsRecyclerV;
+    List<HashMap<String, String>> posts;
+
+
+
+
+    public GeneralWaveFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment GeneralWaveFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static GeneralWaveFragment newInstance(String param1, String param2, String param3) {
+        GeneralWaveFragment fragment = new GeneralWaveFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_ID, param1);
+        args.putString(ARG_NAME, param2);
+        args.putString(ARG_IMAGE, param3);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mWaveID = getArguments().getString(ARG_ID);
+            mWaveName = getArguments().getString(ARG_NAME);
+            mWaveImage = getArguments().getString(ARG_IMAGE);
+
+        }
+        mAuth = FirebaseAuth.getInstance();
+        credentialsManager = new CredentialsManager(getContext());
+        eventManager = new EventManager(getContext());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View inflater1 = inflater.inflate(R.layout.fragment_general_wave, container, false);
+        waveName = inflater1.findViewById(R.id.wave_general_name);
+        waveThumbnail = inflater1.findViewById(R.id.wave_overview_thumbnail);
+        waveAddPost = inflater1.findViewById(R.id.waveAddPostShow);
+        postsRecyclerV = inflater1.findViewById(R.id.posts_recyclerView);
+        postsAdapter = new PostsAdapter(getContext());
+        postsRecyclerV.setAdapter(postsAdapter);
+
+        postsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        waveName.setText(mWaveName);
+
+        if (mWaveImage !=null){
+            Picasso.with(waveThumbnail.getContext()).load(mWaveImage)
+                    .transform(Transformations.getScaleDownWithView(waveThumbnail))
+                    .placeholder(R.drawable.idaelogo6_full).into(waveThumbnail);
+        }
+
+
+        waveAddPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
+                getActivity().startActivity(intent);
+            }});
+        return  inflater1;
+    }
+
+
+
+    private class PostViewHolder extends  RecyclerView.ViewHolder{
+        TextView waveName;
+        TextView postMessage;
+        TextView postEchos;
+        TextView postComments;
+        TextView postTTL;
+
+        ImageView postImage;
+        ImageView postLaunch;
+        ImageView postWaveThumbnail;
+        ImageView postFromThumbnail;
+
+        ConstraintLayout briefConstraintL;
+
+        public PostViewHolder(View itemView){
+            super(itemView);
+            waveName = itemView.findViewById(R.id.wave_single_brief_name);
+            postMessage = itemView.findViewById(R.id.wave_single_brief_message);
+            postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
+            postComments = itemView.findViewById(R.id.wave_single_brief_comments);
+            postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live);
+            postImage = itemView.findViewById(R.id.wave_post_image);
+            postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
+            briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
+            postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);
+        }
+
+    }
+
+
+
+
+    private class PostsAdapter extends RecyclerView.Adapter<PostViewHolder>{
+
+        private LayoutInflater inflater;
+
+
+        private HashMap<String, Integer> record;
+        public PostsAdapter(final Context context){
+            posts = new ArrayList<>();
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
+            DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(mWaveID);
+            waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    posts.clear();
+                    record = new HashMap<>();
+                    if (dataSnapshot.hasChildren()){
+                        final String waveName = dataSnapshot.child("name_event").getValue().toString();
+
+                        Query lastQuery = firebaseDatabase.getReference().child("events_us")
+                                .child(mWaveID)
+                                .child("wall")
+                                .child("posts");
+                        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot2) {
+                                if (dataSnapshot2.hasChildren()){
+                                    for (DataSnapshot postSnapshot : dataSnapshot2.getChildren()){
+                                        HashMap<String, String> postInfo = new HashMap<>();
+                                        String postID = postSnapshot.getKey();
+                                        postInfo.put("waveName", waveName);
+                                        postInfo.put("waveID", mWaveID);
+                                        postInfo.put("postID", postID);
+                                        postInfo.put("postFrom", postSnapshot.child("from").getValue().toString());
+                                        postInfo.put("postFromUsername", postSnapshot.child("fromUsername").getValue().toString());
+                                        postInfo.put("postMessage", postSnapshot.child("message").getValue().toString());
+                                        postInfo.put("postMessage2", postSnapshot.child("message2").getValue().toString());
+                                        postInfo.put("postEchos", postSnapshot.child("numEchos").getValue().toString());
+                                        postInfo.put("postComments", String.valueOf(postSnapshot.child("comments").getChildrenCount()));
+                                        postInfo.put("postTime", String.valueOf(postSnapshot.child("time").getValue()));
+                                        postInfo.put("postType", postSnapshot.child("type").getValue().toString());
+
+                                        posts.add(postInfo);
+                                    }
+
+                                    postsAdapter.notifyDataSetChanged();
+                                    inflater = LayoutInflater.from(context);
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("MY_WAVES", databaseError.getMessage());
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+            });
+
+
+
+        }
+
+        @Override
+        public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.wave_single_brief, parent, false);
+            PostViewHolder holder = new PostViewHolder(view);
+            return holder;
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public void onBindViewHolder(final PostViewHolder holder, int position) {
+            position = posts.size()-1 -position;
+            final String postID = posts.get(position).get("postID");
+            final String postFromUsername = posts.get(position).get("postFromUsername");
+            final String postMessage = posts.get(position).get("postMessage");
+            final String postMessage2 = posts.get(position).get("postMessage2");
+            final String waveName = posts.get(position).get("waveName");
+            final String waveID = posts.get(position).get("waveID");
+            final String postNumEchos = posts.get(position).get("postEchos");
+            final String postNumComments = posts.get(position).get("postComments");
+            final String postFrom = posts.get(position).get("postFrom");
+            final String postType = posts.get(position).get("postType");
+            final String postTime = posts.get(position).get("postTime");
+
+            holder.waveName.setText(postFromUsername);
+            holder.postMessage.setText(postMessage);
+            holder.postEchos.setText(postNumEchos);
+            holder.postComments.setText(postNumComments);
+
+            if (postType.equals("image")) {
+                Picasso.with(holder.postImage.getContext()).load(postMessage2)
+                        .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
+
+            }else {
+                holder.postImage.setVisibility(View.INVISIBLE);
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(holder.briefConstraintL);
+                constraintSet.connect(holder.postMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,ConstraintSet.END, 0);
+                constraintSet.connect(holder.postLaunch.getId(), ConstraintSet.TOP, holder.postMessage.getId(), ConstraintSet.BOTTOM, 3);
+                constraintSet.applyTo(holder.briefConstraintL);
+
+            }
+
+
+
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+
+
+            DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
+                    .child("users")
+                    .child(postFrom)
+                    .child("profile_picture");
+            databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().equals("default")){
+                        Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
+                                .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+
+        }
+        @Override
+        public int getItemCount () {
+            return posts.size();
+        }
+    }
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+}

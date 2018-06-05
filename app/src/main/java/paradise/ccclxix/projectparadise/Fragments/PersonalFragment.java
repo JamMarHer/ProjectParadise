@@ -120,7 +120,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             }
         });
 
-        credentialsManager = new CredentialsManager(getContext());
         generalView = inflater1;
         setupNumWavesAndContacts();
 

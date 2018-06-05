@@ -2,6 +2,8 @@ package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -50,39 +52,27 @@ public class InitialAcitivity extends AppCompatActivity {
         logo_welcome = findViewById(R.id.welcome_logo);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
         ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);
+
+        ConstraintLayout constraintLayout = findViewById(R.id.initial_activity_constraint_layout);
+        AnimationDrawable ad = (AnimationDrawable)constraintLayout.getBackground();
+        ad.setEnterFadeDuration(2000);
+        ad.setExitFadeDuration(4000);
+        ad.start();
+
         resizeAnimation.setDuration(999);
         logo_welcome.startAnimation(resizeAnimation);
-        Thread t = new Thread(){
-            @Override
-            public void run(){
-                try {
-                    long time = System.currentTimeMillis();
-                    while(System.currentTimeMillis()-time <= 999){
-                        sleep(498);
-                    }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            logo_welcome.clearAnimation();
+        if (currentUser == null){
+            loginRegisterLayout.setVisibility(View.VISIBLE);
+        }else {
+            Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
+            intent.putExtra("source", "logged_in");
+            startActivity(intent);
+            finish();
+        }
 
-                            if (currentUser == null){
-                                loginRegisterLayout.setVisibility(View.VISIBLE);
-                            }else {
-                                Intent intent = new Intent(InitialAcitivity.this, MainActivity.class);
-                                intent.putExtra("source", "logged_in");
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    });
-                }
-            }
-        };
-        t.start();
+
+
 
     }
 

@@ -389,6 +389,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
 
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         @Override
         public HighlightPostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -400,7 +404,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onBindViewHolder(final HighlightPostViewHolder holder, int position) {
-            position = highlightPosts.size()-1 -position;
+            position = getItemViewType(position);
             final String postID = highlightPosts.get(position).get("postID");
             final String postFromUsername = highlightPosts.get(position).get("postFromUsername");
             final String postMessage = highlightPosts.get(position).get("postMessage");
@@ -420,7 +424,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
             if (postType.equals("image")) {
                 Picasso.with(holder.postImage.getContext()).load(postMessage2)
-                        .transform(Transformations.getScaleDownWithView(holder.postImage))
                         .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
 
             }else {

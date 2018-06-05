@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/wave_single_brief"
+    android:id="@+id/wave_single_brief_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="1dp"
@@ -11,7 +11,7 @@
     android:background="@drawable/circle">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/wave_single_brief_wave_thumbnail"
+        android:id="@+id/wave_single_brief_wave_thumbnail_main"
         android:layout_width="33dp"
         android:layout_height="33dp"
         android:layout_marginStart="3dp"
@@ -22,33 +22,31 @@
 
 
     <ImageView
-        android:id="@+id/wave_single_brief_launch"
+        android:id="@+id/wave_single_brief_launch_main"
         android:layout_width="66dp"
         android:layout_height="33dp"
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image"
+        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main"
         app:srcCompat="@drawable/baseline_launch_black_24" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:elevation=".5dp"
         android:foregroundGravity="center_horizontal"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_launch"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_launch_main"
         app:layout_constraintEnd_toStartOf="@+id/imageView7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch">
+        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch_main">
 
         <ImageView
             android:id="@+id/imageView8"
@@ -59,7 +57,7 @@
             app:srcCompat="@drawable/baseline_lens_black_24" />
 
         <TextView
-            android:id="@+id/wave_single_brief_echos"
+            android:id="@+id/wave_single_brief_echos_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -83,7 +81,7 @@
             app:srcCompat="@drawable/baseline_comment_black_24" />
 
         <TextView
-            android:id="@+id/wave_single_brief_comments"
+            android:id="@+id/wave_single_brief_comments_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -111,7 +109,7 @@
             app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch_main" />
 
         <TextView
-            android:id="@+id/wave_single_brief_time_to_live"
+            android:id="@+id/wave_single_brief_time_to_live_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -129,7 +127,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/wave_single_brief_name"
+        android:id="@+id/wave_single_brief_name_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -139,28 +137,27 @@
         android:text="TextView"
         android:textColor="@color/common_google_signin_btn_text_light_focused"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_wave_thumbnail"
-        app:layout_constraintStart_toEndOf="@+id/wave_single_brief_wave_thumbnail"
-        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_wave_thumbnail" />
+        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_wave_thumbnail_main"
+        app:layout_constraintStart_toEndOf="@+id/wave_single_brief_wave_thumbnail_main"
+        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_wave_thumbnail_main" />
 
     <ImageView
-        android:id="@+id/wave_post_image"
+        android:id="@+id/wave_post_image_main"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
 
     <TextView
-        android:id="@+id/wave_single_brief_message"
+        android:id="@+id/wave_single_brief_message_main"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_wave_thumbnail" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_wave_thumbnail_main" />
 </android.support.constraint.ConstraintLayout>

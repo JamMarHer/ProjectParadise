@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,7 +40,6 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GeneralWaveFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link GeneralWaveFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -59,7 +60,6 @@ public class GeneralWaveFragment extends Fragment {
     private CredentialsManager credentialsManager;
     private EventManager eventManager;
 
-    private OnFragmentInteractionListener mListener;
 
 
     private TextView waveName;
@@ -139,6 +139,9 @@ public class GeneralWaveFragment extends Fragment {
                 Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
                 getActivity().startActivity(intent);
             }});
+
+
+
         return  inflater1;
     }
 
@@ -160,15 +163,15 @@ public class GeneralWaveFragment extends Fragment {
 
         public PostViewHolder(View itemView){
             super(itemView);
-            waveName = itemView.findViewById(R.id.wave_single_brief_name);
-            postMessage = itemView.findViewById(R.id.wave_single_brief_message);
-            postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
-            postComments = itemView.findViewById(R.id.wave_single_brief_comments);
-            postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live);
-            postImage = itemView.findViewById(R.id.wave_post_image);
-            postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
-            briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
-            postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);
+            waveName = itemView.findViewById(R.id.wave_single_brief_name_main);
+            postMessage = itemView.findViewById(R.id.wave_single_brief_message_main);
+            postEchos = itemView.findViewById(R.id.wave_single_brief_echos_main);
+            postComments = itemView.findViewById(R.id.wave_single_brief_comments_main);
+            postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live_main);
+            postImage = itemView.findViewById(R.id.wave_post_image_main);
+            postLaunch = itemView.findViewById(R.id.wave_single_brief_launch_main);
+            briefConstraintL = itemView.findViewById(R.id.wave_single_brief_main);
+            postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail_main);
         }
 
     }
@@ -220,8 +223,9 @@ public class GeneralWaveFragment extends Fragment {
 
                                         posts.add(postInfo);
                                     }
-
+                                    Collections.reverse(posts);
                                     postsAdapter.notifyDataSetChanged();
+
                                     inflater = LayoutInflater.from(context);
 
                                 }
@@ -239,24 +243,22 @@ public class GeneralWaveFragment extends Fragment {
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-
             });
-
-
-
         }
 
         @Override
         public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_single_brief, parent, false);
+            View view = inflater.inflate(R.layout.wave_single_brief_main, parent, false);
             PostViewHolder holder = new PostViewHolder(view);
             return holder;
         }
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(final PostViewHolder holder, int position) {
-            position = posts.size()-1 -position;
+        public void onBindViewHolder(final PostViewHolder holder, int pos) {
+
+
+            int position = getItemViewType(pos);
             final String postID = posts.get(position).get("postID");
             final String postFromUsername = posts.get(position).get("postFromUsername");
             final String postMessage = posts.get(position).get("postMessage");
@@ -275,17 +277,12 @@ public class GeneralWaveFragment extends Fragment {
             holder.postComments.setText(postNumComments);
 
             if (postType.equals("image")) {
-                Picasso.with(holder.postImage.getContext()).load(postMessage2)
-                        .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
+                Picasso.with(holder.postImage.getContext())
+                        .load(postMessage2)
+                        .into(holder.postImage);
 
             }else {
                 holder.postImage.setVisibility(View.INVISIBLE);
-                ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(holder.briefConstraintL);
-                constraintSet.connect(holder.postMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,ConstraintSet.END, 0);
-                constraintSet.connect(holder.postLaunch.getId(), ConstraintSet.TOP, holder.postMessage.getId(), ConstraintSet.BOTTOM, 3);
-                constraintSet.applyTo(holder.briefConstraintL);
-
             }
 
 
@@ -302,8 +299,7 @@ public class GeneralWaveFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().equals("default")){
                         Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
-                                .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
+                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail)).into(holder.postWaveThumbnail);
                     }
                 }
 
@@ -321,35 +317,15 @@ public class GeneralWaveFragment extends Fragment {
         public int getItemCount () {
             return posts.size();
         }
-    }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }

@@ -83,7 +83,7 @@ public class WavePost extends Fragment {
         wavePostTime = inflater1.findViewById(R.id.wave_post_time);
         wavePostThumbnail = inflater1.findViewById(R.id.wave_post_thumbnail);
         wavePostNumComments = inflater1.findViewById(R.id.wave_post_num_comments);
-        wavePostImage = inflater1.findViewById(R.id.wave_post_image);
+        wavePostImage = inflater1.findViewById(R.id.wave_post_image_main);
         wavePostEcho = inflater1.findViewById(R.id.wave_post_echo);
         wavePostOpenComments = inflater1.findViewById(R.id.wave_post_open_comments);
         wavePostViewComments = inflater1.findViewById(R.id.wave_post_view_comments);

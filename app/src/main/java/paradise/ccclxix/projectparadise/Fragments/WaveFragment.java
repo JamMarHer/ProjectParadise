@@ -103,37 +103,40 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         final String waveID = eventManager.getEventID();
 
-        final DatabaseReference databaseReference = firebaseDatabase.getReference()
-                .child("events_us")
-                .child(waveID);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()){
-                    String members = String.valueOf(dataSnapshot.child("attending").getChildrenCount());
-                    String posts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
-                    String thumbnail = null;
-                    String points = null;
-                    String waveName = dataSnapshot.child("name_event").getValue().toString();
-                    if (dataSnapshot.hasChild("image_url")){
-                        thumbnail = dataSnapshot.child("image_url").getValue().toString();
-                    }
-                    if (dataSnapshot.hasChild("points")){
-                        points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
-                    }
-                    fragmentAdapter.addFragment(GeneralWaveFragment.newInstance(waveID, waveName, thumbnail));
+        if (waveID != null){
 
-                    fragmentAdapter.addFragment(WaveOverview.newInstance(waveID,
-                            waveName, members, posts, points, thumbnail));
-                    verticalViewPager.setAdapter(fragmentAdapter);
+            final DatabaseReference databaseReference = firebaseDatabase.getReference()
+                    .child("events_us")
+                    .child(waveID);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChildren()){
+                        String members = String.valueOf(dataSnapshot.child("attending").getChildrenCount());
+                        String posts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
+                        String thumbnail = null;
+                        String points = null;
+                        String waveName = dataSnapshot.child("name_event").getValue().toString();
+                        if (dataSnapshot.hasChild("image_url")){
+                            thumbnail = dataSnapshot.child("image_url").getValue().toString();
+                        }
+                        if (dataSnapshot.hasChild("points")){
+                            points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
+                        }
+                        fragmentAdapter.addFragment(GeneralWaveFragment.newInstance(waveID, waveName, thumbnail));
+
+                        fragmentAdapter.addFragment(WaveOverview.newInstance(waveID,
+                                waveName, members, posts, points, thumbnail));
+                        verticalViewPager.setAdapter(fragmentAdapter);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 /*
         if (eventManager.getEventID() != null){
 

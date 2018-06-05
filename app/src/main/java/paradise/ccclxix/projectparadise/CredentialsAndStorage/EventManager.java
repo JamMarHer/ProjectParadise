@@ -34,7 +34,11 @@ public class EventManager {
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
-
+    public void logout(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 
 
     public void updatePersonalTimein(Long time){

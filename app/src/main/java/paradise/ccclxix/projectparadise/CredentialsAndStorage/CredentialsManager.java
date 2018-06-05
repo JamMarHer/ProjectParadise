@@ -30,6 +30,12 @@ public class CredentialsManager {
         updateCredentials();
     }
 
+    public void logout(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     public void updateCredentials(){
         if(mAuth.getCurrentUser() != null){
             DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid());
@@ -45,7 +51,6 @@ public class CredentialsManager {
                 }
             });
         }
-        System.out.println(getUsername());
     }
 
 
@@ -63,11 +68,6 @@ public class CredentialsManager {
         return new User(this.getEmail(), this.getToken());
     }
 
-    public void clear(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-    }
 
     public boolean checkLoggedIn(){
         return !(this.getUsername()  == null || this.getEmail() == null || this.getToken() == null);

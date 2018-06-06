@@ -17,14 +17,18 @@ public class SettingsManager implements Manager {
     //TODO
     private final String DESCRIPTION = "TODO";
 
+    private boolean initialized = false;
 
     public SettingsManager(){
     }
 
     @Override
     public Manager initialize(Context context) {
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        if (!initialized){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            initialized = true;
+        }
         return this;
     }
 

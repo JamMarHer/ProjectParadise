@@ -15,14 +15,14 @@ public class AppManager implements Manager {
     private Map<String, Manager> managers = new HashMap<String, Manager>(){
         {
             put(WaveManager.TYPE, new WaveManager());
-            put("credentials", new CredentialsManager());
-            put("mode", new ModeManager());
-            put("settings", new SettingsManager());
+            put(CredentialsManager.TYPE, new CredentialsManager());
+            put(ModeManager.TYPE, new ModeManager());
+            put(SettingsManager.TYPE, new SettingsManager());
         }
     };
 
 
-    private static final String APP_MANAGER = "APP_MANAGER";
+    private static final String TYPE = "APP_MANAGER";
     // TODO
     private static final String DESCRIPTION = "TODO";
     private SharedPreferences appManagerSP;
@@ -38,7 +38,7 @@ public class AppManager implements Manager {
     public Manager initialize(Context context){
         if (!initialized){
             this.context = context;
-            this.appManagerSP = this.context.getSharedPreferences(APP_MANAGER, Context.MODE_PRIVATE);
+            this.appManagerSP = this.context.getSharedPreferences(TYPE, Context.MODE_PRIVATE);
             for (String managerKey : managers.keySet()){
                 managers.get(managerKey).initialize(this.context);
             }
@@ -75,7 +75,7 @@ public class AppManager implements Manager {
 
     @Override
     public String getType() {
-        return APP_MANAGER;
+        return TYPE;
     }
 
     @Override

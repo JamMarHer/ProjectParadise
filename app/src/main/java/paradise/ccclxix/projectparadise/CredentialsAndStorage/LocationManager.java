@@ -25,16 +25,22 @@ public class LocationManager implements Manager{
     private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
 
+    private boolean initialized = false;
+
     public LocationManager(){
     }
 
 
     @Override
     public Manager initialize(Context context) {
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-        getLastFormatedLocation(this.context);
+        if (!initialized){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+            getLastFormatedLocation(this.context);
+            initialized = true;
+        }
+
         return this;
     }
 

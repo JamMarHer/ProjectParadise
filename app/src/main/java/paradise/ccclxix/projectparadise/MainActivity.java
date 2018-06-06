@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
+    public AppManager getAppManager() {
+        return appManager;
+    }
+
     private void showSnackbar(final String message, int icon) {
         TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);

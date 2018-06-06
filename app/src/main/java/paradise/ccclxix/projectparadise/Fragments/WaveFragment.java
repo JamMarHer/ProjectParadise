@@ -21,32 +21,27 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.GeneralWaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveOverview;
 import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.VerticalViewPager;
 
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
-
-    private CredentialsManager credentialsManager;
-
-    private TextView currentWave;
-
-    private ImageView waveShowPost;
-    private ImageView currentWaveThumbnail;
-
+    public static final String TYPE = "WAVE_FRAGMENT";
 
     private ModeManager modeManager;
 
 
     View generalView;
-    EventManager eventManager;
+    AppManager appManager;
 
 
     private FirebaseAuth mAuth;
@@ -58,9 +53,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        eventManager = new EventManager(getContext());
-        modeManager = new ModeManager(getContext());
-        credentialsManager = new CredentialsManager(getContext());
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
    }
 
     @Nullable
@@ -80,7 +76,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final ArrayList<String> record = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        final String waveID = eventManager.getEventID();
+        final String waveID = appManager.getWaveManager().getEventID();
 
         if (waveID != null){
 

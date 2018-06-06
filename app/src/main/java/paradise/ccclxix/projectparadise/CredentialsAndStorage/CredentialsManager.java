@@ -27,16 +27,23 @@ public class CredentialsManager  implements Manager{
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
 
+    private boolean initialized = false;
+
+
     public CredentialsManager(){
 
     }
 
     @Override
     public Manager initialize(Context context) {
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
-        mAuth = FirebaseAuth.getInstance();
-        updateCredentials();
+        if (!initialized){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            mAuth = FirebaseAuth.getInstance();
+            updateCredentials();
+            initialized = true;
+        }
+
         return this;
     }
 

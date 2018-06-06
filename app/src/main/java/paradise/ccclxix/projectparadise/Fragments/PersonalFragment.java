@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
@@ -50,10 +51,9 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
 
-    EventManager eventManager;
+    AppManager appManager;
     FirebaseAuth mAuth;
 
-    private CredentialsManager credentialsManager;
     private TextView personalUsername;
     private ImageView settingsImageView;
     private ImageView profilePicture;
@@ -67,12 +67,21 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     Button joinWave;
     View generalView;
 
-    ModeManager modeManager;
 
     List<HashMap<String, String >> wavePinned;
     List<HashMap<String, String>> highlightPosts;
     WaveCardPinnedAdapter pinnedWavesAdapter;
     HighlightedPostsAdapter highlightedPostsAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -81,11 +90,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         final View inflater1 = inflater.inflate(R.layout.fragment_my_waves, null);
 
         wavePinned = new ArrayList<>();
-        eventManager = new EventManager(getContext());
-        credentialsManager = new CredentialsManager(getContext());
-        modeManager = new ModeManager(getContext());
         mAuth = FirebaseAuth.getInstance();
-
         settingsImageView = inflater1.findViewById(R.id.edit_profile);
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
@@ -123,11 +128,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         setupNumWavesAndContacts();
 
 
-        personalUsername.setText(credentialsManager.getUsername());
+        personalUsername.setText(appManager.getCredentialM().getUsername());
 
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-        if (eventManager.getEventID() == null){
+        if (appManager.getWaveManager().getEventID() == null){
             //TODO
         }
 
@@ -215,7 +220,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
                         Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
@@ -511,7 +515,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                 if(!record.containsKey(waveID)) {
                                     wavePinned.add(eventInfo);
                                     record.put(waveID, wavePinned.size()-1);
-                                    if(waveID.equals(eventManager.getEventID())){
+                                    if(waveID.equals(appManager.getWaveManager().getEventID())){
                                         int toExchange = wavePinned.size()-1;
                                         Collections.swap(wavePinned,0, toExchange);
                                         record.put(waveID, 0);
@@ -568,11 +572,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (waveID.equals(eventManager.getEventID())){
+                    if (waveID.equals(appManager.getWaveManager().getEventID())){
                         showTopSnackBar(getView(), "You are already riding this wave.", Icons.POOP);
                     }else {
-                        eventManager.updateEventID(waveID);
-                        eventManager.updateEventName(waveName);
+                        appManager.getWaveManager().updateEventID(waveID);
+                        appManager.getWaveManager().updateEventName(waveName);
 
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         intent.putExtra("source", "joined_event");

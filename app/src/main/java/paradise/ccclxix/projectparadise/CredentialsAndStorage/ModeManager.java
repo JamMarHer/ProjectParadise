@@ -17,14 +17,18 @@ public class ModeManager implements Manager {
     //TODO
     private final String DESCRIPTION = "TODO";
 
+    private boolean initialzed = false;
 
     public ModeManager(){
     }
 
     @Override
     public Manager initialize(Context context) {
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        if (!initialzed){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            initialzed = true;
+        }
         return this;
     }
 

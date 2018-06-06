@@ -31,15 +31,19 @@ public class WaveManager implements Manager {
     private HashMap<String, Object> event;
     private boolean working;
 
+    private boolean initialized = false;
 
     public WaveManager(){
     }
 
     @Override
     public Manager initialize(Context context) {
-        event = new HashMap<>();
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        if (!initialized){
+            event = new HashMap<>();
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            initialized = true;
+        }
         return this;
     }
 

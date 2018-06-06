@@ -32,15 +32,14 @@ public class WaveManager implements Manager {
     private boolean working;
 
 
-    public WaveManager(Context context){
-        event = new HashMap<>();
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
+    public WaveManager(){
     }
 
     @Override
-    public void initialize() {
-
+    public void initialize(Context context) {
+        event = new HashMap<>();
+        this.context = context;
+        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
     public void logout(){

@@ -24,12 +24,20 @@ public class LocationManager implements Manager{
     private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
 
-    public LocationManager(Context context){
+    public LocationManager(){
+    }
+
+
+    @Override
+    public void initialize(Context context) {
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(LOCATION, MODE_PRIVATE);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-
+        getLastFormatedLocation(this.context);
     }
+
+
+
 
     public String getFormatedLocation(){
         return String.format("%s___%s", sharedPreferences.getString("lat",null),
@@ -74,10 +82,6 @@ public class LocationManager implements Manager{
     }
 
 
-    @Override
-    public void initialize() {
-
-    }
 
     @Override
     public void logout(){

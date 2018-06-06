@@ -10,10 +10,15 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager
 
 public class AppManager implements Manager {
 
-    private WaveManager wm;
-    private CredentialsManager cm;
-    private ModeManager mm;
-    private SettingsManager sm;
+
+    private Map<String, Manager> managers = new HashMap<String, Manager>(){
+        {
+            put("waves", new WaveManager());
+            put("credentials", new CredentialsManager());
+            put("mode", new ModeManager());
+            put("settings", new SettingsManager());
+        }
+    };;
 
 
     private static final String APP_MANAGER = "APP_MANAGER";
@@ -21,36 +26,34 @@ public class AppManager implements Manager {
     private static final String DESCRIPTION = "TODO";
     private SharedPreferences appManagerSP;
 
+    private boolean initialized = false;
+
     private Context  context;
 
-    public AppManager(Context context){
-        this.context = context;
-        this.appManagerSP = this.context.getSharedPreferences(APP_MANAGER, Context.MODE_PRIVATE);
+    public AppManager(){
+
     }
 
-    public void initialize(){
+    public void initialize(Context context){
+        if (!initialized){
+            this.context = context;
+            this.appManagerSP = this.context.getSharedPreferences(APP_MANAGER, Context.MODE_PRIVATE);
+            for (String managerKey : managers.keySet()){
+                managers.get(managerKey).initialize(this.context);
+            }
+            initialized = true;
+        }
 
-        if (wm == null){
-            wm = new WaveManager(this.context);
-            wm.initialize();
-        }
-        if (cm == null){
-            cm = new CredentialsManager(this.context);
-            cm.initialize();
-        }
-        if (mm == null){
-            mm = new ModeManager(this.context);
-            mm.initialize();
-        }
-        if (sm == null){
-            sm = new SettingsManager(this.context);
-            sm.initialize();
-        }
     }
 
     @Override
-    public void logout() {
+    public void logout() throws Exception{
+        if (!initialized)
+            throw new Exception("You must initialize the manager");
 
+        for (String managerKey : managers.keySet()){
+            managers.get(managerKey).logout();
+        }
     }
 
     @Override

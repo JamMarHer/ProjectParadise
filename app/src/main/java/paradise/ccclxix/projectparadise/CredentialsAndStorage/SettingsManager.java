@@ -18,10 +18,13 @@ public class SettingsManager implements Manager {
     private final String DESCRIPTION = "TODO";
 
 
-    public SettingsManager(Context context){
+    public SettingsManager(){
+    }
+
+    @Override
+    public void initialize(Context context) {
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
-
     }
 
     public String getMode(){ return sharedPreferences.getString("mode","explore"); }
@@ -54,10 +57,7 @@ public class SettingsManager implements Manager {
         return this.getMode().equals("attendant");
     }
 
-    @Override
-    public void initialize() {
 
-    }
 
     @Override
     public void logout(){

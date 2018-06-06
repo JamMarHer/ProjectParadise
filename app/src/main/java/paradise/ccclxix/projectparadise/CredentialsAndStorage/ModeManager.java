@@ -18,11 +18,15 @@ public class ModeManager implements Manager {
     private final String DESCRIPTION = "TODO";
 
 
-    public ModeManager(Context context){
+    public ModeManager(){
+    }
+
+    @Override
+    public void initialize(Context context) {
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(MODE, MODE_PRIVATE);
-
     }
+
 
     public String getMode(){ return sharedPreferences.getString("mode","explore"); }
 
@@ -54,10 +58,6 @@ public class ModeManager implements Manager {
         return this.getMode().equals("attendant");
     }
 
-    @Override
-    public void initialize() {
-
-    }
 
     @Override
     public void logout(){

@@ -26,7 +26,12 @@ public class CredentialsManager  implements Manager{
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
 
-    public CredentialsManager(Context context){
+    public CredentialsManager(){
+
+    }
+
+    @Override
+    public void initialize(Context context) {
         this.context = context;
         this.sharedPreferences = this.context.getSharedPreferences(CREDENTIALS, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
@@ -40,13 +45,17 @@ public class CredentialsManager  implements Manager{
         editor.apply();
     }
 
-    public void updateCredentials(){
+    private void updateCredentials(){
         if(mAuth.getCurrentUser() != null){
             DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid());
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    updateName(dataSnapshot.child("name").getValue().toString());
                     updateUsername(dataSnapshot.child("username").getValue().toString());
+                    updateEmail(dataSnapshot.child("email").getValue().toString());
+                    updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
+                    updateStatus(dataSnapshot.child("status").getValue().toString());
                 }
 
                 @Override
@@ -58,24 +67,11 @@ public class CredentialsManager  implements Manager{
     }
 
 
-
-    public void registrationSave(String username, String email, String token){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("username", username);
-        editor.putString("email", email);
-        editor.putString("token", token);
-        editor.apply();
-
-    }
-
     public User getUser(){
         return new User(this.getEmail(), this.getToken());
     }
 
 
-    public boolean checkLoggedIn(){
-        return !(this.getUsername()  == null || this.getEmail() == null || this.getToken() == null);
-    }
 
     public String getUsername(){
         return sharedPreferences.getString("username",null);
@@ -134,10 +130,6 @@ public class CredentialsManager  implements Manager{
     }
 
 
-    @Override
-    public void initialize() {
-
-    }
 
     @Override
     public String getType() {

@@ -11,15 +11,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 import paradise.ccclxix.projectparadise.User;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class CredentialsManager {
+public class CredentialsManager  implements Manager{
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String CREDENTIALS = "iDaeCredentials";
+    private final String CREDENTIALS = "CREDENTIALS";
+    // TODO
+    private final String DESCRIPTION = "TODO";
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
 
@@ -30,6 +33,7 @@ public class CredentialsManager {
         updateCredentials();
     }
 
+    @Override
     public void logout(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
@@ -130,5 +134,19 @@ public class CredentialsManager {
     }
 
 
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public String getType() {
+        return CREDENTIALS;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 }
 

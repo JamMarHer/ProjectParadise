@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.GeneralWaveFragment;
@@ -42,7 +42,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private ImageView currentWaveThumbnail;
 
 
-    private AppModeManager appModeManager;
+    private ModeManager modeManager;
 
 
     View generalView;
@@ -59,7 +59,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         eventManager = new EventManager(getContext());
-        appModeManager = new AppModeManager(getContext());
+        modeManager = new ModeManager(getContext());
         credentialsManager = new CredentialsManager(getContext());
    }
 

@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
@@ -67,7 +67,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     Button joinWave;
     View generalView;
 
-    AppModeManager appModeManager;
+    ModeManager modeManager;
 
     List<HashMap<String, String >> wavePinned;
     List<HashMap<String, String>> highlightPosts;
@@ -83,7 +83,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         wavePinned = new ArrayList<>();
         eventManager = new EventManager(getContext());
         credentialsManager = new CredentialsManager(getContext());
-        appModeManager = new AppModeManager(getContext());
+        modeManager = new ModeManager(getContext());
         mAuth = FirebaseAuth.getInstance();
 
         settingsImageView = inflater1.findViewById(R.id.edit_profile);

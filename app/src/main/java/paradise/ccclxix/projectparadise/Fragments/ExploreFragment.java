@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -56,7 +56,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     RecyclerView listWaves;
     FirebaseAuth mAuth;
     CredentialsManager credentialsManager;
-    AppModeManager appModeManager;
+    ModeManager modeManager;
     private ViewGroup container;
 
 
@@ -396,7 +396,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    appModeManager.setModeToExplore();
+                                                                    modeManager.setModeToExplore();
                                                                     eventManager.updateEventID(null);
                                                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                                                     intent.putExtra("source", "logged_in");

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.AttendantsInEvent;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.EventChat;
@@ -26,7 +26,7 @@ import paradise.ccclxix.projectparadise.R;
 public class ChatFragment extends HolderFragment implements EnhancedFragment {
 
     RecyclerView listAttendingUsers;
-    AppModeManager appModeManager;
+    ModeManager modeManager;
 
     EventManager eventManager;
 
@@ -36,8 +36,8 @@ public class ChatFragment extends HolderFragment implements EnhancedFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shares,container, false);
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
-        appModeManager = new AppModeManager(getContext());
-        if(appModeManager.isHostingMode() || appModeManager.isAttendantMode()) {
+        modeManager = new ModeManager(getContext());
+        if(modeManager.isHostingMode() || modeManager.isAttendantMode()) {
             setUpAttending(viewPager);
             TabLayout tabs = view.findViewById(R.id.result_tabs);
             tabs.setupWithViewPager(viewPager);

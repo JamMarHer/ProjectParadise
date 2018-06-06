@@ -11,18 +11,22 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+
 import static android.content.Context.MODE_PRIVATE;
 
-public class LocationManager {
+public class LocationManager implements Manager{
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String APP_MODE = "iDaeLocation";
+    private final String LOCATION = "LOCATION";
+    //TODO
+    private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
 
     public LocationManager(Context context){
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(APP_MODE, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(LOCATION, MODE_PRIVATE);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
     }
@@ -70,4 +74,24 @@ public class LocationManager {
     }
 
 
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void logout(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+    @Override
+    public String getType() {
+        return LOCATION;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 }

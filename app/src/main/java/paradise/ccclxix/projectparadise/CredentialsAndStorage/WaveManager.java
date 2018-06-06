@@ -17,13 +17,17 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+
 import static android.content.Context.MODE_PRIVATE;
 
-public class WaveManager {
+public class WaveManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String TEMP_EVENT = "CURRENT_WAVE";
+    private final String TEMP_EVENT = "WAVE";
+    private final String DESCRIPTION = "TODO";
+
     private HashMap<String, Object> event;
     private boolean working;
 
@@ -34,10 +38,25 @@ public class WaveManager {
         this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
     }
 
+    @Override
+    public void initialize() {
+
+    }
+
     public void logout(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    @Override
+    public String getType() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
     }
 
 

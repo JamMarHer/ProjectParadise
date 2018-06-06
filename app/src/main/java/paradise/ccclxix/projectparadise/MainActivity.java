@@ -20,7 +20,7 @@ import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment waveFragment;
     private HolderFragment exploreFragment;
     private HolderFragment chatFragment;
-    private AppModeManager appModeManager;
+    private ModeManager modeManager;
 
 
     EventManager eventManager;
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         credentialsManager = new CredentialsManager(getApplicationContext());
         eventManager = new EventManager(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
-        appModeManager = new AppModeManager(getApplicationContext());
+        modeManager = new ModeManager(getApplicationContext());
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -71,36 +71,36 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
-            appModeManager.setModeToExplore();
+            modeManager.setModeToExplore();
             showSnackbar("Welcome fam :)", Icons.COOL);
             loadExploreMode();
         }else if (source.equals("event_created")) {
-            appModeManager.setModeToHost();
+            modeManager.setModeToHost();
             invalidateOptionsMenu();
             loadHostMode();
         }else if (source.equals("qr_code_scanned")) {
-            appModeManager.setModeToAttendant();
+            modeManager.setModeToAttendant();
             loadAttendantMode();
         }else if (source.equals("joined_event")) {
-            appModeManager.setModeToAttendant();
+            modeManager.setModeToAttendant();
             loadAttendantMode();
             showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
         }else if (source.equals("login")){
-            appModeManager.setModeToExplore();
+            modeManager.setModeToExplore();
             loadExploreMode();
         }else if (source.equals("logged_in")){
-            if (appModeManager.getMode().equals("host")){
+            if (modeManager.getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (modeManager.getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
             }
         }else if (source.equals("logged_in_no_internet")){
             // TODO constant check to get internet going.
-            if (appModeManager.getMode().equals("host")){
+            if (modeManager.getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (modeManager.getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
-            if (appModeManager.getMode().equals("host")){
+            if (modeManager.getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (modeManager.getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();

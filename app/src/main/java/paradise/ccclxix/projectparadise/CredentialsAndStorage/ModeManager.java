@@ -5,18 +5,22 @@ import android.content.SharedPreferences;
 
 import java.nio.file.Path;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+
 import static android.content.Context.MODE_PRIVATE;
 
-public class AppModeManager {
+public class ModeManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String APP_MODE = "iDaeAppMode";
+    private final String MODE = "MODE";
+    //TODO
+    private final String DESCRIPTION = "TODO";
 
 
-    public AppModeManager(Context context){
+    public ModeManager(Context context){
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(APP_MODE, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(MODE, MODE_PRIVATE);
 
     }
 
@@ -48,5 +52,27 @@ public class AppModeManager {
     }
     public boolean isAttendantMode(){
         return this.getMode().equals("attendant");
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void logout(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    @Override
+    public String getType() {
+        return MODE;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
     }
 }

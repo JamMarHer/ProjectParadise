@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class OnGoingChats extends Fragment{
@@ -32,6 +34,19 @@ public class OnGoingChats extends Fragment{
     UsersAdapter usersAdapter;
     RecyclerView listAttendingUsers;
     private FirebaseAuth mAuth;
+
+
+    AppManager appManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,8 +95,7 @@ public class OnGoingChats extends Fragment{
             }
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();
-            CredentialsManager cm =  new CredentialsManager(context);
-            final String personalUN = cm.getUsername();
+            final String personalUN = appManager.getCredentialM().getUsername();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("messages")

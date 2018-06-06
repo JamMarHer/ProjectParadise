@@ -25,14 +25,15 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     AppManager appManager;
-    public SettingsActivity(AppManager appManager){
-        this.appManager = appManager;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
+
 
         mAuth = FirebaseAuth.getInstance();
 

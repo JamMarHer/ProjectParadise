@@ -81,7 +81,7 @@ public class AttendantsInEvent extends Fragment{
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
-                    .child(appManager.getWaveManager().getEventID()).child("attending");
+                    .child(appManager.getWaveM().getEventID()).child("attending");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

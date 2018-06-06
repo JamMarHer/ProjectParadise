@@ -76,7 +76,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final ArrayList<String> record = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        final String waveID = appManager.getWaveManager().getEventID();
+        final String waveID = appManager.getWaveM().getEventID();
 
         if (waveID != null){
 

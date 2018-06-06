@@ -56,14 +56,13 @@ public class EditProfileActivity extends AppCompatActivity {
     public static final int GALLERY_PICK = 1;
 
     AppManager appManager;
-    public EditProfileActivity(AppManager appManager){
-        this.appManager = appManager;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
 
         name = findViewById(R.id.name_editable);
         username = findViewById(R.id.username_editable);

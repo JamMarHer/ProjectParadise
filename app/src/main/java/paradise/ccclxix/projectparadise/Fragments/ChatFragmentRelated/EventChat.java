@@ -196,7 +196,7 @@ public class EventChat extends Fragment{
             }
         });
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("events_us").child(appManager.getWaveManager().getEventID()).child("messages");
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child("events_us").child(appManager.getWaveM().getEventID()).child("messages");
         messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);
         messageQuery.addChildEventListener(eventListener);
         return inflater1;
@@ -213,7 +213,7 @@ public class EventChat extends Fragment{
             StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
             Uri imageUri = data.getData();
 
-            final String currentUser = "events_us/"+appManager.getWaveManager().getEventID()+"/messages/" + appManager.getCredentialM().getUsername();
+            final String currentUser = "events_us/"+appManager.getWaveM().getEventID()+"/messages/" + appManager.getCredentialM().getUsername();
 
             String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),appManager.getCredentialM().getUsername());
 
@@ -255,7 +255,7 @@ public class EventChat extends Fragment{
     private void sendMessage(){
         final String message = chatMessageText.getText().toString();
         if (!TextUtils.isEmpty(message)){
-            String currentUserRef = "events_us/"+appManager.getWaveManager().getEventID()+"/messages/";
+            String currentUserRef = "events_us/"+appManager.getWaveM().getEventID()+"/messages/";
 
             DatabaseReference databaseReference = firebaseDatabase.getReference();
 

@@ -3,14 +3,14 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 
-public class AppManager implements Manager {
-
+public class AppManager implements Manager{
 
     private Map<String, Manager> managers = new HashMap<String, Manager>(){
         {
@@ -34,7 +34,7 @@ public class AppManager implements Manager {
     private String source;
 
 
-    public AppManager(String source){
+    public AppManager(){
 
     }
 

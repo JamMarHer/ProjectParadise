@@ -104,13 +104,13 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                     DatabaseReference dbAddCommentPlain = firebaseDatabase.getReference();
                     DatabaseReference dbAddComment = dbAddCommentPlain
                             .child("events_us")
-                            .child(appManager.getWaveManager().getEventID())
+                            .child(appManager.getWaveM().getEventID())
                             .child("wall")
                             .child("posts")
                             .child(postID)
                             .child("comments")
                             .child(mAuth.getUid()).push();
-                    String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts/"+postID
+                    String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/"+postID
                             +"/comments";
                     String pushID = dbAddComment.getKey();
                     Map postMap = new HashMap();
@@ -174,7 +174,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
-                    .child(appManager.getWaveManager().getEventID())
+                    .child(appManager.getWaveM().getEventID())
                     .child("wall")
                     .child("posts")
                     .child(postID)
@@ -197,7 +197,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                         if(!record.containsKey(commentID)) {
                             waveList.add(eventInfo);
                             record.put(commentID, waveList.size()-1);
-                            if(commentID.equals(appManager.getWaveManager().getEventID())){
+                            if(commentID.equals(appManager.getWaveM().getEventID())){
                                 int toExchange = waveList.size()-1;
                                 Collections.swap(waveList,0, toExchange);
                                 record.put(commentID, 0);

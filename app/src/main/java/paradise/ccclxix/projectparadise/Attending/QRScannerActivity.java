@@ -52,14 +52,13 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     FirebaseAuth mAuth;
 
     AppManager appManager;
-    public QRScannerActivity (AppManager appManager){
-        this.appManager = appManager;
-    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_qrscanner);
         scannerView = (ZXingScannerView) findViewById(R.id.zxscan);
@@ -171,7 +170,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event.put("name_event", dataSnapshot.child("name_event").getValue().toString());
-                    event.put("event_id", appManager.getWaveManager().getEventID());
+                    event.put("event_id", appManager.getWaveM().getEventID());
                     event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
                     event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
                     event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
@@ -236,8 +235,8 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                appManager.getWaveManager().updateEventID(eventID);
-                appManager.getWaveManager().updateEventName((String)event.get("event_name"));
+                appManager.getWaveM().updateEventID(eventID);
+                appManager.getWaveM().updateEventName((String)event.get("event_name"));
                 DatabaseReference eventDatabaseReference = database.getReference()
                         .child("events_us")
                         .child(eventID)
@@ -261,7 +260,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                     intent.putExtra("source", "joined_event");
                                     dialogInterface.dismiss();
 
-                                    appManager.getWaveManager().updatePersonalTimein(timeIn);
+                                    appManager.getWaveM().updatePersonalTimein(timeIn);
 
                                     QRScannerActivity.this.startActivity(intent);
                                     finish();

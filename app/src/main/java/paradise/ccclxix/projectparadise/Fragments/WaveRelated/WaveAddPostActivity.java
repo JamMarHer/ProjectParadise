@@ -59,14 +59,13 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
     AppManager appManager;
 
-    public WaveAddPostActivity(AppManager appManager){
-        this.appManager = appManager;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wave_add_post);
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -91,9 +90,9 @@ public class WaveAddPostActivity extends AppCompatActivity {
         waveAddPostImage = findViewById(R.id.wave_add_post_image);
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
 
-        if(appManager.getWaveManager().getEventID() != null){
+        if(appManager.getWaveM().getEventID() != null){
             waveAddPostUsername.setText(appManager.getCredentialM().getUsername());
-            waveAddPostWave.setText(appManager.getWaveManager().getEventName());
+            waveAddPostWave.setText(appManager.getWaveM().getEventName());
         }
 
 
@@ -124,7 +123,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                         final DatabaseReference databaseReference = firebaseDatabase.getReference();
                         StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-                        StorageReference filePath = imageStorage.child(appManager.getWaveManager().getEventID()).child("images").child(imageName);
+                        StorageReference filePath = imageStorage.child(appManager.getWaveM().getEventID()).child("images").child(imageName);
                         filePath.putFile(imageUriGeneral).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -132,11 +131,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
                                     String downloadURL = task.getResult().getDownloadUrl().toString();
                                     DatabaseReference dbWave = databaseReference
                                             .child("events_us")
-                                            .child(appManager.getWaveManager().getEventID())
+                                            .child(appManager.getWaveM().getEventID())
                                             .child("wall")
                                             .child("posts")
                                             .child(mAuth.getUid()).push();
-                                    String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts";
+                                    String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                                     String pushID = dbWave.getKey();
                                     Map postMap = new HashMap();
                                     postMap.put("message", waveAddPostMessage.getText().toString());
@@ -179,11 +178,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
                         DatabaseReference dbWave = baseReference
                                 .child("events_us")
-                                .child(appManager.getWaveManager().getEventID())
+                                .child(appManager.getWaveM().getEventID())
                                 .child("wall")
                                 .child("posts")
                                 .child(mAuth.getUid()).push();
-                        String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts";
+                        String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                         String pushID = dbWave.getKey();
                         Map postMap = new HashMap();
                         postMap.put("message", waveAddPostMessage.getText().toString());

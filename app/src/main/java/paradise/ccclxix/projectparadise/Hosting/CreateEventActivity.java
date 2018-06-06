@@ -61,14 +61,13 @@ public class CreateEventActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     AppManager appManager;
-    public CreateEventActivity(AppManager appManager){
-        this.appManager = appManager;
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
         setContentView(R.layout.activity_create_event);
 
         firebaseAuth = FirebaseAuth.getInstance();

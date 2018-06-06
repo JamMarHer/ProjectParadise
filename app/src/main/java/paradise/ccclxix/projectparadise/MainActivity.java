@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment waveFragment;
     private HolderFragment exploreFragment;
     private HolderFragment chatFragment;
-    private ModeManager modeManager;
 
 
     AppManager appManager;
@@ -68,36 +67,36 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
-            modeManager.setModeToExplore();
+            appManager.getModeM().setModeToExplore();
             showSnackbar("Welcome fam :)", Icons.COOL);
             loadExploreMode();
         }else if (source.equals("event_created")) {
-            modeManager.setModeToHost();
+            appManager.getModeM().setModeToHost();
             invalidateOptionsMenu();
             loadHostMode();
         }else if (source.equals("qr_code_scanned")) {
-            modeManager.setModeToAttendant();
+            appManager.getModeM().setModeToAttendant();
             loadAttendantMode();
         }else if (source.equals("joined_event")) {
-            modeManager.setModeToAttendant();
+            appManager.getModeM().setModeToAttendant();
             loadAttendantMode();
-            showSnackbar(" You are now riding: "+ appManager.getWaveManager().getEventName(), Icons.COOL);
+            showSnackbar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
-            modeManager.setModeToExplore();
+            appManager.getModeM().setModeToExplore();
             loadExploreMode();
         }else if (source.equals("logged_in")){
-            if (modeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (modeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
             }
         }else if (source.equals("logged_in_no_internet")){
             // TODO constant check to get internet going.
-            if (modeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (modeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
@@ -105,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
-            if (modeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (modeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
@@ -185,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void createEvent(View view){
+
         Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
         MainActivity.this.startActivity(intent);
     }

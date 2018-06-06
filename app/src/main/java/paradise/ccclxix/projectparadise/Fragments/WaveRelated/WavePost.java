@@ -136,7 +136,7 @@ public class WavePost extends Fragment {
 
         DatabaseReference waveTableGet = dbPlainReference
                 .child("events_us")
-                .child(appManager.getWaveManager().getEventID())
+                .child(appManager.getWaveM().getEventID())
                 .child("wall")
                 .child("posts")
                 .child(this.postID);
@@ -164,7 +164,7 @@ public class WavePost extends Fragment {
                 .child("users")
                 .child(mAuth.getUid())
                 .child("echos")
-                .child(appManager.getWaveManager().getEventID());
+                .child(appManager.getWaveM().getEventID());
         personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -196,7 +196,7 @@ public class WavePost extends Fragment {
                             .child("users")
                             .child(mAuth.getUid())
                             .child("echos")
-                            .child(appManager.getWaveManager().getEventID());
+                            .child(appManager.getWaveM().getEventID());
                     personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -204,13 +204,13 @@ public class WavePost extends Fragment {
 
                                 DatabaseReference dbWave = dbPlainReference
                                         .child("events_us")
-                                        .child(appManager.getWaveManager().getEventID())
+                                        .child(appManager.getWaveM().getEventID())
                                         .child("wall")
                                         .child("posts")
                                         .child(postID)
                                         .child("echos")
                                         .child(mAuth.getUid()).push();
-                                String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts/" + postID + "/echos";
+                                String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
                                 final String pushID = dbWave.getKey();
                                 Map postMap = new HashMap();
                                 postMap.put("from", mAuth.getUid());
@@ -228,7 +228,7 @@ public class WavePost extends Fragment {
                                                     .child("users")
                                                     .child(mAuth.getUid())
                                                     .child("echos")
-                                                    .child(appManager.getWaveManager().getEventID())
+                                                    .child(appManager.getWaveM().getEventID())
                                                     .child(postID);
                                             Map input = new HashMap<>();
                                             input.put("pushID", pushID);
@@ -256,7 +256,7 @@ public class WavePost extends Fragment {
                                         .child("users")
                                         .child(mAuth.getUid())
                                         .child("echos")
-                                        .child(appManager.getWaveManager().getEventID())
+                                        .child(appManager.getWaveM().getEventID())
                                         .child(postID);
                                 deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -265,7 +265,7 @@ public class WavePost extends Fragment {
 
                                             DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
                                                     .child("events_us")
-                                                    .child(appManager.getWaveManager().getEventID())
+                                                    .child(appManager.getWaveM().getEventID())
                                                     .child("wall")
                                                     .child("posts")
                                                     .child(postID)

@@ -94,9 +94,9 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
                 if (toPos == 0){
                     String waveID = waveList.get(toPos).get("waveID");
-                    appManager.getWaveManager().updateEventID(waveID);
-                    appManager.getWaveManager().updateEventName(waveList.get(toPos).get("waveName"));
-                    appManager.getWaveManager().updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
+                    appManager.getWaveM().updateEventID(waveID);
+                    appManager.getWaveM().updateEventName(waveList.get(toPos).get("waveName"));
+                    appManager.getWaveM().updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
 
 
                     Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -190,7 +190,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                 if(!record.containsKey(waveID)) {
                                     waveList.add(eventInfo);
                                     record.put(waveID, waveList.size()-1);
-                                    if(waveID.equals(appManager.getWaveManager().getEventID())){
+                                    if(waveID.equals(appManager.getWaveM().getEventID())){
                                         int toExchange = waveList.size()-1;
                                         Collections.swap(waveList,0, toExchange);
                                         record.put(waveID, 0);
@@ -239,18 +239,18 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
 
-            if (appManager.getWaveManager().getWavePosts(waveID) != -1){
-                if (appManager.getWaveManager().getWavePosts(waveID) != currentWavePostsNum){
+            if (appManager.getWaveM().getWavePosts(waveID) != -1){
+                if (appManager.getWaveM().getWavePosts(waveID) != currentWavePostsNum){
                     holder.waveNotification.setVisibility(View.VISIBLE);
                 }else {
                     holder.waveNotification.setVisibility(View.INVISIBLE);
                 }
             }else {
-                appManager.getWaveManager().updateWavePosts(waveID, currentWavePostsNum);
+                appManager.getWaveM().updateWavePosts(waveID, currentWavePostsNum);
             }
 
 
-            if (waveID.equals(appManager.getWaveManager().getEventID())){
+            if (waveID.equals(appManager.getWaveM().getEventID())){
                 holder.waveJoin.setImageResource(R.drawable.baseline_radio_button_checked_white_36);
                 final int sdk = android.os.Build.VERSION.SDK_INT;
                 if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -265,11 +265,11 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (waveID.equals(appManager.getWaveManager().getEventID())){
+                    if (waveID.equals(appManager.getWaveM().getEventID())){
                         showTopSnackBar(getView(), "You are already riding this wave.", Icons.POOP);
                     }else {
-                        appManager.getWaveManager().updateEventID(waveID);
-                        appManager.getWaveManager().updateEventName(waveName);
+                        appManager.getWaveM().updateEventID(waveID);
+                        appManager.getWaveM().updateEventName(waveName);
 
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         intent.putExtra("source", "joined_event");
@@ -403,7 +403,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
                                                                     appManager.getModeM().setModeToExplore();
-                                                                    appManager.getWaveManager().updateEventID(null);
+                                                                    appManager.getWaveM().updateEventID(null);
                                                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                                                     intent.putExtra("source", "logged_in");
                                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

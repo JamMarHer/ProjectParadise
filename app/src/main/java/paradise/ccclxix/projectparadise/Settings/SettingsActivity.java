@@ -11,9 +11,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
-import paradise.ccclxix.projectparadise.Models.Event;
 import paradise.ccclxix.projectparadise.R;
 
 public class SettingsActivity extends AppCompatActivity {

@@ -27,12 +27,10 @@
         android:layout_height="33dp"
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main"
         app:srcCompat="@drawable/baseline_launch_black_24" />
 
     <LinearLayout
@@ -144,8 +142,10 @@
     <ImageView
         android:id="@+id/wave_post_image_main"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/wave_single_brief_launch_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />

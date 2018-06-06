@@ -24,7 +24,6 @@ import java.util.List;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.R;
 
 public class AttendantsInEvent extends Fragment{

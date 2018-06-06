@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.AttendantsInEvent;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.EventChat;

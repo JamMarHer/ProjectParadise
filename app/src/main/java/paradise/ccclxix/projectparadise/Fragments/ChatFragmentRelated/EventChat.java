@@ -43,7 +43,6 @@ import java.util.Map;
 import paradise.ccclxix.projectparadise.Chat.MessageAdapter;
 import paradise.ccclxix.projectparadise.Chat.Messages;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.app.Activity.RESULT_OK;

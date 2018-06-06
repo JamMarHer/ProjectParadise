@@ -13,7 +13,7 @@ public class SettingsManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String SETTINGS = "SETTINGS";
+    public static final String TYPE = "SETTINGS";
     //TODO
     private final String DESCRIPTION = "TODO";
 
@@ -22,9 +22,10 @@ public class SettingsManager implements Manager {
     }
 
     @Override
-    public void initialize(Context context) {
+    public Manager initialize(Context context) {
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(SETTINGS, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        return this;
     }
 
     public String getMode(){ return sharedPreferences.getString("mode","explore"); }
@@ -68,7 +69,7 @@ public class SettingsManager implements Manager {
 
     @Override
     public String getType() {
-        return SETTINGS;
+        return TYPE;
     }
 
     @Override

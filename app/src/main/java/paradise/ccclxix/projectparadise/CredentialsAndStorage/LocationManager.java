@@ -17,9 +17,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LocationManager implements Manager{
 
+    public static final String TYPE = "LOCATION";
+
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String LOCATION = "LOCATION";
     //TODO
     private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
@@ -29,11 +30,12 @@ public class LocationManager implements Manager{
 
 
     @Override
-    public void initialize(Context context) {
+    public Manager initialize(Context context) {
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(LOCATION, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         getLastFormatedLocation(this.context);
+        return this;
     }
 
 
@@ -91,7 +93,7 @@ public class LocationManager implements Manager{
     }
     @Override
     public String getType() {
-        return LOCATION;
+        return TYPE;
     }
 
     @Override

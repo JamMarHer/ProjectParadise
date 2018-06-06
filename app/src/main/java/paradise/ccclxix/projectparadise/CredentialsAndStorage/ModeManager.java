@@ -13,7 +13,7 @@ public class ModeManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String MODE = "MODE";
+    public static final String TYPE = "MODE";
     //TODO
     private final String DESCRIPTION = "TODO";
 
@@ -22,9 +22,10 @@ public class ModeManager implements Manager {
     }
 
     @Override
-    public void initialize(Context context) {
+    public Manager initialize(Context context) {
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(MODE, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        return this;
     }
 
 
@@ -68,7 +69,7 @@ public class ModeManager implements Manager {
 
     @Override
     public String getType() {
-        return MODE;
+        return TYPE;
     }
 
     @Override

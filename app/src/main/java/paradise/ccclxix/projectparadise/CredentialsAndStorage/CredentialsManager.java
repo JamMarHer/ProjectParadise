@@ -18,9 +18,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class CredentialsManager  implements Manager{
 
+    public static final String TYPE = "CREDENTIALS";
+
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String CREDENTIALS = "CREDENTIALS";
     // TODO
     private final String DESCRIPTION = "TODO";
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -31,11 +32,12 @@ public class CredentialsManager  implements Manager{
     }
 
     @Override
-    public void initialize(Context context) {
+    public Manager initialize(Context context) {
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(CREDENTIALS, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
         updateCredentials();
+        return this;
     }
 
     @Override
@@ -133,7 +135,7 @@ public class CredentialsManager  implements Manager{
 
     @Override
     public String getType() {
-        return CREDENTIALS;
+        return TYPE;
     }
 
     @Override

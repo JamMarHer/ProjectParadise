@@ -20,6 +20,7 @@ import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
@@ -41,8 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private ModeManager modeManager;
 
 
-    EventManager eventManager;
-    CredentialsManager credentialsManager;
+    AppManager appManager;
 
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
@@ -57,10 +57,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
 
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
-        mAuth = FirebaseAuth.getInstance();
-        modeManager = new ModeManager(getApplicationContext());
+        appManager = (AppManager) new AppManager().initialize(getApplicationContext());
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }else if (source.equals("joined_event")) {
             modeManager.setModeToAttendant();
             loadAttendantMode();
-            showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
+            showSnackbar(" You are now riding: "+ appManager.getWaveManager().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
             modeManager.setModeToExplore();
             loadExploreMode();

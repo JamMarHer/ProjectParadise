@@ -25,7 +25,7 @@ public class WaveManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String TEMP_EVENT = "WAVE";
+    public static final String TYPE = "WAVE";
     private final String DESCRIPTION = "TODO";
 
     private HashMap<String, Object> event;
@@ -36,10 +36,11 @@ public class WaveManager implements Manager {
     }
 
     @Override
-    public void initialize(Context context) {
+    public Manager initialize(Context context) {
         event = new HashMap<>();
         this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(TEMP_EVENT, MODE_PRIVATE);
+        this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+        return this;
     }
 
     public void logout(){
@@ -50,7 +51,7 @@ public class WaveManager implements Manager {
 
     @Override
     public String getType() {
-        return null;
+        return TYPE;
     }
 
     @Override

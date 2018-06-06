@@ -3,9 +3,13 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.BooleanSetting;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -17,6 +21,17 @@ public class SettingsManager implements Manager {
     //TODO
     private final String DESCRIPTION = "TODO";
 
+
+    private Map<String, Map<String, Setting>> settings = new HashMap<String, Map<String, Setting>>() {
+        {
+            put("NOTIFICATIONS", new HashMap<String, Setting>(){
+                {
+                    put("ALL", new BooleanSetting("NOTIFICATIONS_ALL","TODO"));
+                }
+            });
+        }
+    };
+
     private boolean initialized = false;
 
     public SettingsManager(){
@@ -27,42 +42,67 @@ public class SettingsManager implements Manager {
         if (!initialized){
             this.context = context;
             this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+
+            for (String settingTypeKey : settings.keySet()){
+                for (String settingkey : settings.get(settingTypeKey).keySet())
+                if(settings.get(settingTypeKey).get(settingkey).getType().equals("BOOL")){
+                    BooleanSetting bool = new BooleanSetting(settingkey, "TODO", sharedPreferences.getBoolean(settingkey, false));
+                    settings.get(settingTypeKey).put(settingkey, bool);
+                }else if (settings.get(settingTypeKey).get(settingkey).getType().equals("STR")){
+                    StringSetting str = new StringSetting(settingkey, "TODO", sharedPreferences.getString(settingkey, ""));
+                    settings.get(settingTypeKey).put(settingkey, str);
+                }
+            }
+
             initialized = true;
         }
         return this;
     }
 
-    public String getMode(){ return sharedPreferences.getString("mode","explore"); }
-
-    public void  setModeToExplore(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("mode","explore");
-        editor.apply();
+    // TODO some regular expressssssssssssssssssssssssssssssion.
+    private String getSettingParentType(String setting){
+        if(setting.contains("_")){
+            return setting.split("_")[0];
+        }
+        return "";
     }
 
-    public void  setModeToHost(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("mode","host");
-        editor.apply();
+    private String getSettingChildType(String setting){
+        if(setting.contains("_")){
+            return setting.split("_")[1];
+        }
+        return "";
     }
 
-    public void  setModeToAttendant(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("mode","attendant");
-        editor.apply();
-    }
-
-    public boolean isHostingMode(){
-        return this.getMode().equals("host");
-    }
-    public boolean isExploreMode(){
-        return this.getMode().equals("explore");
-    }
-    public boolean isAttendantMode(){
-        return this.getMode().equals("attendant");
+    private boolean isValidSettingName(String setting){
+        String parent = getSettingParentType(setting);
+        String child = getSettingChildType(setting);
+        return settings.containsKey(parent) && settings.get(parent).containsKey(child);
     }
 
 
+    public void updateBoolSetting(String name, boolean value) throws Exception{
+        if (!isValidSettingName(name)){
+            throw new Exception(String.format("Setting : %s. Does not exist.",name));
+        }else{
+            BooleanSetting bs = (BooleanSetting)settings.get(getSettingParentType(name)).get(getSettingChildType(name));
+            bs.setValue(value);
+        }
+    }
+
+    public void updateStringSetting(String name, String value) throws Exception{
+        if (!isValidSettingName(name)){
+            throw new Exception(String.format("Setting : %s. Does not exist.",name));
+        }else{
+            StringSetting ss = (StringSetting)settings.get(getSettingParentType(name)).get(getSettingChildType(name));
+            ss.setValue(value);
+        }
+    }
+
+
+    public Map<String, Map<String, Setting>> getSettings(){
+        return settings;
+    }
 
     @Override
     public void logout(){

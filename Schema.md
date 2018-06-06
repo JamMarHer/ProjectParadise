@@ -1,0 +1,51 @@
+# Database Schema
+
+### Firebase v0.0.3
+- Wave
+  - name: String
+  - creation: Date
+  - members: [List of `Users`]
+  - living-posts [List of `Post`]
+  - dead-posts [List of `Post`]
+  - logo: Image
+  - privacy: String
+  - Location: Geolocation
+- User
+  - name: String
+  - email: String
+  - phone: String
+  - username: String
+  - password: String
+  - joined: Date
+  - waves: [List of `Waves`]
+  - history: [List of `Action`]
+- Action
+  - type: String
+  - date: Date
+  - user: `User`
+  - message:`Message`
+  - post: `Post`
+  - comment: `Comment`
+- Message
+  - from: `User`
+  - to: `User`
+  - body: String
+  - sent: Date
+  - seen: Boolean
+  - attachment: String
+- Post
+  - author: `User`
+  - caption: String
+  - attachment: String
+  - comments: [List of `Comment`]
+  - last-echo: `User`
+  - date-created: Date
+  - waves: [List of `Wave`]
+  - death: Date
+  - echoed-by: [List of `User`]
+- Comment
+  - author: `User`
+  - created: Date
+  - body: String
+  - reply-to: `Comment`
+  - replies: [List of `Comment`]

@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
@@ -19,17 +21,18 @@ public class SettingsActivity extends AppCompatActivity {
 
     private TextView logout;
 
-    private CredentialsManager credentialsManager;
-    private EventManager eventManager;
 
     private FirebaseAuth mAuth;
+
+    AppManager appManager;
+    public SettingsActivity(AppManager appManager){
+        this.appManager = appManager;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -53,9 +56,11 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 mAuth.signOut();
 
-                credentialsManager.logout();
-                eventManager.logout();
-
+                try{
+                    appManager.logout();
+                }catch (Exception e){
+                    Log.d("LOG_OUT", e.getMessage());
+                }
                 Intent intent = new Intent(SettingsActivity.this, InitialAcitivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -49,19 +51,23 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
 
-    EventManager eventManager;
-    CredentialsManager credentialsManager;
+    AppManager appManager;
 
     String postID;
+
+    public WavePostCommentsActivity(AppManager appManager){
+        this.appManager = appManager;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wave_post_comments);
+
+
         postID = getIntent().getExtras().getString("postID");
         mAuth = FirebaseAuth.getInstance();
-        eventManager = new EventManager(getApplicationContext());
-        credentialsManager = new CredentialsManager(getApplicationContext());
 
         wavePostAddCommentMessage = findViewById(R.id.wave_post_add_message);
         wavePostAddCommentSend =findViewById(R.id.wave_post_add_send);
@@ -98,13 +104,13 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                     DatabaseReference dbAddCommentPlain = firebaseDatabase.getReference();
                     DatabaseReference dbAddComment = dbAddCommentPlain
                             .child("events_us")
-                            .child(eventManager.getEventID())
+                            .child(appManager.getWaveManager().getEventID())
                             .child("wall")
                             .child("posts")
                             .child(postID)
                             .child("comments")
                             .child(mAuth.getUid()).push();
-                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/"+postID
+                    String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts/"+postID
                             +"/comments";
                     String pushID = dbAddComment.getKey();
                     Map postMap = new HashMap();
@@ -113,7 +119,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                     postMap.put("type", "text");
                     postMap.put("time", ServerValue.TIMESTAMP);
                     postMap.put("from", mAuth.getUid());
-                    postMap.put("fromUsername", credentialsManager.getUsername());
+                    postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                     Map postUserMap = new HashMap();
                     postUserMap.put(chatUserRef + "/"+ pushID, postMap);
@@ -168,7 +174,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
-                    .child(eventManager.getEventID())
+                    .child(appManager.getWaveManager().getEventID())
                     .child("wall")
                     .child("posts")
                     .child(postID)
@@ -191,7 +197,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                         if(!record.containsKey(commentID)) {
                             waveList.add(eventInfo);
                             record.put(commentID, waveList.size()-1);
-                            if(commentID.equals(eventManager.getEventID())){
+                            if(commentID.equals(appManager.getWaveManager().getEventID())){
                                 int toExchange = waveList.size()-1;
                                 Collections.swap(waveList,0, toExchange);
                                 record.put(commentID, 0);
@@ -241,7 +247,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                        appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
                         Picasso.with(holder.wavePostCommentThumbnail.getContext()).load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(holder.wavePostCommentThumbnail))
                                 .placeholder(R.drawable.baseline_person_black_24).into(holder.wavePostCommentThumbnail);

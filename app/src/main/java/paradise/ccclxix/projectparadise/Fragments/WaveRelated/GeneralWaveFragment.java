@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +30,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -53,8 +56,6 @@ public class GeneralWaveFragment extends Fragment {
     private String mWaveImage;
 
     private FirebaseAuth mAuth;
-    private CredentialsManager credentialsManager;
-    private EventManager eventManager;
 
 
 
@@ -65,7 +66,7 @@ public class GeneralWaveFragment extends Fragment {
     PostsAdapter postsAdapter;
     RecyclerView postsRecyclerV;
     List<HashMap<String, String>> posts;
-
+    AppManager appManager;
 
 
 
@@ -92,6 +93,7 @@ public class GeneralWaveFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +104,10 @@ public class GeneralWaveFragment extends Fragment {
 
         }
         mAuth = FirebaseAuth.getInstance();
-        credentialsManager = new CredentialsManager(getContext());
-        eventManager = new EventManager(getContext());
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
     }
 
     @Override

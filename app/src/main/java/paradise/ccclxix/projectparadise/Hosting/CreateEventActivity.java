@@ -34,6 +34,7 @@ import com.google.firebase.database.ServerValue;
 import java.util.HashMap;
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.BuildConfig;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -51,9 +52,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     Event eventCreateResponse;
 
-    private LocationManager locationManager;
-    private CredentialsManager credentialsManager;
-    private EventManager eventManager;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private static final String TAG = CreateEventActivity.class.getSimpleName();
@@ -62,7 +60,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
-
+    AppManager appManager;
+    public CreateEventActivity(AppManager appManager){
+        this.appManager = appManager;
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -78,10 +79,6 @@ public class CreateEventActivity extends AppCompatActivity {
         eventCreateTextPublic =         findViewById(R.id.createEventTextPublic);
         eventCreateTextPrivate =        findViewById(R.id.createEventTextPrivate);
         eventCreateButtonLaunch =       findViewById(R.id.createEventButtonLaunch);
-
-        locationManager = new LocationManager(getApplicationContext());
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -148,8 +145,8 @@ public class CreateEventActivity extends AppCompatActivity {
             eventMap.put("privacy", getPrivacy());
             eventMap.put("location_based", getLocationSetting());
             if (getLocationSetting().equals("true")){
-                eventMap.put("latitude", locationManager.getLastLatitude(getApplicationContext()));
-                eventMap.put("longitude", locationManager.getLastLongitude(getApplicationContext()));
+                eventMap.put("latitude", appManager.getLocationM().getLastLatitude(getApplicationContext()));
+                eventMap.put("longitude", appManager.getLocationM().getLastLongitude(getApplicationContext()));
             }else{
                 eventMap.put("latitude", "not set");
                 eventMap.put("longitude", "not set");
@@ -187,9 +184,9 @@ public class CreateEventActivity extends AppCompatActivity {
                                                 Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
                                                 intent.putExtra("source", "event_created");
 
-                                                eventManager.updateEventID(eventID);
-                                                eventManager.updatePersonalTimein(timeStamp);
-                                                eventManager.updateEventName(eventCreateName.getText().toString());
+                                                appManager.getWaveM().updateEventID(eventID);
+                                                appManager.getWaveM().updatePersonalTimein(timeStamp);
+                                                appManager.getWaveM().updateEventName(eventCreateName.getText().toString());
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
                                                 finish();
@@ -221,7 +218,7 @@ public class CreateEventActivity extends AppCompatActivity {
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            lastLocationFormated = locationManager.getLastFormatedLocation(getApplicationContext());
+            lastLocationFormated = appManager.getLocationM().getLastFormatedLocation(getApplicationContext());
         }
     }
     private boolean validInput(){
@@ -258,7 +255,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted.
-                lastLocationFormated = locationManager.getLastFormatedLocation(getApplicationContext());
+                lastLocationFormated = appManager.getLocationM().getLastFormatedLocation(getApplicationContext());
             } else {
                 // Permission denied.
 

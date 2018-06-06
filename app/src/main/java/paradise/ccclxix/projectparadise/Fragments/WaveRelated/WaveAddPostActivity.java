@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -56,8 +57,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
     public static final int GALLERY_PICK = 1;
 
-    EventManager eventManager;
-    CredentialsManager credentialsManager;
+    AppManager appManager;
+
+    public WaveAddPostActivity(AppManager appManager){
+        this.appManager = appManager;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,6 @@ public class WaveAddPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wave_add_post);
 
         mAuth = FirebaseAuth.getInstance();
-        eventManager = new EventManager(getApplicationContext());
-        credentialsManager = new CredentialsManager(getApplicationContext());
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -89,9 +91,9 @@ public class WaveAddPostActivity extends AppCompatActivity {
         waveAddPostImage = findViewById(R.id.wave_add_post_image);
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
 
-        if(eventManager.getEventID() != null){
-            waveAddPostUsername.setText(credentialsManager.getUsername());
-            waveAddPostWave.setText(eventManager.getEventName());
+        if(appManager.getWaveManager().getEventID() != null){
+            waveAddPostUsername.setText(appManager.getCredentialM().getUsername());
+            waveAddPostWave.setText(appManager.getWaveManager().getEventName());
         }
 
 
@@ -116,13 +118,13 @@ public class WaveAddPostActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(waveAddPostMessage.getText()) || imageUriGeneral != null){
                     if (imageUriGeneral != null){
 
-                        String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),credentialsManager.getUsername());
+                        String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),appManager.getCredentialM().getUsername());
 
 
                         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                         final DatabaseReference databaseReference = firebaseDatabase.getReference();
                         StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-                        StorageReference filePath = imageStorage.child(eventManager.getEventID()).child("images").child(imageName);
+                        StorageReference filePath = imageStorage.child(appManager.getWaveManager().getEventID()).child("images").child(imageName);
                         filePath.putFile(imageUriGeneral).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -130,11 +132,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
                                     String downloadURL = task.getResult().getDownloadUrl().toString();
                                     DatabaseReference dbWave = databaseReference
                                             .child("events_us")
-                                            .child(eventManager.getEventID())
+                                            .child(appManager.getWaveManager().getEventID())
                                             .child("wall")
                                             .child("posts")
                                             .child(mAuth.getUid()).push();
-                                    String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts";
+                                    String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts";
                                     String pushID = dbWave.getKey();
                                     Map postMap = new HashMap();
                                     postMap.put("message", waveAddPostMessage.getText().toString());
@@ -144,7 +146,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                                     postMap.put("type", "image");
                                     postMap.put("time", ServerValue.TIMESTAMP);
                                     postMap.put("from", mAuth.getUid());
-                                    postMap.put("fromUsername", credentialsManager.getUsername());
+                                    postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                                     Map postUserMap = new HashMap();
                                     postUserMap.put(chatUserRef + "/"+ pushID, postMap);
@@ -177,11 +179,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
                         DatabaseReference dbWave = baseReference
                                 .child("events_us")
-                                .child(eventManager.getEventID())
+                                .child(appManager.getWaveManager().getEventID())
                                 .child("wall")
                                 .child("posts")
                                 .child(mAuth.getUid()).push();
-                        String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts";
+                        String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts";
                         String pushID = dbWave.getKey();
                         Map postMap = new HashMap();
                         postMap.put("message", waveAddPostMessage.getText().toString());
@@ -191,7 +193,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         postMap.put("type", "text");
                         postMap.put("time", ServerValue.TIMESTAMP);
                         postMap.put("from", mAuth.getUid());
-                        postMap.put("fromUsername", credentialsManager.getUsername());
+                        postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                         Map postUserMap = new HashMap();
                         postUserMap.put(chatUserRef + "/"+ pushID, postMap);
@@ -236,7 +238,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
+                        appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
                         Picasso.with(waveAddPostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(waveAddPostThumbnail))
                                 .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostThumbnail);

@@ -33,6 +33,7 @@ import com.google.zxing.Result;
 import java.util.HashMap;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -46,11 +47,15 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
     ValueEventListener valueEventListener;
     DatabaseReference databaseReference;
-    CredentialsManager credentialsManager;
-    EventManager eventManager;
 
 
     FirebaseAuth mAuth;
+
+    AppManager appManager;
+    public QRScannerActivity (AppManager appManager){
+        this.appManager = appManager;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +74,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
             }
         });
 
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkPermission()){
@@ -168,7 +171,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event.put("name_event", dataSnapshot.child("name_event").getValue().toString());
-                    event.put("event_id", eventManager.getEventID());
+                    event.put("event_id", appManager.getWaveManager().getEventID());
                     event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
                     event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
                     event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
@@ -233,8 +236,8 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                eventManager.updateEventID(eventID);
-                eventManager.updateEventName((String)event.get("event_name"));
+                appManager.getWaveManager().updateEventID(eventID);
+                appManager.getWaveManager().updateEventName((String)event.get("event_name"));
                 DatabaseReference eventDatabaseReference = database.getReference()
                         .child("events_us")
                         .child(eventID)
@@ -258,7 +261,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                     intent.putExtra("source", "joined_event");
                                     dialogInterface.dismiss();
 
-                                    eventManager.updatePersonalTimein(timeIn);
+                                    appManager.getWaveManager().updatePersonalTimein(timeIn);
 
                                     QRScannerActivity.this.startActivity(intent);
                                     finish();

@@ -51,7 +51,6 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
 
-    AppManager appManager;
     FirebaseAuth mAuth;
 
     private TextView personalUsername;
@@ -72,6 +71,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     List<HashMap<String, String>> highlightPosts;
     WaveCardPinnedAdapter pinnedWavesAdapter;
     HighlightedPostsAdapter highlightedPostsAdapter;
+
+
+    AppManager appManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -28,7 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -63,8 +65,18 @@ public class WavePost extends Fragment {
 
     FirebaseAuth mAuth;
 
-    EventManager eventManager;
-    CredentialsManager credentialsManager;
+    AppManager appManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+    }
+
 
     @Nullable
     @Override
@@ -73,8 +85,6 @@ public class WavePost extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
 
-        eventManager = new EventManager(getContext());
-        credentialsManager = new CredentialsManager(getContext());
 
         wavePostUsername = inflater1.findViewById(R.id.wave_post_username);
         wavePostMessage = inflater1.findViewById(R.id.wave_post_message);
@@ -126,7 +136,7 @@ public class WavePost extends Fragment {
 
         DatabaseReference waveTableGet = dbPlainReference
                 .child("events_us")
-                .child(eventManager.getEventID())
+                .child(appManager.getWaveManager().getEventID())
                 .child("wall")
                 .child("posts")
                 .child(this.postID);
@@ -154,7 +164,7 @@ public class WavePost extends Fragment {
                 .child("users")
                 .child(mAuth.getUid())
                 .child("echos")
-                .child(eventManager.getEventID());
+                .child(appManager.getWaveManager().getEventID());
         personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -186,7 +196,7 @@ public class WavePost extends Fragment {
                             .child("users")
                             .child(mAuth.getUid())
                             .child("echos")
-                            .child(eventManager.getEventID());
+                            .child(appManager.getWaveManager().getEventID());
                     personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -194,18 +204,18 @@ public class WavePost extends Fragment {
 
                                 DatabaseReference dbWave = dbPlainReference
                                         .child("events_us")
-                                        .child(eventManager.getEventID())
+                                        .child(appManager.getWaveManager().getEventID())
                                         .child("wall")
                                         .child("posts")
                                         .child(postID)
                                         .child("echos")
                                         .child(mAuth.getUid()).push();
-                                String chatUserRef = "events_us/" + eventManager.getEventID() + "/wall/posts/" + postID + "/echos";
+                                String chatUserRef = "events_us/" + appManager.getWaveManager().getEventID() + "/wall/posts/" + postID + "/echos";
                                 final String pushID = dbWave.getKey();
                                 Map postMap = new HashMap();
                                 postMap.put("from", mAuth.getUid());
                                 postMap.put("pushID", pushID);
-                                postMap.put("fromUsername", credentialsManager.getUsername()); // TODO For now.
+                                postMap.put("fromUsername", appManager.getCredentialM().getUsername()); // TODO For now.
                                 postMap.put("time", ServerValue.TIMESTAMP);
 
                                 Map postUserMap = new HashMap();
@@ -218,7 +228,7 @@ public class WavePost extends Fragment {
                                                     .child("users")
                                                     .child(mAuth.getUid())
                                                     .child("echos")
-                                                    .child(eventManager.getEventID())
+                                                    .child(appManager.getWaveManager().getEventID())
                                                     .child(postID);
                                             Map input = new HashMap<>();
                                             input.put("pushID", pushID);
@@ -246,7 +256,7 @@ public class WavePost extends Fragment {
                                         .child("users")
                                         .child(mAuth.getUid())
                                         .child("echos")
-                                        .child(eventManager.getEventID())
+                                        .child(appManager.getWaveManager().getEventID())
                                         .child(postID);
                                 deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -255,7 +265,7 @@ public class WavePost extends Fragment {
 
                                             DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
                                                     .child("events_us")
-                                                    .child(eventManager.getEventID())
+                                                    .child(appManager.getWaveManager().getEventID())
                                                     .child("wall")
                                                     .child("posts")
                                                     .child(postID)
@@ -325,7 +335,6 @@ public class WavePost extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
 
-                    credentialsManager.updateProfilePic(dataSnapshot.getValue().toString());
                     Picasso.with(wavePostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
                             .transform(Transformations.getScaleDownWithView(wavePostThumbnail))
                             .placeholder(R.drawable.baseline_person_black_24).into(wavePostThumbnail);

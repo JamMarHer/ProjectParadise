@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private boolean running = false;
-    private CredentialsManager credentialsManager;
 
     // UI references.
     // TODO name of class variables don't exactly match resgistration class.
@@ -75,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // Set up the login form.
 
-        credentialsManager = new CredentialsManager(this);
         mEmailView = findViewById(R.id.email);
 
         mPasswordView = findViewById(R.id.password);

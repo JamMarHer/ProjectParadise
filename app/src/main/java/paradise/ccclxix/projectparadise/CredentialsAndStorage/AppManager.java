@@ -18,6 +18,7 @@ public class AppManager implements Manager {
             put(CredentialsManager.TYPE, new CredentialsManager());
             put(ModeManager.TYPE, new ModeManager());
             put(SettingsManager.TYPE, new SettingsManager());
+            put(LocationManager.TYPE, new LocationManager());
         }
     };
 
@@ -30,8 +31,10 @@ public class AppManager implements Manager {
     private boolean initialized = false;
 
     private Context  context;
+    private String source;
 
-    public AppManager(){
+
+    public AppManager(String source){
 
     }
 
@@ -59,8 +62,12 @@ public class AppManager implements Manager {
         return (ModeManager) managers.get(ModeManager.TYPE);
     }
 
-    public WaveManager getWaveManager(){
+    public WaveManager getWaveM(){
         return (WaveManager) managers.get(WaveManager.TYPE);
+    }
+
+    public LocationManager getLocationM(){
+        return (LocationManager) managers.get(LocationManager.TYPE);
     }
 
     @Override

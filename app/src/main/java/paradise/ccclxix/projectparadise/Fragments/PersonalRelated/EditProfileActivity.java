@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -49,14 +50,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
 
-    CredentialsManager credentialsManager;
-
     boolean[] updated = {true, true, true, true};
-
     private Uri imageUriGeneral = null;
 
-
     public static final int GALLERY_PICK = 1;
+
+    AppManager appManager;
+    public EditProfileActivity(AppManager appManager){
+        this.appManager = appManager;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,21 +85,20 @@ public class EditProfileActivity extends AppCompatActivity {
         mainSettings.setVisibility(View.INVISIBLE);
         mainInfo.setVisibility(View.INVISIBLE);
 
-        credentialsManager = new CredentialsManager(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
 
-        username.setText(credentialsManager.getUsername());
+        username.setText(appManager.getCredentialM().getUsername());
 
-        if (credentialsManager.getName() != null)
-            name.setText(credentialsManager.getName());
-
-
-        if (credentialsManager.getStatus() != null)
-            status.setText(credentialsManager.getStatus());
+        if (appManager.getCredentialM().getName() != null)
+            name.setText(appManager.getCredentialM().getName());
 
 
-        if (credentialsManager.getProfilePic() != null){
-            Picasso.with(profilePicture.getContext()).load(credentialsManager.getProfilePic())
+        if (appManager.getCredentialM().getStatus() != null)
+            status.setText(appManager.getCredentialM().getStatus());
+
+
+        if (appManager.getCredentialM().getProfilePic() != null){
+            Picasso.with(profilePicture.getContext()).load(appManager.getCredentialM().getProfilePic())
                     .transform(Transformations.getScaleDownWithView(profilePicture))
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
         }
@@ -125,7 +126,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             .child("users")
                             .child(mAuth.getUid());
 
-                    if (!TextUtils.isEmpty(username.getText()) && !credentialsManager.getUsername().equals(username.getText().toString())) {
+                    if (!TextUtils.isEmpty(username.getText()) && !appManager.getCredentialM().getUsername().equals(username.getText().toString())) {
                         updated[0] = false;
                         DatabaseReference databaseReference = firebaseDatabase.getReference()
                                 .child("used_usernames");
@@ -140,7 +141,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             updated[0] = true;
-                                            credentialsManager.updateUsername(username.getText().toString());
+                                            appManager.getCredentialM().updateUsername(username.getText().toString());
                                                 if (allSet()){
                                                     Intent intent = new Intent(getApplication(), MainActivity.class);
                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -161,13 +162,13 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    if (credentialsManager.getStatus() == null || !credentialsManager.getStatus().equals(status.getText().toString())) {
+                    if (appManager.getCredentialM().getStatus() == null || !appManager.getCredentialM().getStatus().equals(status.getText().toString())) {
                         updated[1] = false;
                         dbPersonal.child("status").setValue(status.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 updated[1] = true;
-                                credentialsManager.updateStatus(status.getText().toString());
+                                appManager.getCredentialM().updateStatus(status.getText().toString());
                                 if (allSet()){
                                     Intent intent = new Intent(getApplication(), MainActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -180,13 +181,13 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    if (!TextUtils.isEmpty(name.getText()) && (credentialsManager.getName() == null || !credentialsManager.getName().equals(name.getText().toString()))) {
+                    if (!TextUtils.isEmpty(name.getText()) && (appManager.getCredentialM().getName() == null || !appManager.getCredentialM().getName().equals(name.getText().toString()))) {
                         updated[2] = false;
                         dbPersonal.child("name").setValue(name.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 updated[2] = true;
-                                credentialsManager.updateName(name.getText().toString());
+                                appManager.getCredentialM().updateName(name.getText().toString());
                                 if (allSet()){
                                     Intent intent = new Intent(getApplication(), MainActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -205,7 +206,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (imageUriGeneral != null) {
                         System.out.println("HERERE");
                         updated[3] = false;
-                        String imageName = String.format("%s_.%s.jpg", String.valueOf(System.currentTimeMillis()), credentialsManager.getUsername());
+                        String imageName = String.format("%s_.%s.jpg", String.valueOf(System.currentTimeMillis()), appManager.getCredentialM().getUsername());
 
 
                         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -225,7 +226,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             updated[3] = true;
                                             if (task.isSuccessful()){
-                                                credentialsManager.updateProfilePic(downloadURL);
+                                                appManager.getCredentialM().updateProfilePic(downloadURL);
                                             }
                                             if (allSet()){
                                                 Intent intent = new Intent(getApplication(), MainActivity.class);

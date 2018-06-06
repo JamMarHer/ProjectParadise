@@ -19,12 +19,10 @@ import android.support.v7.widget.Toolbar;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Set;
-
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
@@ -41,11 +39,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment waveFragment;
     private HolderFragment exploreFragment;
     private HolderFragment chatFragment;
-    private AppModeManager appModeManager;
 
 
-    EventManager eventManager;
-    CredentialsManager credentialsManager;
+    AppManager appManager;
 
     private Toolbar mainToolbar;
     private FirebaseAuth mAuth;
@@ -60,10 +56,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
 
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
-        mAuth = FirebaseAuth.getInstance();
-        appModeManager = new AppModeManager(getApplicationContext());
+        appManager = (AppManager) new AppManager().initialize(getApplicationContext());
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -74,36 +67,36 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Intent  intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
-            appModeManager.setModeToExplore();
+            appManager.getModeM().setModeToExplore();
             showSnackbar("Welcome fam :)", Icons.COOL);
             loadExploreMode();
         }else if (source.equals("event_created")) {
-            appModeManager.setModeToHost();
+            appManager.getModeM().setModeToHost();
             invalidateOptionsMenu();
             loadHostMode();
         }else if (source.equals("qr_code_scanned")) {
-            appModeManager.setModeToAttendant();
+            appManager.getModeM().setModeToAttendant();
             loadAttendantMode();
         }else if (source.equals("joined_event")) {
-            appModeManager.setModeToAttendant();
+            appManager.getModeM().setModeToAttendant();
             loadAttendantMode();
-            showSnackbar(" You are now riding: "+ eventManager.getEventName(), Icons.COOL);
+            showSnackbar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
-            appModeManager.setModeToExplore();
+            appManager.getModeM().setModeToExplore();
             loadExploreMode();
         }else if (source.equals("logged_in")){
-            if (appModeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
             }
         }else if (source.equals("logged_in_no_internet")){
             // TODO constant check to get internet going.
-            if (appModeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
@@ -111,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
-            if (appModeManager.getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")){
                 loadHostMode();
-            }else if (appModeManager.getMode().equals("attendant")){
+            }else if (appManager.getModeM().getMode().equals("attendant")){
                 loadAttendantMode();
             }else{
                 loadExploreMode();
@@ -152,6 +145,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
+    public AppManager getAppManager() {
+        return appManager;
+    }
+
     private void showSnackbar(final String message, int icon) {
         TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);
@@ -187,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void createEvent(View view){
+
         Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
         MainActivity.this.startActivity(intent);
     }

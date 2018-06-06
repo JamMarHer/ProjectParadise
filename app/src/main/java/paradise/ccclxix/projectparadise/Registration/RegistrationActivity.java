@@ -59,7 +59,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        credentialsManager = new CredentialsManager(this);
+        credentialsManager = new CredentialsManager();
+        credentialsManager.initialize(getApplicationContext());
         usernameView = findViewById(R.id.registration_username);
         emailView = findViewById(R.id.registration_email);
         passwordView = findViewById(R.id.registration_password);

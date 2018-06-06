@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private boolean running = false;
-    private CredentialsManager credentialsManager;
 
     // UI references.
     // TODO name of class variables don't exactly match resgistration class.
@@ -75,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // Set up the login form.
 
-        credentialsManager = new CredentialsManager(this);
         mEmailView = findViewById(R.id.email);
 
         mPasswordView = findViewById(R.id.password);
@@ -161,7 +159,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        credentialsManager.updateCredentials();
+                        CredentialsManager credentialsManager = new CredentialsManager();
+                        credentialsManager.initialize(getApplicationContext());
                         if (credentialsManager.getToken() != null){
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference eventDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("token");
@@ -174,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        credentialsManager.updateCredentials();
                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                         mainIntent.putExtra("source", "login");
                         startActivity(mainIntent);

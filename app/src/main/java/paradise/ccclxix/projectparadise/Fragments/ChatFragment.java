@@ -12,33 +12,42 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.AttendantsInEvent;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.EventChat;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.OnGoingChats;
 import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class ChatFragment extends HolderFragment implements EnhancedFragment {
 
     RecyclerView listAttendingUsers;
-    AppModeManager appModeManager;
 
-    EventManager eventManager;
+    AppManager appManager;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shares,container, false);
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
-        appModeManager = new AppModeManager(getContext());
-        if(appModeManager.isHostingMode() || appModeManager.isAttendantMode()) {
+        if(appManager.getModeM().isHostingMode() || appManager.getModeM().isAttendantMode()) {
             setUpAttending(viewPager);
             TabLayout tabs = view.findViewById(R.id.result_tabs);
             tabs.setupWithViewPager(viewPager);

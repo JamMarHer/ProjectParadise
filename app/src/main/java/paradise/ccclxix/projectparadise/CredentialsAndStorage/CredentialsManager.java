@@ -11,38 +11,66 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 import paradise.ccclxix.projectparadise.User;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class CredentialsManager {
+public class CredentialsManager  implements Manager{
+
+    public static final String TYPE = "CREDENTIALS";
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String CREDENTIALS = "iDaeCredentials";
+    // TODO
+    private final String DESCRIPTION = "TODO";
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
 
-    public CredentialsManager(Context context){
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(CREDENTIALS, MODE_PRIVATE);
-        mAuth = FirebaseAuth.getInstance();
-        updateCredentials();
+    private boolean initialized = false;
+
+
+    public CredentialsManager(){
+
     }
 
+    @Override
+    public Manager initialize(Context context) {
+        if (!initialized){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            mAuth = FirebaseAuth.getInstance();
+            updateCredentials();
+            initialized = true;
+        }
+
+        return this;
+    }
+
+    @Override
     public void logout(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
     }
 
-    public void updateCredentials(){
+    private void updateCredentials(){
         if(mAuth.getCurrentUser() != null){
             DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid());
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    updateName(dataSnapshot.child("name").getValue().toString());
                     updateUsername(dataSnapshot.child("username").getValue().toString());
+                    updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
+                    updateStatus(dataSnapshot.child("status").getValue().toString());
+                    if (dataSnapshot.hasChild("token")){
+                        updateToken(dataSnapshot.child("token").getValue().toString());
+                    }
+                    // TODO temporary check.
+                    if (dataSnapshot.hasChild("email")){
+                        updateEmail(dataSnapshot.child("email").getValue().toString());
+                    }
                 }
 
                 @Override
@@ -54,24 +82,11 @@ public class CredentialsManager {
     }
 
 
-
-    public void registrationSave(String username, String email, String token){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("username", username);
-        editor.putString("email", email);
-        editor.putString("token", token);
-        editor.apply();
-
-    }
-
     public User getUser(){
         return new User(this.getEmail(), this.getToken());
     }
 
 
-    public boolean checkLoggedIn(){
-        return !(this.getUsername()  == null || this.getEmail() == null || this.getToken() == null);
-    }
 
     public String getUsername(){
         return sharedPreferences.getString("username",null);
@@ -130,5 +145,15 @@ public class CredentialsManager {
     }
 
 
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 }
 

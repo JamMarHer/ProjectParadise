@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,9 +41,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -53,26 +52,32 @@ import paradise.ccclxix.projectparadise.utils.Icons;
 
 public class ExploreFragment extends HolderFragment implements EnhancedFragment {
 
-    EventManager eventManager;
     WavesAdapter wavesAdapter;
     RecyclerView listWaves;
     FirebaseAuth mAuth;
-    CredentialsManager credentialsManager;
-    AppModeManager appModeManager;
     private ViewGroup container;
 
+    AppManager appManager;
 
     private List<HashMap<String, String>> waveList;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflater1 = inflater.inflate(R.layout.fragment_explore_waves, null);
-        eventManager = new EventManager(getContext());
 
 
         listWaves = inflater1.findViewById(R.id.myWaves);
-        credentialsManager = new CredentialsManager(getContext());
         mAuth = FirebaseAuth.getInstance();
         this.container = container;
 
@@ -89,9 +94,9 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
                 if (toPos == 0){
                     String waveID = waveList.get(toPos).get("waveID");
-                    eventManager.updateEventID(waveID);
-                    eventManager.updateEventName(waveList.get(toPos).get("waveName"));
-                    eventManager.updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
+                    appManager.getWaveM().updateEventID(waveID);
+                    appManager.getWaveM().updateEventName(waveList.get(toPos).get("waveName"));
+                    appManager.getWaveM().updateWavePosts(waveID, Long.valueOf(waveList.get(toPos).get("wavePosts")));
 
 
                     Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -185,7 +190,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                 if(!record.containsKey(waveID)) {
                                     waveList.add(eventInfo);
                                     record.put(waveID, waveList.size()-1);
-                                    if(waveID.equals(eventManager.getEventID())){
+                                    if(waveID.equals(appManager.getWaveM().getEventID())){
                                         int toExchange = waveList.size()-1;
                                         Collections.swap(waveList,0, toExchange);
                                         record.put(waveID, 0);
@@ -234,18 +239,18 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
 
-            if (eventManager.getWavePosts(waveID) != -1){
-                if (eventManager.getWavePosts(waveID) != currentWavePostsNum){
+            if (appManager.getWaveM().getWavePosts(waveID) != -1){
+                if (appManager.getWaveM().getWavePosts(waveID) != currentWavePostsNum){
                     holder.waveNotification.setVisibility(View.VISIBLE);
                 }else {
                     holder.waveNotification.setVisibility(View.INVISIBLE);
                 }
             }else {
-                eventManager.updateWavePosts(waveID, currentWavePostsNum);
+                appManager.getWaveM().updateWavePosts(waveID, currentWavePostsNum);
             }
 
 
-            if (waveID.equals(eventManager.getEventID())){
+            if (waveID.equals(appManager.getWaveM().getEventID())){
                 holder.waveJoin.setImageResource(R.drawable.baseline_radio_button_checked_white_36);
                 final int sdk = android.os.Build.VERSION.SDK_INT;
                 if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -260,11 +265,11 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (waveID.equals(eventManager.getEventID())){
+                    if (waveID.equals(appManager.getWaveM().getEventID())){
                         showTopSnackBar(getView(), "You are already riding this wave.", Icons.POOP);
                     }else {
-                        eventManager.updateEventID(waveID);
-                        eventManager.updateEventName(waveName);
+                        appManager.getWaveM().updateEventID(waveID);
+                        appManager.getWaveM().updateEventName(waveName);
 
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         intent.putExtra("source", "joined_event");
@@ -346,7 +351,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
     private void leaveWave(final String waveID){
         if (mAuth.getCurrentUser() != null) {
-            credentialsManager.updateCredentials();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
@@ -398,8 +402,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    appModeManager.setModeToExplore();
-                                                                    eventManager.updateEventID(null);
+                                                                    appManager.getModeM().setModeToExplore();
+                                                                    appManager.getWaveM().updateEventID(null);
                                                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                                                     intent.putExtra("source", "logged_in");
                                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

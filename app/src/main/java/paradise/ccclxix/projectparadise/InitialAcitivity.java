@@ -25,8 +25,6 @@ import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
 
 public class InitialAcitivity extends AppCompatActivity {
 
-    private CredentialsManager credentialsManager;
-    final int ALPHA_TIME_ANIMATION= 1002;
     private ImageView logo_welcome;
     private TextView idae_title;
     private LinearLayout loginRegisterLayout;

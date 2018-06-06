@@ -32,7 +32,8 @@ public class TokenAuthentication  extends FirebaseInstanceIdService{
     }
 
     private void updateToken(String newToken){
-        CredentialsManager credentialsManager =  new CredentialsManager(getApplicationContext());
+        CredentialsManager credentialsManager =  new CredentialsManager();
+        credentialsManager.initialize(getApplicationContext());
         firebaseAuth =  FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() != null && firebaseAuth.getUid() != null){
             FirebaseDatabase database = FirebaseDatabase.getInstance();

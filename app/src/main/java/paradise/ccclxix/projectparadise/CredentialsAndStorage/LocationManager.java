@@ -11,21 +11,41 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+
 import static android.content.Context.MODE_PRIVATE;
 
-public class LocationManager {
+public class LocationManager implements Manager{
+
+    public static final String TYPE = "LOCATION";
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private final String APP_MODE = "iDaeLocation";
+    //TODO
+    private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
 
-    public LocationManager(Context context){
-        this.context = context;
-        this.sharedPreferences = this.context.getSharedPreferences(APP_MODE, MODE_PRIVATE);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+    private boolean initialized = false;
 
+    public LocationManager(){
     }
+
+
+    @Override
+    public Manager initialize(Context context) {
+        if (!initialized){
+            this.context = context;
+            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+            getLastFormatedLocation(this.context);
+            initialized = true;
+        }
+
+        return this;
+    }
+
+
+
 
     public String getFormatedLocation(){
         return String.format("%s___%s", sharedPreferences.getString("lat",null),
@@ -70,4 +90,20 @@ public class LocationManager {
     }
 
 
+
+    @Override
+    public void logout(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 }

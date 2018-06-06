@@ -1,73 +1,47 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppModeManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.GeneralWaveFragment;
-import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveOverview;
-import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePost;
 import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
-import paradise.ccclxix.projectparadise.utils.Transformations;
 import paradise.ccclxix.projectparadise.utils.VerticalViewPager;
 
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
+    public static final String TYPE = "WAVE_FRAGMENT";
 
-    private CredentialsManager credentialsManager;
-
-    private TextView currentWave;
-
-    private ImageView waveShowPost;
-    private ImageView currentWaveThumbnail;
-
-
-    private AppModeManager appModeManager;
+    private ModeManager modeManager;
 
 
     View generalView;
-    EventManager eventManager;
+    AppManager appManager;
 
 
     private FirebaseAuth mAuth;
@@ -79,9 +53,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        eventManager = new EventManager(getContext());
-        appModeManager = new AppModeManager(getContext());
-        credentialsManager = new CredentialsManager(getContext());
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
    }
 
     @Nullable
@@ -101,7 +76,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final ArrayList<String> record = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        final String waveID = eventManager.getEventID();
+        final String waveID = appManager.getWaveM().getEventID();
 
         if (waveID != null){
 

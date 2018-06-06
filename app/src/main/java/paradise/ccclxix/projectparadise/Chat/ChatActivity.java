@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
 
@@ -50,9 +51,6 @@ public class ChatActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FirebaseAuth mauth;
     private String username;
-
-
-    private CredentialsManager credentialsManager;
 
     private Button chatAddButton;
     private Button chatSendButton;
@@ -89,14 +87,18 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView otherThumbnailTitle;
     private TextView otherUsernameTitle;
 
+    AppManager appManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
         setContentView(R.layout.activity_chat);
-        credentialsManager = new CredentialsManager(getApplicationContext());
         mauth = FirebaseAuth.getInstance();
         if(mauth.getCurrentUser() != null){
-            username = credentialsManager.getUsername();
+            username = appManager.getCredentialM().getUsername();
         }
         mChatUserID = getIntent().getStringExtra("user_id");
         mChatUserName = getIntent().getStringExtra("username_other");

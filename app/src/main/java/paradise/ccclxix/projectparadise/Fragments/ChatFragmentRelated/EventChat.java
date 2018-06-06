@@ -42,8 +42,9 @@ import java.util.Map;
 
 import paradise.ccclxix.projectparadise.Chat.MessageAdapter;
 import paradise.ccclxix.projectparadise.Chat.Messages;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -52,9 +53,6 @@ public class EventChat extends Fragment{
 
     private Toolbar toolbar;
     private FirebaseAuth mauth;
-
-
-    private CredentialsManager credentialsManager;
 
 
     private final List<Messages> messagesList = new ArrayList<>();
@@ -73,7 +71,6 @@ public class EventChat extends Fragment{
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     View inflater1;
 
-    EventManager eventManager;
     private Button chatAddButton;
     private Button chatSendButton;
     private EditText chatMessageText;
@@ -82,12 +79,18 @@ public class EventChat extends Fragment{
     private Query messageQuery;
     private ChildEventListener eventListener;
 
+    AppManager appManager;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mauth = FirebaseAuth.getInstance();
-        credentialsManager = new CredentialsManager(getContext());
-        eventManager = new EventManager(getContext());
+
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
+
         eventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -193,7 +196,7 @@ public class EventChat extends Fragment{
             }
         });
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("events_us").child(eventManager.getEventID()).child("messages");
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child("events_us").child(appManager.getWaveM().getEventID()).child("messages");
         messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);
         messageQuery.addChildEventListener(eventListener);
         return inflater1;
@@ -210,9 +213,9 @@ public class EventChat extends Fragment{
             StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
             Uri imageUri = data.getData();
 
-            final String currentUser = "events_us/"+eventManager.getEventID()+"/messages/" + credentialsManager.getUsername();
+            final String currentUser = "events_us/"+appManager.getWaveM().getEventID()+"/messages/" + appManager.getCredentialM().getUsername();
 
-            String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),credentialsManager.getUsername());
+            String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),appManager.getCredentialM().getUsername());
 
 
             StorageReference filePath = imageStorage.child("message_images").child(imageName);
@@ -252,7 +255,7 @@ public class EventChat extends Fragment{
     private void sendMessage(){
         final String message = chatMessageText.getText().toString();
         if (!TextUtils.isEmpty(message)){
-            String currentUserRef = "events_us/"+eventManager.getEventID()+"/messages/";
+            String currentUserRef = "events_us/"+appManager.getWaveM().getEventID()+"/messages/";
 
             DatabaseReference databaseReference = firebaseDatabase.getReference();
 

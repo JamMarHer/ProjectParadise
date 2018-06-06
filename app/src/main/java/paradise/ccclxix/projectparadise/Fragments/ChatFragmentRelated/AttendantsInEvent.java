@@ -23,23 +23,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class AttendantsInEvent extends Fragment{
 
     UsersAdapter usersAdapter;
     RecyclerView listAttendingUsers;
-    EventManager eventManager;
 
+    AppManager appManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflater1 = inflater.inflate(R.layout.attendants_event_fragment, null);
         listAttendingUsers = inflater1.findViewById(R.id.usersAttending);
-        eventManager = new EventManager(getContext());
+
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            appManager = mainActivity.getAppManager();
+        }
         usersAdapter = new UsersAdapter(getContext());
         listAttendingUsers.setAdapter(usersAdapter);
         listAttendingUsers.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,12 +77,11 @@ public class AttendantsInEvent extends Fragment{
         public UsersAdapter(final Context context){
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();
-            CredentialsManager cm =  new CredentialsManager(context);
-            final String personalUN = cm.getUsername();
+            final String personalUN = appManager.getCredentialM().getUsername();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("events_us")
-                    .child(eventManager.getEventID()).child("attending");
+                    .child(appManager.getWaveM().getEventID()).child("attending");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

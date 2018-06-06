@@ -1,17 +1,13 @@
 package paradise.ccclxix.projectparadise.Attending;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -37,8 +33,8 @@ import com.google.zxing.Result;
 import java.util.HashMap;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.EventManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
@@ -51,15 +47,18 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
     ValueEventListener valueEventListener;
     DatabaseReference databaseReference;
-    CredentialsManager credentialsManager;
-    EventManager eventManager;
 
 
     FirebaseAuth mAuth;
 
+    AppManager appManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_qrscanner);
         scannerView = (ZXingScannerView) findViewById(R.id.zxscan);
@@ -74,8 +73,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
             }
         });
 
-        credentialsManager = new CredentialsManager(getApplicationContext());
-        eventManager = new EventManager(getApplicationContext());
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkPermission()){
@@ -173,7 +170,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event.put("name_event", dataSnapshot.child("name_event").getValue().toString());
-                    event.put("event_id", eventManager.getEventID());
+                    event.put("event_id", appManager.getWaveM().getEventID());
                     event.put("privacy", dataSnapshot.child("privacy").getValue().toString());
                     event.put("latitude", dataSnapshot.child("latitude").getValue().toString());
                     event.put("longitude", dataSnapshot.child("longitude").getValue().toString());
@@ -238,8 +235,8 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                eventManager.updateEventID(eventID);
-                eventManager.updateEventName((String)event.get("event_name"));
+                appManager.getWaveM().updateEventID(eventID);
+                appManager.getWaveM().updateEventName((String)event.get("event_name"));
                 DatabaseReference eventDatabaseReference = database.getReference()
                         .child("events_us")
                         .child(eventID)
@@ -263,7 +260,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                     intent.putExtra("source", "joined_event");
                                     dialogInterface.dismiss();
 
-                                    eventManager.updatePersonalTimein(timeIn);
+                                    appManager.getWaveM().updatePersonalTimein(timeIn);
 
                                     QRScannerActivity.this.startActivity(intent);
                                     finish();

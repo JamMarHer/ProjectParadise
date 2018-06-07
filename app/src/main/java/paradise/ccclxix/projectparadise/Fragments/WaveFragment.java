@@ -79,7 +79,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         if (waveID != null){
 
-            final DatabaseReference databaseReference = firebase.get("event_us", waveID);
+            final DatabaseReference databaseReference = firebase.get("events_us", waveID);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

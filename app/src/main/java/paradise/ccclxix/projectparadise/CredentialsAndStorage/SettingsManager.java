@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,12 +22,17 @@ public class SettingsManager implements Manager {
     //TODO
     private final String DESCRIPTION = "TODO";
 
+    public static final ArrayList<String> PARENT_ORDER = new ArrayList<String>(){
+        {
+            add("NOTIFICATIONS");
+        }
+    };
 
     private Map<String, Map<String, Setting>> settings = new HashMap<String, Map<String, Setting>>() {
         {
             put("NOTIFICATIONS", new HashMap<String, Setting>(){
                 {
-                    put("ALL", new BooleanSetting("NOTIFICATIONS_ALL","TODO"));
+                    put("NOTIFICATIONS_ALL", new BooleanSetting("NOTIFICATIONS_ALL","TODO"));
                 }
             });
         }
@@ -60,14 +66,14 @@ public class SettingsManager implements Manager {
     }
 
     // TODO some regular expressssssssssssssssssssssssssssssion.
-    private String getSettingParentType(String setting){
+    public static String getSettingParentType(String setting){
         if(setting.contains("_")){
             return setting.split("_")[0];
         }
         return "";
     }
 
-    private String getSettingChildType(String setting){
+    public static String getSettingChildType(String setting){
         if(setting.contains("_")){
             return setting.split("_")[1];
         }

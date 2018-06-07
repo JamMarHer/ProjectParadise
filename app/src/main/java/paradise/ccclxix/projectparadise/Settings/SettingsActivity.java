@@ -143,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             Map<String, Map<String, Setting>> settings = appManager.getSettingsM().getSettings();
 
             for (final String parentSettingKey : SettingsManager.PARENT_ORDER){
-                StringSetting stringSetting = new StringSetting("TITLE", "TODO", parentSettingKey);
+                StringSetting stringSetting = new StringSetting("TITLE", parentSettingKey);
                 settingsList.add(stringSetting);
                 for (String settingKey : settings.get(parentSettingKey).keySet()){
                     settingsList.add(settings.get(parentSettingKey).get(settingKey));
@@ -172,7 +172,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (settingName.equals("TITLE")){
                 StringSetting ss = (StringSetting)settingsList.get(position);
-                holder.settingTitle.setText(ss.getValue());
+                holder.settingTitle.setText(ss.getDescription());
                 holder.settingString.setVisibility(View.INVISIBLE);
                 holder.settingSwitch.setVisibility(View.INVISIBLE);
                 holder.settingName.setVisibility(View.INVISIBLE);
@@ -184,19 +184,20 @@ public class SettingsActivity extends AppCompatActivity {
 
                 holder.settingSwitch.setVisibility(View.INVISIBLE);
                 holder.settingTitle.setVisibility(View.INVISIBLE);
+                // TODO Come up with a simple way to edit text for the settings.
 
 
             }else if (settingType.equals("BOOL")){
-                BooleanSetting bs = (BooleanSetting) settingsList.get(position);
+                final BooleanSetting bs = (BooleanSetting) settingsList.get(position);
                 holder.settingName.setText(SettingsManager.getSettingChildType(settingName));
                 holder.settingSwitch.setChecked(bs.getValue());
                 holder.settingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         try{
-                            appManager.getSettingsM().updateBoolSetting(settingName, b);
+                            bs.setValue(b);
                         }catch (Exception e){
-
+                            Log.d("UPDATING_BOOL_SETTING", e.getMessage());
                         }
                     }
                 });

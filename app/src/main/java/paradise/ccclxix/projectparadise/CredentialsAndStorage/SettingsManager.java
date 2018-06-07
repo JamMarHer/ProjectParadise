@@ -87,24 +87,6 @@ public class SettingsManager implements Manager {
     }
 
 
-    public void updateBoolSetting(String name, boolean value) throws Exception{
-        if (!isValidSettingName(name)){
-            throw new Exception(String.format("Setting : %s. Does not exist.",name));
-        }else{
-            BooleanSetting bs = (BooleanSetting)settings.get(getSettingParentType(name)).get(getSettingChildType(name));
-            bs.setValue(value);
-        }
-    }
-
-    public void updateStringSetting(String name, String value) throws Exception{
-        if (!isValidSettingName(name)){
-            throw new Exception(String.format("Setting : %s. Does not exist.",name));
-        }else{
-            StringSetting ss = (StringSetting)settings.get(getSettingParentType(name)).get(getSettingChildType(name));
-            ss.setValue(value);
-        }
-    }
-
 
     public Map<String, Map<String, Setting>> getSettings(){
         return settings;

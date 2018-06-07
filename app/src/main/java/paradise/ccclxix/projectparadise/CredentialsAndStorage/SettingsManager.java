@@ -52,10 +52,10 @@ public class SettingsManager implements Manager {
             for (String settingTypeKey : settings.keySet()){
                 for (String settingkey : settings.get(settingTypeKey).keySet())
                 if(settings.get(settingTypeKey).get(settingkey).getType().equals("BOOL")){
-                    BooleanSetting bool = new BooleanSetting(settingkey, "TODO", sharedPreferences.getBoolean(settingkey, false));
+                    BooleanSetting bool = new BooleanSetting(settingkey, "TODO", sharedPreferences);
                     settings.get(settingTypeKey).put(settingkey, bool);
                 }else if (settings.get(settingTypeKey).get(settingkey).getType().equals("STR")){
-                    StringSetting str = new StringSetting(settingkey, "TODO", sharedPreferences.getString(settingkey, ""));
+                    StringSetting str = new StringSetting(settingkey, "TODO", sharedPreferences);
                     settings.get(settingTypeKey).put(settingkey, str);
                 }
             }

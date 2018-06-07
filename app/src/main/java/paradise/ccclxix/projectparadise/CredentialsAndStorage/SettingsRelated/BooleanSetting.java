@@ -1,11 +1,14 @@
 package paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated;
 
+import android.content.SharedPreferences;
+
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
 
 public class BooleanSetting implements Setting {
 
     private String name;
     private String description;
+    private SharedPreferences sharedPreferences;
     private boolean value;
 
     public BooleanSetting(String name, String description) {
@@ -13,19 +16,24 @@ public class BooleanSetting implements Setting {
         this.description = description;
     }
 
-    public BooleanSetting(String name, String description, boolean value) {
+    public BooleanSetting(String name, String description, SharedPreferences sharedPreferences) {
         this.name = name;
         this.description = description;
         this.value = value;
+        this.sharedPreferences = sharedPreferences;
     }
 
     public void setValue(boolean value) {
+        if (this.sharedPreferences != null){
+            SharedPreferences.Editor editor = this.sharedPreferences.edit();
+            editor.putBoolean(this.name, value);
+            editor.apply();
+        }
         this.value = value;
     }
 
     @Override
     public String getType() {
-
         return "BOOL";
     }
 
@@ -39,8 +47,8 @@ public class BooleanSetting implements Setting {
         return this.description;
     }
 
-    public boolean getValue(){
-        return this.value;
+    public boolean getValue() {
+        return this.sharedPreferences != null && this.sharedPreferences.getBoolean(this.name, false);
     }
 }
 

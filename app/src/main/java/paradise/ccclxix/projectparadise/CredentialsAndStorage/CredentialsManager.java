@@ -63,15 +63,12 @@ public class CredentialsManager  implements Manager{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //updateName(dataSnapshot.child("name").getValue().toString());
                     updateUsername(dataSnapshot.child("username").getValue().toString());
-                    //updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
-                    //updateStatus(dataSnapshot.child("status").getValue().toString());
+                    updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
+                    updateStatus(dataSnapshot.child("status").getValue().toString());
                     if (dataSnapshot.hasChild("token")){
                         updateToken(dataSnapshot.child("token").getValue().toString());
                     }
-                    // TODO temporary check.
-                    if (dataSnapshot.hasChild("email")){
-                        updateEmail(dataSnapshot.child("email").getValue().toString());
-                    }
+
                 }
 
                 @Override
@@ -100,7 +97,10 @@ public class CredentialsManager  implements Manager{
     public String getProfilePic(){return  sharedPreferences.getString("profile_picture", null);}
 
     public String getEmail(){
-        return sharedPreferences.getString("email",null);
+        if (mAuth.getCurrentUser() != null){
+            return  mAuth.getCurrentUser().getEmail();
+        }
+        return "";
     }
 
     public String getToken(){
@@ -133,11 +133,6 @@ public class CredentialsManager  implements Manager{
         editor.apply();
     }
 
-    public void updateEmail(String email){
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("email", email);
-        editor.apply();
-    }
 
     public void updateToken(String token){
         SharedPreferences.Editor editor= this.sharedPreferences.edit();

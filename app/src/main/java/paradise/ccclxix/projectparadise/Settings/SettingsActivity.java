@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -216,6 +217,10 @@ public class SettingsActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     showProgress(true);
                                     String oldPass = input.getText().toString();
+                                    if (TextUtils.isEmpty(oldPass)){
+                                        showTopSnackBar(mSettingsView, " ...", Icons.POOP);
+                                        return;
+                                    }
                                     AuthCredential authCredential = EmailAuthProvider.getCredential(
                                             appManager.getCredentialM().getEmail(), oldPass);
                                     user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -238,18 +243,23 @@ public class SettingsActivity extends AppCompatActivity {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         showProgress(true);
                                                         String newPass = input.getText().toString();
-                                                        user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (!task.isSuccessful()){
-                                                                    showProgress(false);
-                                                                    Log.d("CHANGING_PASSWORD", "Failed");
-                                                                }else {
-                                                                    showProgress(false);
-                                                                    showTopSnackBar(mSettingsView,"Password updated", Icons.COOL);
+                                                        if (TextUtils.isEmpty(newPass)){
+                                                            showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                                       }else {
+                                                            user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (!task.isSuccessful()){
+                                                                        showProgress(false);
+                                                                        Log.d("CHANGING_PASSWORD", "Failed");
+                                                                    }else {
+                                                                        showProgress(false);
+                                                                        showTopSnackBar(mSettingsView,"Password updated", Icons.COOL);
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
+                                                            });
+                                                        }
+
                                                     }
                                                 });
                                                 buildernewPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

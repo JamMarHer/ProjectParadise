@@ -10,7 +10,7 @@
     android:background="@drawable/circle">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/wave_overview_thumbnail"
+        android:id="@+id/main_wave_thumbnail"
         android:layout_width="33dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
@@ -29,8 +29,8 @@
         android:text="TextView"
         android:textColor="@color/common_google_signin_btn_text_light_default"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_overview_thumbnail"
+        app:layout_constraintBottom_toBottomOf="@+id/main_wave_thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wave_overview_thumbnail"
-        app:layout_constraintTop_toTopOf="@+id/wave_overview_thumbnail" />
+        app:layout_constraintStart_toEndOf="@+id/main_wave_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/main_wave_thumbnail" />
 </android.support.constraint.ConstraintLayout>

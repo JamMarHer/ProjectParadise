@@ -247,7 +247,8 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
                         appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
                         picasso.load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(waveAddPostThumbnail))
+                                .fit()
+                                .centerInside()
                                 .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostThumbnail);
                     }
                 }

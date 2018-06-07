@@ -39,6 +39,9 @@ public class ChatFragment extends HolderFragment implements EnhancedFragment {
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
     }
 

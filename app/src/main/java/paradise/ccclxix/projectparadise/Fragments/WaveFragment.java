@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -59,6 +61,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
     private PostsAdapter adapter;
     private RecyclerView waveRecyclerView;
+    private ImageView waveThumbnail;
+    private TextView waveName;
+    private ImageView waveAddPost;
+
+
     private List<Map<String, String>> posts;
     Picasso picasso;
     @Override
@@ -70,6 +77,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
@@ -84,7 +94,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final View view = inflater.inflate(R.layout.fragment_wave, null);
 
         generalView = view;
-
+        waveName = view.findViewById(R.id.main_wave_name);
+        waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
+        waveAddPost = view.findViewById(R.id.main_add_post);
 
 
         this.container = container;
@@ -112,13 +124,19 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         String posts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
                         String thumbnail = null;
                         String points = null;
-                        String waveName = dataSnapshot.child("name_event").getValue().toString();
+                        String name = dataSnapshot.child("name_event").getValue().toString();
                         if (dataSnapshot.hasChild("image_url")){
                             thumbnail = dataSnapshot.child("image_url").getValue().toString();
+                            picasso.load(thumbnail)
+                                    .fit()
+                                    .centerInside()
+                                    .into(waveThumbnail);
                         }
                         if (dataSnapshot.hasChild("points")){
                             points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
                         }
+
+                        waveName.setText(name);
 
                     }
                 }
@@ -129,6 +147,14 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
         }
+
+        waveAddPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
         return view;
     }
 

@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,8 +38,6 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
@@ -90,6 +87,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
         firebase = new FirebaseBuilder();
     }
@@ -279,7 +279,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
-            waveThumbnail = itemView.findViewById(R.id.wave_overview_thumbnail);
+            waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
 
             mView = itemView;
         }

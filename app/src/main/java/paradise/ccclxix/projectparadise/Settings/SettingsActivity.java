@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.Map;
 
+import paradise.ccclxix.projectparadise.BuildConfig;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsManager;
@@ -50,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private TextView logout;
+    private TextView appVersion;
 
 
     private FirebaseAuth mAuth;
@@ -68,8 +71,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
-
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -93,7 +94,8 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        appVersion = findViewById(R.id.app_version);
+        appVersion.setText("Ver. " + BuildConfig.VERSION_NAME);
         logout = findViewById(R.id.settings_logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

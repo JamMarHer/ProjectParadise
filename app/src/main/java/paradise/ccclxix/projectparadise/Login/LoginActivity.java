@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
@@ -64,14 +65,13 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    private FirebaseAuth mAuth;
+    private FirebaseBuilder firebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
         // Set up the login form.
 
         mEmailView = findViewById(R.id.email);
@@ -155,15 +155,14 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(true);
             running = true;
 
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            firebase.auth().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         CredentialsManager credentialsManager = new CredentialsManager();
                         credentialsManager.initialize(getApplicationContext());
                         if (credentialsManager.getToken() != null){
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference eventDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("token");
+                            DatabaseReference eventDatabaseReference = firebase.get_user( "token");
                             eventDatabaseReference.setValue(credentialsManager.getToken()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

@@ -18,7 +18,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 
 public class TokenAuthentication  extends FirebaseInstanceIdService{
 
-    FirebaseAuth firebaseAuth;
+    FirebaseBuilder firebase;
 
     @Override
     public void onTokenRefresh() {
@@ -34,18 +34,18 @@ public class TokenAuthentication  extends FirebaseInstanceIdService{
     private void updateToken(String newToken){
         CredentialsManager credentialsManager =  new CredentialsManager();
         credentialsManager.initialize(getApplicationContext());
-        firebaseAuth =  FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null && firebaseAuth.getUid() != null){
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference eventDatabaseReference = database.getReference().child("users").child(firebaseAuth.getUid()).child("token");
-            eventDatabaseReference.setValue(newToken).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
-                        Log.d("UPDATED_TOKEN", "New token has been added to db.");
+        if (firebase.auth().getCurrentUser() != null && firebase.auth().getUid() != null){
+            DatabaseReference eventDatabaseReference = firebase.get("users", firebase.auth().getUid(), "token");
+            firebase.setValue(eventDatabaseReference, newToken,
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("UPDATED_TOKEN", "New token has been added to db.");
+                            }
+                        }
                     }
-                }
-            });
+            );
         }
         credentialsManager.updateToken(newToken);
     }

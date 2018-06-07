@@ -1,6 +1,5 @@
 package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -139,6 +138,7 @@ public class WaveOverview extends Fragment {
 
         return inflater1;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

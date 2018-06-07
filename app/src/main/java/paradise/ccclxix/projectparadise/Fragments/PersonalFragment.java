@@ -176,6 +176,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             }
         });
 
+
+
         pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext());
         highlightedPostsAdapter = new HighlightedPostsAdapter(getContext());
         mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
@@ -183,6 +185,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         LinearLayoutManager layoutManager= new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
         mPinnedWavesRecyclerV.setLayoutManager(layoutManager);
         mHightlightedPostsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mPinnedWavesRecyclerV.setItemViewCacheSize(20);
+        mPinnedWavesRecyclerV.setDrawingCacheEnabled(true);
+        mPinnedWavesRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        mHightlightedPostsRecyclerV.setItemViewCacheSize(20);
+        mHightlightedPostsRecyclerV.setDrawingCacheEnabled(true);
+        mHightlightedPostsRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         return inflater1;
 
@@ -224,6 +232,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     if (dataSnapshot.getValue() != null){
 
                         picasso.load(dataSnapshot.getValue().toString())
+                                .fit()
+                                .centerInside()
                                 .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
                     }
@@ -422,6 +432,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
             if (postType.equals("image")) {
                 picasso.load(postMessage2)
+                        .fit()
+                        .centerInside()
                         .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
 
             }else {
@@ -448,7 +460,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
                         picasso.load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
+                                .fit()
+                                .centerInside()
                                 .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
                     }
                 }
@@ -560,7 +573,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.waveName.setText(waveName);
             if (waveImageURL != null){
                 picasso.load(waveImageURL)
-                        .transform(Transformations.getScaleDownWithView(holder.waveThumbnail))
+                        .fit()
+                        .centerInside()
                         .placeholder(R.drawable.idaelogo6_full).into(holder.waveThumbnail);
             }
 

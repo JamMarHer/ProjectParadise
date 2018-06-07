@@ -6,16 +6,13 @@
     android:layout_height="match_parent"
     app:layout_constraintBottom_toTopOf="@+id/navigation">
 
-    <paradise.ccclxix.projectparadise.utils.VerticalViewPager
-        android:id="@+id/wave_post_viewpager"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/main_wave_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
 </android.support.constraint.ConstraintLayout>

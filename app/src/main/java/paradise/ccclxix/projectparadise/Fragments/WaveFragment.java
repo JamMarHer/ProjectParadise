@@ -39,6 +39,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -230,7 +231,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                         postInfo.put("postFromUsername", postSnapshot.child("fromUsername").getValue().toString());
                                         postInfo.put("postMessage", postSnapshot.child("message").getValue().toString());
                                         postInfo.put("postMessage2", postSnapshot.child("message2").getValue().toString());
-                                        postInfo.put("postEchos", postSnapshot.child("numEchos").getValue().toString());
+                                        postInfo.put("postEchos", String.valueOf(postSnapshot.child("echos").getChildrenCount()));
                                         postInfo.put("postComments", String.valueOf(postSnapshot.child("comments").getChildrenCount()));
                                         postInfo.put("postTime", String.valueOf(postSnapshot.child("time").getValue()));
                                         postInfo.put("postType", postSnapshot.child("type").getValue().toString());
@@ -269,10 +270,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(final PostViewHolder holder, int pos) {
+        public void onBindViewHolder(final PostViewHolder holder, final int pos) {
 
 
-            int position = getItemViewType(pos);
+            final int position = getItemViewType(pos);
             final String postID = posts.get(position).get("postID");
             final String postFromUsername = posts.get(position).get("postFromUsername");
             final String postMessage = posts.get(position).get("postMessage");
@@ -325,6 +326,52 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
+                }
+            });
+
+            DatabaseReference databaseReferencePost = firebaseDatabase1.getReference()
+                    .child("events_us")
+                    .child(waveID)
+                    .child("wall")
+                    .child("posts")
+                    .child(postID);
+            databaseReferencePost.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChildren()){
+                        String numEchos = String.valueOf(dataSnapshot.child("echos").getChildrenCount());
+                        String numComments =  String.valueOf(dataSnapshot.child("comments").getChildrenCount());
+                        posts.get(position).put("postEchos", numEchos);
+                        posts.get(position).put("postComments", numComments);
+
+                        holder.postEchos.setText(numEchos);
+                        holder.postComments.setText(numComments);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            holder.postLaunch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), WavePostActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("postID", postID);
+                    bundle.putString("username", postFromUsername);
+                    bundle.putString("message", postMessage);
+                    bundle.putString("message2", postMessage2);
+                    bundle.putString("numEchos", postNumEchos);
+                    bundle.putString("numComments", postNumComments);
+                    bundle.putString("time", postTime);
+                    bundle.putString("type", postType);
+                    bundle.putString("from", postFrom);
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
                 }
             });
 

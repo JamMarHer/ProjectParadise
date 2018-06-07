@@ -60,16 +60,14 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
 
     Picasso picasso;
-    public WavePostCommentsActivity(AppManager appManager){
-        this.appManager = appManager;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wave_post_comments);
 
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .build();
 
@@ -259,7 +257,8 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
                         appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
                         picasso.load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(holder.wavePostCommentThumbnail))
+                                .fit()
+                                .centerInside()
                                 .placeholder(R.drawable.baseline_person_black_24).into(holder.wavePostCommentThumbnail);
                     }
                 }

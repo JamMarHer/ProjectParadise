@@ -63,12 +63,13 @@ public class CredentialsManager  implements Manager{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //updateName(dataSnapshot.child("name").getValue().toString());
                     updateUsername(dataSnapshot.child("username").getValue().toString());
-                    updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
                     updateStatus(dataSnapshot.child("status").getValue().toString());
                     if (dataSnapshot.hasChild("token")){
                         updateToken(dataSnapshot.child("token").getValue().toString());
                     }
-
+                    if (dataSnapshot.hasChild("profile_picture")){
+                        updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
+                    }
                 }
 
                 @Override

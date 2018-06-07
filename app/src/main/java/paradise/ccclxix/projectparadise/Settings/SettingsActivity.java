@@ -1,6 +1,9 @@
 package paradise.ccclxix.projectparadise.Settings;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -60,9 +66,14 @@ public class SettingsActivity extends AppCompatActivity {
     SettingsAdapter settingsAdapter;
 
 
+
+
     AppManager appManager;
 
     ArrayList<Setting> settingsList;
+
+    View mProgressView;
+    View mSettingsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,9 @@ public class SettingsActivity extends AppCompatActivity {
         settingsList = new ArrayList<>();
         settingsAdapter = new SettingsAdapter(this);
         settingsRecyclerView = findViewById(R.id.settings_recyclerView);
+        mProgressView = findViewById(R.id.settings_progress);
+        mSettingsView = findViewById(R.id.settings_layout);
+
         settingsRecyclerView.setAdapter(settingsAdapter);
         settingsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -137,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
     private class SettingsAdapter extends RecyclerView.Adapter<SettingViewHolder>{
 
         private LayoutInflater inflater;
-        ProgressDialog progressDialog;
+        ProgressBar progressBar;
 
 
         public SettingsAdapter(final Context context){
@@ -194,19 +208,13 @@ public class SettingsActivity extends AppCompatActivity {
                             input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                             input.setHint("old password...");
                             builder.setView(input);
-                            if (progressDialog == null) {
-                                progressDialog = new ProgressDialog(SettingsActivity.this);
-                                progressDialog.setMessage("one sec...");
-                                progressDialog.setIndeterminate(true);
-                            }
-
 
 
                             builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    progressDialog.show();
+                                    showProgress(true);
                                     String oldPass = input.getText().toString();
                                     AuthCredential authCredential = EmailAuthProvider.getCredential(
                                             appManager.getCredentialM().getEmail(), oldPass);
@@ -214,10 +222,8 @@ public class SettingsActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()){
-                                                progressDialog.dismiss();
-                                                progressDialog.setMessage("another sec...");
-                                                progressDialog.setIndeterminate(true);
-                                                AlertDialog.Builder buildernewPass = new AlertDialog.Builder(SettingsActivity.this);
+
+                                                AlertDialog.Builder buildernewPass = new AlertDialog.Builder(SettingsActivity.this, R.style.MyDialogTheme);
                                                 buildernewPass.setTitle("Provide new password");
 
 
@@ -230,17 +236,17 @@ public class SettingsActivity extends AppCompatActivity {
                                                 buildernewPass.setPositiveButton("Go", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
-                                                        progressDialog.show();
+                                                        showProgress(true);
                                                         String newPass = input.getText().toString();
                                                         user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (!task.isSuccessful()){
-                                                                    progressDialog.dismiss();
+                                                                    showProgress(false);
                                                                     Log.d("CHANGING_PASSWORD", "Failed");
                                                                 }else {
-                                                                    progressDialog.dismiss();
-                                                                    showTopSnackBar(holder.mView,"Password updated", Icons.COOL);
+                                                                    showProgress(false);
+                                                                    showTopSnackBar(mSettingsView,"Password updated", Icons.COOL);
                                                                 }
                                                             }
                                                         });
@@ -251,15 +257,23 @@ public class SettingsActivity extends AppCompatActivity {
                                                     public void onClick(DialogInterface dialog, int which) {
 
                                                         dialog.cancel();
+                                                        showProgress(false);
                                                     }
                                                 });
-
+                                                buildernewPass.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                    @Override
+                                                    public void onDismiss(DialogInterface dialogInterface) {
+                                                        showProgress(false);
+                                                    }
+                                                });
+                                                showProgress(false);
                                                 buildernewPass.show();
 
 
 
                                             }else{
-                                                progressDialog.dismiss();
+                                                showTopSnackBar(mSettingsView, "Password incorrect", Icons.POOP);
+                                                showProgress(false);
                                             }
                                         }
                                     });
@@ -269,6 +283,14 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
+                                    showProgress(false);
+                                }
+                            });
+
+                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialogInterface) {
+                                    showProgress(false);
                                 }
                             });
 
@@ -327,4 +349,36 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            settingsRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+            settingsRecyclerView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    settingsRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            settingsRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
 }

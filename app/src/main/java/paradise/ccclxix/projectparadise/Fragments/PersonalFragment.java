@@ -39,6 +39,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
@@ -51,7 +52,7 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
 
-    FirebaseAuth mAuth;
+    private FirebaseBuilder firebase;
 
     private TextView personalUsername;
     private ImageView settingsImageView;
@@ -78,7 +79,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
@@ -92,7 +92,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         final View inflater1 = inflater.inflate(R.layout.fragment_my_waves, null);
 
         wavePinned = new ArrayList<>();
-        mAuth = FirebaseAuth.getInstance();
         settingsImageView = inflater1.findViewById(R.id.edit_profile);
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
@@ -157,7 +156,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
+                firebase.auth().signOut();
                 Intent intent = new Intent(getContext(), InitialAcitivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -180,16 +179,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     // TODO This can be highly optimized.
     private void setupNumWavesAndContacts(){
-        if(mAuth.getCurrentUser() != null && mAuth.getUid() != null) {
+        if(firebase.auth().getCurrentUser() != null && firebase.auth().getUid() != null) {
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference userDBReference = firebaseDatabase.getReference()
-                    .child("users")
-                    .child(mAuth.getUid())
-                    .child("waves")
-                    .child("in");
-            final DatabaseReference contacesDBReference = firebaseDatabase.getReference()
-                    .child("messages")
-                    .child(mAuth.getUid());
+            DatabaseReference userDBReference = firebase.get("users", firebase.auth().getUid(), "waves", "in");
+            final DatabaseReference contacesDBReference = firebase.get("messages", firebase.auth().getUid());
             userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -212,11 +205,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
-            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference = firebaseDatabase1.getReference()
-                    .child("users")
-                    .child(mAuth.getUid())
-                    .child("profile_picture");
+            DatabaseReference databaseReference = firebase.get_user("profile_picture");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -233,10 +222,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
-            databaseReference = firebaseDatabase1.getReference()
-                    .child("users")
-                    .child(mAuth.getUid())
-                    .child("status");
+            databaseReference = firebase.get_user("status");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -317,8 +303,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private HashMap<String, Integer> record;
         public HighlightedPostsAdapter(final Context context){
             highlightPosts = new ArrayList<>();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(mAuth.getUid()).child("waves").child("in");
+            final DatabaseReference databaseReference = firebase.get_user("waves", "in");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -335,10 +320,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                 if (dataSnapshot.hasChildren()){
                                     final String waveName = dataSnapshot.child("name_event").getValue().toString();
 
-                                    Query lastQuery = firebaseDatabase.getReference().child("events_us")
-                                            .child(waveID)
-                                            .child("wall")
-                                            .child("posts").orderByKey().limitToLast(1);
+                                    Query lastQuery = firebase.get("event_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
                                     lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot2) {
@@ -483,8 +465,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private HashMap<String, Integer> record;
         public WaveCardPinnedAdapter(final Context context){
             wavePinned = new ArrayList<>();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(mAuth.getUid()).child("waves").child("pinned");
+            final DatabaseReference databaseReference = firebase.get_user("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -493,7 +474,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
-                        DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
+                        DatabaseReference waveDBReference = firebase.get("event_us", waveID);
                         waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {

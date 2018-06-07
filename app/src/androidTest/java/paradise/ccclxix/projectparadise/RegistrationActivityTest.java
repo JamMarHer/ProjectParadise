@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,11 +17,10 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class RegistrationActivityTest {
     @Test
-    public void useAppContext() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+    public void test() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         assertEquals("paradise.ccclxix.projectparadise", appContext.getPackageName());
     }

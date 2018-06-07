@@ -25,6 +25,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.GeneralWaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveOverview;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -44,7 +45,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     AppManager appManager;
 
 
-    private FirebaseAuth mAuth;
+    private FirebaseBuilder firebase;
     private ViewGroup container;
 
 
@@ -52,7 +53,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
@@ -74,15 +74,12 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final FragmentAdapter fragmentAdapter = new FragmentAdapter(getChildFragmentManager());
 
         final ArrayList<String> record = new ArrayList<>();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
         final String waveID = appManager.getWaveM().getEventID();
 
         if (waveID != null){
 
-            final DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(waveID);
+            final DatabaseReference databaseReference = firebase.get("event_us", waveID);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -112,50 +109,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
         }
-/*
-        if (eventManager.getEventID() != null){
-
-            DatabaseReference dbPostsReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(eventManager.getEventID())
-                    .child("wall")
-                    .child("posts");
-            dbPostsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChildren()){
-                        for (final DataSnapshot post :dataSnapshot.getChildren()){
-                            if(!record.contains(post.getKey())){
-                                Bundle postInfo = new Bundle();
-                                postInfo.putString("postID", post.getKey());
-                                postInfo.putString("username", post.child("fromUsername").getValue().toString());
-                                postInfo.putString("from", post.child("from").getValue().toString());
-                                postInfo.putString("message", post.child("message").getValue().toString());
-                                postInfo.putString("message2", post.child("message2").getValue().toString());
-                                postInfo.putString("time", post.child("time").getValue().toString());
-                                postInfo.putString("type", post.child("type").getValue().toString());
-                                postInfo.putString("numEchos", String.valueOf(post.child("echos").getChildrenCount()));
-                                postInfo.putString("numComments", String.valueOf(post.child("comments").getChildrenCount()));
-                                record.add(post.getKey());
-                                WavePost wavePost = new WavePost();
-                                wavePost.setArguments(postInfo);
-                                fragmentAdapter.addFragment(wavePost);
-                            }
-                        }
-                        verticalViewPager.setAdapter(fragmentAdapter);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }
-        */
-
-
         return view;
     }
 

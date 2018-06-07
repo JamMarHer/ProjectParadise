@@ -28,7 +28,7 @@ public class InitialAcitivity extends AppCompatActivity {
     private ImageView logo_welcome;
     private TextView idae_title;
     private LinearLayout loginRegisterLayout;
-    private FirebaseAuth mAuth;
+    private FirebaseBuilder firebase;
 
 
 
@@ -36,7 +36,6 @@ public class InitialAcitivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_initial_acitivity);
         idae_title = findViewById(R.id.idae_title2);
         loginRegisterLayout = findViewById(R.id.registration_buttons);
@@ -46,7 +45,7 @@ public class InitialAcitivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = firebase.auth().getCurrentUser();
         logo_welcome = findViewById(R.id.welcome_logo);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
         ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);

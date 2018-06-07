@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     AppManager appManager;
 
     private Toolbar mainToolbar;
-    private FirebaseAuth mAuth;
+    private FirebaseBuilder firebase;
 
 
 

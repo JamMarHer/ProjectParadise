@@ -1,53 +1,50 @@
 package paradise.ccclxix.projectparadise.Settings;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
+import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.androidadvance.topsnackbar.TSnackbar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.BooleanSetting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
-import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
-import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+
+import static java.security.AccessController.getContext;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -138,6 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
     private class SettingsAdapter extends RecyclerView.Adapter<SettingViewHolder>{
 
         private LayoutInflater inflater;
+        ProgressDialog progressDialog;
 
 
         public SettingsAdapter(final Context context){
@@ -181,8 +179,100 @@ public class SettingsActivity extends AppCompatActivity {
             }else if (settingType.equals("STR")){
                 StringSetting ss = (StringSetting)settingsList.get(position);
                 holder.settingName.setText(SettingsManager.getSettingChildType(settingName));
-                if (settingName.equals(SettingsManager.EMAIL_TYPE) ||
-                        settingName.equals(SettingsManager.PASSWORD_TYPE)){
+                if (settingName.equals(SettingsManager.PASSWORD_TYPE)){
+                    holder.settingName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final FirebaseUser user = mAuth.getCurrentUser();
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                            builder.setTitle("Provide current password");
+
+                            final EditText input = new EditText(getApplicationContext());
+                            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            builder.setView(input);
+                            if (progressDialog == null) {
+                                progressDialog = new ProgressDialog(SettingsActivity.this);
+                                progressDialog.setMessage("One sec...");
+                                progressDialog.setIndeterminate(true);
+                            }
+
+
+
+                            builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    progressDialog.show();
+                                    String oldPass = input.getText().toString();
+                                    AuthCredential authCredential = EmailAuthProvider.getCredential(
+                                            appManager.getCredentialM().getEmail(), oldPass);
+                                    user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                progressDialog.dismiss();
+                                                progressDialog.setMessage("Another sec...");
+                                                progressDialog.setIndeterminate(true);
+                                                AlertDialog.Builder buildernewPass = new AlertDialog.Builder(SettingsActivity.this);
+                                                buildernewPass.setTitle("Provide new password");
+
+
+                                                final EditText input = new EditText(getApplicationContext());
+                                                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                                                buildernewPass.setView(input);
+
+
+                                                buildernewPass.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        progressDialog.show();
+                                                        String newPass = input.getText().toString();
+                                                        user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (!task.isSuccessful()){
+                                                                    progressDialog.dismiss();
+                                                                    Log.d("CHANGING_PASSWORD", "Failed");
+                                                                }else {
+                                                                    progressDialog.dismiss();
+                                                                    showTopSnackBar(holder.mView,"Password updated", Icons.COOL);
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                                buildernewPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        dialog.cancel();
+                                                    }
+                                                });
+
+                                                buildernewPass.show();
+
+
+
+                                            }else{
+                                                progressDialog.dismiss();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            builder.show();
+
+
+                        }
+                    });
                     //TODO Add prompt.
                 }
 
@@ -215,6 +305,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
+
+        public void showTopSnackBar(View view, String message, int icon){
+            TSnackbar snackbar = TSnackbar.make(view, message, TSnackbar.LENGTH_SHORT);
+            snackbar.setActionTextColor(Color.WHITE);
+            snackbar.setIconLeft(icon, 24);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
+            TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+            textView.setTextColor(Color.WHITE);
+            snackbar.show();
+        }
 
         @Override
         public int getItemCount() {

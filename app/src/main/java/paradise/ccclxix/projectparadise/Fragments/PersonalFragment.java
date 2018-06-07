@@ -83,6 +83,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
         }
+        firebase = new FirebaseBuilder();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -129,7 +130,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         setupNumWavesAndContacts();
 
 
-        personalUsername.setText(appManager.getCredentialM().getUsername());
+        if (appManager.getCredentialM() !=null){
+            personalUsername.setText(appManager.getCredentialM().getUsername());
+
+        }
 
 
         View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
@@ -320,7 +324,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                 if (dataSnapshot.hasChildren()){
                                     final String waveName = dataSnapshot.child("name_event").getValue().toString();
 
-                                    Query lastQuery = firebase.get("event_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
+                                    Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
                                     lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot2) {
@@ -474,7 +478,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
-                        DatabaseReference waveDBReference = firebase.get("event_us", waveID);
+                        DatabaseReference waveDBReference = firebase.get("events_us", waveID);
                         waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -39,6 +39,7 @@ public class InitialAcitivity extends AppCompatActivity {
         setContentView(R.layout.activity_initial_acitivity);
         idae_title = findViewById(R.id.idae_title2);
         loginRegisterLayout = findViewById(R.id.registration_buttons);
+        firebase = new FirebaseBuilder();
     }
 
 

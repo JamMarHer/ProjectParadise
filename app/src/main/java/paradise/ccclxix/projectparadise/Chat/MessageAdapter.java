@@ -1,5 +1,6 @@
 package paradise.ccclxix.projectparadise.Chat;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +9,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.R;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
@@ -22,13 +26,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private boolean personalPrev = false;
     private boolean otherPrev = false;
 
-    public MessageAdapter(List<Messages> messageList, String currentUsername){
+    Picasso picasso;
+    public MessageAdapter(List<Messages> messageList, String currentUsername, Context context){
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(context).downloader(new OkHttp3Downloader(okHttpClient)).build();
         this.messageList = messageList;
         this.currentUsername = currentUsername;
     }
 
     @Override
     public MessageAdapter.MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.message_single_layout, parent, false);
 
@@ -53,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.messageImage_personal.setVisibility(View.INVISIBLE);
             }else {
 
-                Picasso.with(holder.thumbnail_personal.getContext()).load(messages.getMessage())
+                picasso.load(messages.getMessage())
                         .placeholder(R.drawable.idaelogo6_full).into(holder.messageImage_personal);
                 holder.messageText_personal.setVisibility(View.INVISIBLE);
 
@@ -71,7 +81,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.messageImage_other.setVisibility(View.INVISIBLE);
             }else {
 
-                Picasso.with(holder.thumbnail_other.getContext()).load(messages.getMessage())
+                picasso.load(messages.getMessage())
                         .placeholder(R.drawable.idaelogo6_full).into(holder.messageImage_other);
                 holder.messageText_other.setVisibility(View.INVISIBLE);
             }

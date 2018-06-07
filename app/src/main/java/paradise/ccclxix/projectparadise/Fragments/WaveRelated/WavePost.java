@@ -22,12 +22,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -67,9 +70,14 @@ public class WavePost extends Fragment {
 
     AppManager appManager;
 
+    Picasso picasso;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         mAuth = FirebaseAuth.getInstance();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
@@ -125,7 +133,7 @@ public class WavePost extends Fragment {
 
         if (type.equals("image")){
 
-            Picasso.with(wavePostImage.getContext()).load(message2).transform(Transformations.getScaleDownWithMaxWidthDP(getContext()))
+            picasso.load(message2).transform(Transformations.getScaleDownWithMaxWidthDP(getContext()))
                     .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
         }
 
@@ -335,7 +343,7 @@ public class WavePost extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
 
-                    Picasso.with(wavePostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                    picasso.load(dataSnapshot.getValue().toString())
                             .transform(Transformations.getScaleDownWithView(wavePostThumbnail))
                             .placeholder(R.drawable.baseline_person_black_24).into(wavePostThumbnail);
                 }

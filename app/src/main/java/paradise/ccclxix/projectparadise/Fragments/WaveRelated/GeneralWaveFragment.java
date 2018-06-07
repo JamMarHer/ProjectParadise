@@ -23,8 +23,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Downloader;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +75,8 @@ public class GeneralWaveFragment extends Fragment {
     AppManager appManager;
 
 
+    Picasso picasso;
+
 
     public GeneralWaveFragment() {
         // Required empty public constructor
@@ -99,6 +105,11 @@ public class GeneralWaveFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getActivity().getCacheDir(), 250000000))
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         if (getArguments() != null) {
             mWaveID = getArguments().getString(ARG_ID);
             mWaveName = getArguments().getString(ARG_NAME);
@@ -129,7 +140,7 @@ public class GeneralWaveFragment extends Fragment {
         waveName.setText(mWaveName);
 
         if (mWaveImage !=null){
-            Picasso.with(waveThumbnail.getContext()).load(mWaveImage)
+            picasso.load(mWaveImage)
                     .transform(Transformations.getScaleDownWithView(waveThumbnail))
                     .placeholder(R.drawable.idaelogo6_full).into(waveThumbnail);
         }
@@ -187,9 +198,7 @@ public class GeneralWaveFragment extends Fragment {
 
 
         private HashMap<String, Integer> record;
-        Picasso picasso;
         public PostsAdapter(final Context context){
-            picasso = new Picasso.Builder(getContext()).downloader(new OkHttpDownloader(getContext().getCacheDir(), 250000000)).build();
             posts = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -281,8 +290,7 @@ public class GeneralWaveFragment extends Fragment {
             holder.postComments.setText(postNumComments);
 
             if (postType.equals("image")) {
-                picasso.with(holder.postImage.getContext())
-                        .load(postMessage2)
+                picasso.load(postMessage2)
                         .into(holder.postImage);
 
             }else {
@@ -302,7 +310,7 @@ public class GeneralWaveFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().equals("default")){
-                        picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail)).into(holder.postWaveThumbnail);
                     }
                 }

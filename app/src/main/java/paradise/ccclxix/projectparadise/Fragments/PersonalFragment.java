@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
@@ -75,10 +78,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
     AppManager appManager;
-
+    Picasso picasso;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getActivity().getCacheDir(), 25000000))
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
@@ -215,7 +223,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
                     }
@@ -413,7 +421,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.postComments.setText(postNumComments);
 
             if (postType.equals("image")) {
-                Picasso.with(holder.postImage.getContext()).load(postMessage2)
+                picasso.load(postMessage2)
                         .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
 
             }else {
@@ -439,7 +447,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
-                        Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
                                 .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
                     }
@@ -551,7 +559,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final long currentWavePostsNum  = Long.valueOf(wavePinned.get(position).get("wavePosts"));
             holder.waveName.setText(waveName);
             if (waveImageURL != null){
-                Picasso.with(holder.waveThumbnail.getContext()).load(waveImageURL)
+                picasso.load(waveImageURL)
                         .transform(Transformations.getScaleDownWithView(holder.waveThumbnail))
                         .placeholder(R.drawable.idaelogo6_full).into(holder.waveThumbnail);
             }

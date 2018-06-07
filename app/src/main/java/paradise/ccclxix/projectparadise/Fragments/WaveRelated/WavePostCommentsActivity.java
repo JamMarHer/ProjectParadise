@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -55,6 +58,8 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
     String postID;
 
+
+    Picasso picasso;
     public WavePostCommentsActivity(AppManager appManager){
         this.appManager = appManager;
     }
@@ -64,6 +69,11 @@ public class WavePostCommentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wave_post_comments);
+
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
 
         postID = getIntent().getExtras().getString("postID");
@@ -248,7 +258,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue() != null){
 
                         appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
-                        Picasso.with(holder.wavePostCommentThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(holder.wavePostCommentThumbnail))
                                 .placeholder(R.drawable.baseline_person_black_24).into(holder.wavePostCommentThumbnail);
                     }

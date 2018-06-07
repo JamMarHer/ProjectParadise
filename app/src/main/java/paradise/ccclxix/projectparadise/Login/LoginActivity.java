@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
+        firebase = new FirebaseBuilder();
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }

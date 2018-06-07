@@ -60,7 +60,9 @@
         <activity android:name=".Fragments.WaveRelated.WaveAddPostActivity" />
         <activity android:name=".Fragments.WaveRelated.WavePostCommentsActivity" />
         <activity android:name=".Fragments.PersonalRelated.EditProfileActivity" />
-        <activity android:name=".Settings.SettingsActivity"></activity>
+        <activity
+            android:name=".Settings.SettingsActivity"
+            />
     </application>
 
 </manifest>

@@ -21,12 +21,10 @@ public class StringSetting implements Setting {
     private String description;
     private String value;
     private SharedPreferences sharedPreferences;
-    private FirebaseAuth mAuth;
 
     public StringSetting(String name, String description){
         this.name = name;
         this.description = description;
-        this.mAuth =  FirebaseAuth.getInstance();
     }
 
     public StringSetting(String name, String description, SharedPreferences sharedPreferences){
@@ -62,23 +60,7 @@ public class StringSetting implements Setting {
     public void setValue(String email, String pass, final String newPass) {
         if (this.sharedPreferences != null){
             if(this.name.equals(SettingsManager.PASSWORD_TYPE) || this.name.equals(SettingsManager.EMAIL_TYPE)){
-                final FirebaseUser user = mAuth.getCurrentUser();
-                AuthCredential authCredential = EmailAuthProvider.getCredential(email, pass);
-                user.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (!task.isSuccessful()){
-                                        Log.d("CHANGING_PASSWORD", "Failed");
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
+
             }else{
                 Log.d("UPDATING_SETTING", "Incorrect method to update setting.");
             }

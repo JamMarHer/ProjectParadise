@@ -185,15 +185,16 @@ public class SettingsActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             final FirebaseUser user = mAuth.getCurrentUser();
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-                            builder.setTitle("Provide current password");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this, R.style.MyDialogTheme);
+                            builder.setTitle("Provide old password");
 
                             final EditText input = new EditText(getApplicationContext());
                             input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            input.setHint("Old password...");
                             builder.setView(input);
                             if (progressDialog == null) {
                                 progressDialog = new ProgressDialog(SettingsActivity.this);
-                                progressDialog.setMessage("One sec...");
+                                progressDialog.setMessage("one sec...");
                                 progressDialog.setIndeterminate(true);
                             }
 
@@ -212,7 +213,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()){
                                                 progressDialog.dismiss();
-                                                progressDialog.setMessage("Another sec...");
+                                                progressDialog.setMessage("another sec...");
                                                 progressDialog.setIndeterminate(true);
                                                 AlertDialog.Builder buildernewPass = new AlertDialog.Builder(SettingsActivity.this);
                                                 buildernewPass.setTitle("Provide new password");
@@ -220,6 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                                                 final EditText input = new EditText(getApplicationContext());
                                                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                                                input.setHint("New password...");
                                                 buildernewPass.setView(input);
 
 

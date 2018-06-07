@@ -57,6 +57,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
         }
+        firebase = new FirebaseBuilder();
    }
 
     @Nullable

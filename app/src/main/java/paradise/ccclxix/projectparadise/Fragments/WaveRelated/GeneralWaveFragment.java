@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class GeneralWaveFragment extends Fragment {
     private static final String ARG_ID = "param1";
     private static final String ARG_NAME = "param2";
     private static final String ARG_IMAGE = "param3";
+
 
     // TODO: Rename and change types of parameters
     private String mWaveID;
@@ -185,7 +187,9 @@ public class GeneralWaveFragment extends Fragment {
 
 
         private HashMap<String, Integer> record;
+        Picasso picasso;
         public PostsAdapter(final Context context){
+            picasso = new Picasso.Builder(getContext()).downloader(new OkHttpDownloader(getContext().getCacheDir(), 250000000)).build();
             posts = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -277,7 +281,7 @@ public class GeneralWaveFragment extends Fragment {
             holder.postComments.setText(postNumComments);
 
             if (postType.equals("image")) {
-                Picasso.with(holder.postImage.getContext())
+                picasso.with(holder.postImage.getContext())
                         .load(postMessage2)
                         .into(holder.postImage);
 
@@ -298,7 +302,7 @@ public class GeneralWaveFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null && !dataSnapshot.getValue().equals("default")){
-                        Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
                                 .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail)).into(holder.postWaveThumbnail);
                     }
                 }

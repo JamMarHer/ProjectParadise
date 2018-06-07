@@ -69,53 +69,53 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (source.equals("registration")){
             appManager.getModeM().setModeToExplore();
             showSnackbar("Welcome fam :)", Icons.COOL);
-            loadExploreMode();
+            loadFragments();
         }else if (source.equals("event_created")) {
             appManager.getModeM().setModeToHost();
             invalidateOptionsMenu();
-            loadHostMode();
+            loadFragments();
         }else if (source.equals("qr_code_scanned")) {
             appManager.getModeM().setModeToAttendant();
-            loadAttendantMode();
+            loadFragments();
         }else if (source.equals("joined_event")) {
             appManager.getModeM().setModeToAttendant();
-            loadAttendantMode();
+            loadFragments();
             showSnackbar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
             appManager.getModeM().setModeToExplore();
-            loadExploreMode();
+            loadFragments();
         }else if (source.equals("logged_in")){
             if (appManager.getModeM().getMode().equals("host")){
-                loadHostMode();
+                loadFragments();
             }else if (appManager.getModeM().getMode().equals("attendant")){
-                loadAttendantMode();
+                loadFragments();
             }else{
-                loadExploreMode();
+                loadFragments();
             }
         }else if (source.equals("logged_in_no_internet")){
             // TODO constant check to get internet going.
             if (appManager.getModeM().getMode().equals("host")){
-                loadHostMode();
+                loadFragments();
             }else if (appManager.getModeM().getMode().equals("attendant")){
-                loadAttendantMode();
+                loadFragments();
             }else{
-                loadExploreMode();
+                loadFragments();
             }
             showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appManager.getModeM().getMode().equals("host")){
-                loadHostMode();
+                loadFragments();
             }else if (appManager.getModeM().getMode().equals("attendant")){
-                loadAttendantMode();
+                loadFragments();
             }else{
-                loadExploreMode();
+                loadFragments();
             }
             showSnackbar("Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
         if(source.equals("postAdded")){
-            loadAttendantMode();
+            loadFragments();
             loadAllFragments();
             fragmentToShow(waveFragment, personalFragment, exploreFragment, chatFragment);
             navigation.setSelectedItemId(R.id.navigation_wave);
@@ -161,22 +161,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    public void loadExploreMode(){
-        personalFragment =  new PersonalFragment();
-        waveFragment = new WaveFragment();
-        exploreFragment = new ExploreFragment();
-        chatFragment = new ChatFragment();
-    }
-
-    public void loadHostMode(){
-        showSnackbar("  You are now hosting.", Icons.FIRE);
-        personalFragment =  new PersonalFragment();
-        waveFragment = new WaveFragment();
-        exploreFragment = new ExploreFragment();
-        chatFragment = new ChatFragment();
-    }
-
-    public void loadAttendantMode(){
+    public void loadFragments(){
         personalFragment =  new PersonalFragment();
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();

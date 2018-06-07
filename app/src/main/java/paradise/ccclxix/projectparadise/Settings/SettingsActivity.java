@@ -190,7 +190,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             final EditText input = new EditText(getApplicationContext());
                             input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                            input.setHint("Old password...");
+                            input.setHint("old password...");
                             builder.setView(input);
                             if (progressDialog == null) {
                                 progressDialog = new ProgressDialog(SettingsActivity.this);
@@ -221,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                                                 final EditText input = new EditText(getApplicationContext());
                                                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                                                input.setHint("New password...");
+                                                input.setHint("new password...");
                                                 buildernewPass.setView(input);
 
 

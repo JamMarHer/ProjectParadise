@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -180,11 +181,15 @@ public class SettingsActivity extends AppCompatActivity {
             }else if (settingType.equals("STR")){
                 StringSetting ss = (StringSetting)settingsList.get(position);
                 holder.settingName.setText(SettingsManager.getSettingChildType(settingName));
-                holder.settingString.setText(ss.getValue());
+                if (settingName.equals(SettingsManager.EMAIL_TYPE) ||
+                        settingName.equals(SettingsManager.PASSWORD_TYPE)){
+                    //TODO Add prompt.
+                }
 
+                holder.settingString.setVisibility(View.INVISIBLE);
                 holder.settingSwitch.setVisibility(View.INVISIBLE);
                 holder.settingTitle.setVisibility(View.INVISIBLE);
-                // TODO Come up with a simple way to edit text for the settings.
+                // TODO Come up with a simple way to edit text for the settings.`
 
 
             }else if (settingType.equals("BOOL")){

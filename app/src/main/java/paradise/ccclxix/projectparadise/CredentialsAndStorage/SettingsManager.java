@@ -3,6 +3,8 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,21 +20,33 @@ public class SettingsManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
+
+    public static final String PASSWORD_TYPE = "Account_Password";
+    public static final String EMAIL_TYPE = "Account_Email";
+
     public static final String TYPE = "SETTINGS";
     //TODO
     private final String DESCRIPTION = "TODO";
 
+
     public static final ArrayList<String> PARENT_ORDER = new ArrayList<String>(){
         {
-            add("NOTIFICATIONS");
+            add("Account");
+            add("Notifications");
         }
     };
 
     private Map<String, Map<String, Setting>> settings = new HashMap<String, Map<String, Setting>>() {
         {
-            put("NOTIFICATIONS", new HashMap<String, Setting>(){
+            put("Account", new HashMap<String, Setting>(){
                 {
-                    put("NOTIFICATIONS_ALL", new BooleanSetting("NOTIFICATIONS_ALL","TODO"));
+                    put("Account_Password", new StringSetting("Account_Password", "TODO"));
+                    put("Account_Email", new StringSetting("Account_Email", "TODO"));
+                }
+            });
+            put("Notifications", new HashMap<String, Setting>(){
+                {
+                    put("Notifications_All", new BooleanSetting("Notifications_All","TODO"));
                 }
             });
         }

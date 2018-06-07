@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated;
 import android.content.SharedPreferences;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsManager;
 
 public class BooleanSetting implements Setting {
 

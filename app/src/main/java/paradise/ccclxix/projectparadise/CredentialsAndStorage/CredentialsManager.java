@@ -13,17 +13,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 import paradise.ccclxix.projectparadise.User;
+import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class CredentialsManager  implements Manager{
 
-    public static final String TYPE = "CREDENTIALS";
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    // TODO
-    private final String DESCRIPTION = "TODO";
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
 
@@ -39,7 +37,7 @@ public class CredentialsManager  implements Manager{
     public Manager initialize(Context context) {
         if (!initialized){
             this.context = context;
-            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.C_TYPE, MODE_PRIVATE);
             mAuth = FirebaseAuth.getInstance();
             updateCredentials();
             initialized = true;
@@ -61,15 +59,19 @@ public class CredentialsManager  implements Manager{
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    //updateName(dataSnapshot.child("name").getValue().toString());
-                    updateUsername(dataSnapshot.child("username").getValue().toString());
-                    updateStatus(dataSnapshot.child("status").getValue().toString());
-                    if (dataSnapshot.hasChild("token")){
+
+                    if (dataSnapshot.hasChild("name"))
+                        updateName(dataSnapshot.child("name").getValue().toString());
+
+                    if (dataSnapshot.hasChild("status"))
+                        updateStatus(dataSnapshot.child("status").getValue().toString());
+
+                    if (dataSnapshot.hasChild("token"))
                         updateToken(dataSnapshot.child("token").getValue().toString());
-                    }
-                    if (dataSnapshot.hasChild("profile_picture")){
+
+                    if (dataSnapshot.hasChild("profile_picture"))
                         updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
-                    }
+
                 }
 
                 @Override
@@ -145,12 +147,12 @@ public class CredentialsManager  implements Manager{
 
     @Override
     public String getType() {
-        return TYPE;
+        return ManagersInfo.C_TYPE;
     }
 
     @Override
     public String getDescription() {
-        return DESCRIPTION;
+        return ManagersInfo.C_DESCRIPTION;
     }
 }
 

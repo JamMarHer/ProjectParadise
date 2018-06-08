@@ -12,17 +12,15 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class LocationManager implements Manager{
 
-    public static final String TYPE = "LOCATION";
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    //TODO
-    private final String DESCRIPTION = "TODO";
     private FusedLocationProviderClient mFusedLocationClient;
 
     private boolean initialized = false;
@@ -35,7 +33,7 @@ public class LocationManager implements Manager{
     public Manager initialize(Context context) {
         if (!initialized){
             this.context = context;
-            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.L_TYPE, MODE_PRIVATE);
             mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
             getLastFormatedLocation(this.context);
             initialized = true;
@@ -99,11 +97,11 @@ public class LocationManager implements Manager{
     }
     @Override
     public String getType() {
-        return TYPE;
+        return ManagersInfo.L_TYPE;
     }
 
     @Override
     public String getDescription() {
-        return DESCRIPTION;
+        return ManagersInfo.L_DESCRIPTION;
     }
 }

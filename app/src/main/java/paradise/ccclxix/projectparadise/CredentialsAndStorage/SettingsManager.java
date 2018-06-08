@@ -13,6 +13,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.BooleanSetting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
+import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -24,9 +25,6 @@ public class SettingsManager implements Manager {
     public static final String PASSWORD_TYPE = "Account_Password";
     public static final String EMAIL_TYPE = "Account_Email";
 
-    public static final String TYPE = "SETTINGS";
-    //TODO
-    private final String DESCRIPTION = "TODO";
 
 
     public static final ArrayList<String> PARENT_ORDER = new ArrayList<String>(){
@@ -61,7 +59,7 @@ public class SettingsManager implements Manager {
     public Manager initialize(Context context) {
         if (!initialized){
             this.context = context;
-            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.S_TYPE, MODE_PRIVATE);
 
             for (String settingTypeKey : settings.keySet()){
                 for (String settingkey : settings.get(settingTypeKey).keySet())
@@ -115,11 +113,11 @@ public class SettingsManager implements Manager {
 
     @Override
     public String getType() {
-        return TYPE;
+        return ManagersInfo.S_TYPE;
     }
 
     @Override
     public String getDescription() {
-        return DESCRIPTION;
+        return ManagersInfo.S_DESCRIPTION;
     }
 }

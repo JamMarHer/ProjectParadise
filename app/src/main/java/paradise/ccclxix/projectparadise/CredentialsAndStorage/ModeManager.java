@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import java.nio.file.Path;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -13,9 +14,6 @@ public class ModeManager implements Manager {
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    public static final String TYPE = "MODE";
-    //TODO
-    private final String DESCRIPTION = "TODO";
 
     private boolean initialzed = false;
 
@@ -26,7 +24,7 @@ public class ModeManager implements Manager {
     public Manager initialize(Context context) {
         if (!initialzed){
             this.context = context;
-            this.sharedPreferences = this.context.getSharedPreferences(TYPE, MODE_PRIVATE);
+            this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.M_TYPE, MODE_PRIVATE);
             initialzed = true;
         }
         return this;
@@ -73,11 +71,11 @@ public class ModeManager implements Manager {
 
     @Override
     public String getType() {
-        return TYPE;
+        return ManagersInfo.M_TYPE;
     }
 
     @Override
     public String getDescription() {
-        return DESCRIPTION;
+        return ManagersInfo.M_DESCRIPTION;
     }
 }

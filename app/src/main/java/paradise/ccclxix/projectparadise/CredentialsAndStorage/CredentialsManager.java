@@ -29,6 +29,16 @@ public class CredentialsManager  implements Manager{
     private boolean initialized = false;
 
 
+    private DataChangedListener listener;
+
+    public interface DataChangedListener{
+        public void onDataChanged(boolean changed);
+    }
+
+    public void setDataChangedListener(DataChangedListener listener){
+        this.listener = listener;
+
+    }
 
     public CredentialsManager(){
 
@@ -42,6 +52,7 @@ public class CredentialsManager  implements Manager{
             this.fb = new FirebaseBuilder();
             this.mAuth = FirebaseAuth.getInstance();
             this.initialized = true;
+            this.listener = null;
             updateCredentials();
         }
         return this;
@@ -62,6 +73,7 @@ public class CredentialsManager  implements Manager{
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot.hasChild("username"))
+
                         updateUsername(dataSnapshot.child("username").getValue().toString());
 
                     if (dataSnapshot.hasChild("name"))
@@ -82,6 +94,8 @@ public class CredentialsManager  implements Manager{
 
                     if (dataSnapshot.hasChild("echos"))
                         updateNumWaves(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
+                    if (listener != null)
+                        listener.onDataChanged(true); // <---- fire listener here
 
                 }
 
@@ -208,5 +222,7 @@ public class CredentialsManager  implements Manager{
     public String getDescription() {
         return ManagersInfo.C_DESCRIPTION;
     }
+
+
 }
 

@@ -39,6 +39,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
@@ -110,8 +111,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mStatus = inflater1.findViewById(R.id.personal_status);
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
-        // TODO check for user logged in.
-
 
 
         createWave = inflater1.findViewById(R.id.createWave);
@@ -199,17 +198,25 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     // TODO This can be highly optimized.
     private void setupUserCard(){
-        personalUsername.setText(appManager.getCredentialM().getUsername());
-        mStatus.setText(appManager.getCredentialM().getStatus());
-        myNumContacts.setText(appManager.getCredentialM().getNumContacts());
-        myNumWaves.setText(appManager.getCredentialM().getNumWaves());
-        String thumbnailURL = appManager.getCredentialM().getProfilePic();
-        if (!TextUtils.isEmpty(thumbnailURL)) {
-            picasso.load(thumbnailURL)
-                    .fit()
-                    .centerInside()
-                    .placeholder(R.drawable.ic_import_export).into(profilePicture);
-        }
+        appManager.getCredentialM().setDataChangedListener(new CredentialsManager.DataChangedListener() {
+            @Override
+            public void onDataChanged(boolean key) {
+                if (key){
+                    personalUsername.setText(appManager.getCredentialM().getUsername());
+                    mStatus.setText(appManager.getCredentialM().getStatus());
+                    myNumContacts.setText(appManager.getCredentialM().getNumContacts());
+                    myNumWaves.setText(appManager.getCredentialM().getNumWaves());
+                    String thumbnailURL = appManager.getCredentialM().getProfilePic();
+                    if (!TextUtils.isEmpty(thumbnailURL)) {
+                        picasso.load(thumbnailURL)
+                                .fit()
+                                .centerInside()
+                                .placeholder(R.drawable.ic_import_export).into(profilePicture);
+                    }
+                }
+
+            }
+        });
     }
 
 

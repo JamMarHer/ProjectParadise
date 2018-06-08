@@ -82,10 +82,8 @@ public class WavePostActivity extends AppCompatActivity {
         appManager.initialize(getApplicationContext());
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        ImageView mainInfo = toolbar.getRootView().findViewById(R.id.main_info);
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
         mainSettings.setVisibility(View.INVISIBLE);
-        mainInfo.setVisibility(View.INVISIBLE);
         mAuth = FirebaseAuth.getInstance();
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

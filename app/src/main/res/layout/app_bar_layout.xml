@@ -22,21 +22,6 @@
 
 
         <ImageView
-            android:id="@+id/main_info"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/circle"
-            android:clickable="true"
-            android:elevation="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_info_outline_black_24dp" />
-
-        <ImageView
             android:id="@+id/main_settings"
             android:layout_width="30dp"
             android:layout_height="30dp"

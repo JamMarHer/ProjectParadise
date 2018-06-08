@@ -10,6 +10,45 @@
     android:layout_marginTop="3dp"
     android:background="@drawable/circle">
 
+    <ImageView
+        android:id="@+id/main_comment_post"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle"
+        android:elevation="1dp"
+        android:foregroundGravity="center_vertical"
+        android:src="@drawable/baseline_add_comment_black_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_echo_post" />
+
+    <ImageView
+        android:id="@+id/main_echo_post"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/circle"
+        android:elevation="1dp"
+        android:src="@drawable/baseline_panorama_fish_eye_black_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="6dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/main_comment_post"
+        app:layout_constraintEnd_toStartOf="@+id/main_comment_post"
+        app:layout_constraintTop_toTopOf="@+id/main_comment_post"
+        app:srcCompat="@drawable/circle_holder_main_colors" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/wave_single_brief_wave_thumbnail_main"
         android:layout_width="33dp"
@@ -25,29 +64,28 @@
         android:id="@+id/wave_single_brief_launch_main"
         android:layout_width="66dp"
         android:layout_height="33dp"
-        android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_launch_black_24" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:elevation=".5dp"
         android:foregroundGravity="center_horizontal"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_launch_main"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch_main">
+        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main">
 
         <ImageView
             android:id="@+id/imageView8"
@@ -146,6 +184,7 @@
         android:id="@+id/wave_post_image_main"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
@@ -156,9 +195,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="3dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_wave_thumbnail_main" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_launch_main" />
 </android.support.constraint.ConstraintLayout>

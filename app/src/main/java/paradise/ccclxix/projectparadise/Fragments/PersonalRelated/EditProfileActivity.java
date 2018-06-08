@@ -88,10 +88,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-        ImageView mainInfo = toolbar.getRootView().findViewById(R.id.main_info);
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
         mainSettings.setVisibility(View.INVISIBLE);
-        mainInfo.setVisibility(View.INVISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
 

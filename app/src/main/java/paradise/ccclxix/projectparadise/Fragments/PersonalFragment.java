@@ -234,8 +234,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         picasso.load(dataSnapshot.getValue().toString())
                                 .fit()
                                 .centerInside()
-                                .transform(Transformations.getScaleDownWithView(profilePicture))
-                                .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
+                                .placeholder(R.drawable.ic_import_export).into(profilePicture);
                     }
                 }
 
@@ -434,7 +433,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 picasso.load(postMessage2)
                         .fit()
                         .centerInside()
-                        .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
+                        .placeholder(R.drawable.ic_import_export).into(holder.postImage);
 
             }else {
                 holder.postImage.setVisibility(View.INVISIBLE);
@@ -462,7 +461,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         picasso.load(dataSnapshot.getValue().toString())
                                 .fit()
                                 .centerInside()
-                                .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
+                                .placeholder(R.drawable.ic_import_export).into(holder.postWaveThumbnail);
                     }
                 }
 
@@ -575,7 +574,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 picasso.load(waveImageURL)
                         .fit()
                         .centerInside()
-                        .placeholder(R.drawable.idaelogo6_full).into(holder.waveThumbnail);
+                        .placeholder(R.drawable.ic_import_export).into(holder.waveThumbnail);
             }
 
             holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {

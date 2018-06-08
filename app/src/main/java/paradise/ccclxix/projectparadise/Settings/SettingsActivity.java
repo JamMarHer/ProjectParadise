@@ -89,7 +89,6 @@ public class SettingsActivity extends AppCompatActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
-        ImageView info = toolbar.getRootView().findViewById(R.id.main_info);
 
         settingsList = new ArrayList<>();
         settingsAdapter = new SettingsAdapter(this);
@@ -102,7 +101,6 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         settings.setVisibility(View.INVISIBLE);
-        info.setVisibility(View.INVISIBLE);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

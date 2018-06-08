@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,11 +42,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
@@ -56,6 +59,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     RecyclerView listWaves;
     FirebaseAuth mAuth;
     private ViewGroup container;
+    private Button joinWave;
+    private Button createWave;
 
     AppManager appManager;
 
@@ -129,6 +134,29 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         wavesAdapter = new WavesAdapter(getContext());
         listWaves.setAdapter(wavesAdapter);
         listWaves.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        createWave = inflater1.findViewById(R.id.createWave);
+        joinWave = inflater1.findViewById(R.id.joinWave);
+
+
+        createWave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        joinWave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), QRScannerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         return inflater1;
 
     }

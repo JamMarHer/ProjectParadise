@@ -13,6 +13,7 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
+        lintOptions { checkReleaseBuilds false }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -26,6 +27,7 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

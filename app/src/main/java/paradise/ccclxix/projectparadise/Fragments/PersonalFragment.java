@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -135,7 +136,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         });
 
         generalView = inflater1;
-        setupNumWavesAndContacts();
+        setupUserCard();
 
 
         if (appManager.getCredentialM() !=null){
@@ -198,66 +199,17 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
     // TODO This can be highly optimized.
-    private void setupNumWavesAndContacts(){
-        if(firebase.auth().getCurrentUser() != null && firebase.auth().getUid() != null) {
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference userDBReference = firebase.get("users", firebase.auth().getUid(), "waves", "in");
-            final DatabaseReference contacesDBReference = firebase.get("messages", firebase.auth().getUid());
-            userDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    myNumWaves.setText(String.format("%s", String.valueOf(dataSnapshot.getChildrenCount())));
-                    contacesDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            myNumContacts.setText(String.format("%s", String.valueOf(dataSnapshot.getChildrenCount())));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            DatabaseReference databaseReference = firebase.get_user("profile_picture");
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null){
-
-                        picasso.load(dataSnapshot.getValue().toString())
-                                .fit()
-                                .centerInside()
-                                .placeholder(R.drawable.ic_import_export).into(profilePicture);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            databaseReference = firebase.get_user("status");
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null){
-                        mStatus.setText(dataSnapshot.getValue().toString());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
+    private void setupUserCard(){
+        personalUsername.setText(appManager.getCredentialM().getUsername());
+        mStatus.setText(appManager.getCredentialM().getStatus());
+        myNumContacts.setText(appManager.getCredentialM().getNumContacts());
+        myNumWaves.setText(appManager.getCredentialM().getNumWaves());
+        String thumbnailURL = appManager.getCredentialM().getProfilePic();
+        if (!TextUtils.isEmpty(thumbnailURL)) {
+            picasso.load(thumbnailURL)
+                    .fit()
+                    .centerInside()
+                    .placeholder(R.drawable.ic_import_export).into(profilePicture);
         }
     }
 

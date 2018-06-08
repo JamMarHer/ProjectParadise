@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.User;
 import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
@@ -22,8 +23,8 @@ public class CredentialsManager  implements Manager{
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAuth mAuth;
+    private FirebaseBuilder fb;
 
     private boolean initialized = false;
 
@@ -35,14 +36,14 @@ public class CredentialsManager  implements Manager{
 
     @Override
     public Manager initialize(Context context) {
-        if (!initialized){
+        if (!initialized) {
             this.context = context;
             this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.C_TYPE, MODE_PRIVATE);
-            mAuth = FirebaseAuth.getInstance();
+            this.fb = new FirebaseBuilder();
+            this.mAuth = FirebaseAuth.getInstance();
+            this.initialized = true;
             updateCredentials();
-            initialized = true;
         }
-
         return this;
     }
 
@@ -55,10 +56,13 @@ public class CredentialsManager  implements Manager{
 
     private void updateCredentials(){
         if(mAuth.getCurrentUser() != null){
-            DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid());
+            DatabaseReference userDatabaseReference = fb.get_user();
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.hasChild("username"))
+                        updateUsername(dataSnapshot.child("username").getValue().toString());
 
                     if (dataSnapshot.hasChild("name"))
                         updateName(dataSnapshot.child("name").getValue().toString());
@@ -72,6 +76,27 @@ public class CredentialsManager  implements Manager{
                     if (dataSnapshot.hasChild("profile_picture"))
                         updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
 
+                    if (dataSnapshot.hasChild("waves") && dataSnapshot.child("waves").hasChild("in"))
+                        updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
+
+
+                    if (dataSnapshot.hasChild("echos"))
+                        updateNumWaves(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            DatabaseReference userMessages = fb.getMessages();
+            userMessages.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChildren())
+                        updateNumContacts(String.valueOf(dataSnapshot.getChildrenCount()));
                 }
 
                 @Override
@@ -90,14 +115,14 @@ public class CredentialsManager  implements Manager{
 
 
     public String getUsername(){
-        return sharedPreferences.getString("username",null);
+        return sharedPreferences.getString("username","");
     }
 
-    public String getName(){return  sharedPreferences.getString("name", null);}
+    public String getName(){return  sharedPreferences.getString("name", "");}
 
-    public String getStatus(){return  sharedPreferences.getString("bio", null);}
+    public String getStatus(){return  sharedPreferences.getString("bio", "");}
 
-    public String getProfilePic(){return  sharedPreferences.getString("profile_picture", null);}
+    public String getProfilePic(){return  sharedPreferences.getString("profile_picture", "");}
 
     public String getEmail(){
         if (mAuth.getCurrentUser() != null){
@@ -110,6 +135,35 @@ public class CredentialsManager  implements Manager{
         return sharedPreferences.getString("token",null);
     }
 
+    public String getNumEchos(){
+        return sharedPreferences.getString("num_echos","");
+    }
+
+    public String getNumContacts(){
+        return sharedPreferences.getString("num_contacts","");
+    }
+
+    public String getNumWaves(){
+        return sharedPreferences.getString("num_waves","");
+    }
+
+    public void updateNumWaves(String waves){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("num_waves", waves);
+        editor.apply();
+    }
+
+    public void updateNumEchos(String echos){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("num_echos", echos);
+        editor.apply();
+    }
+
+    public void updateNumContacts(String contacts){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("num_contacts", contacts);
+        editor.apply();
+    }
 
     public void updateUsername(String username){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();

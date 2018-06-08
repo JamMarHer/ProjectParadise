@@ -33,6 +33,14 @@ public class FirebaseBuilder {
         return db;
     }
 
+    public DatabaseReference getMessages(String... args){
+        DatabaseReference db = database.getReference().child("messages").child(auth.getUid());
+        for(String arg: args){
+            db = db.child(arg);
+        }
+        return db;
+    }
+
     public FirebaseAuth auth(){
         return auth;
     }

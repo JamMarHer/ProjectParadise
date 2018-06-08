@@ -48,7 +48,6 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
-import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
@@ -99,7 +98,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View inflater1 = inflater.inflate(R.layout.fragment_my_waves, null);
+        final View inflater1 = inflater.inflate(R.layout.fragment_personal, null);
 
         wavePinned = new ArrayList<>();
         settingsImageView = inflater1.findViewById(R.id.edit_profile);

@@ -117,6 +117,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         final ArrayList<String> record = new ArrayList<>();
 
         final String waveID = appManager.getWaveM().getEventID();
+
         adapter = new PostsAdapter(getContext(), waveID);
         waveRecyclerView.setAdapter(adapter);
         waveRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

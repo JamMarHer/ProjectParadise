@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -39,6 +40,8 @@ import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Models.User;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -155,7 +158,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         usernameView.setError(getString(R.string.error_field_required));
                         focusView = usernameView;
                         cancel = true;
-                        showSnackbar("Username already exist");
+                        showSnackBar("Username already exist", Icons.NON);
                     } else {
                         firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -199,7 +202,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     showProgress(false);
                                     running = false;
                                     Log.d("ELSE", "Something went wrong");
-                                    showSnackbar("The authentication has failed.");
+                                    showSnackBar("The authentication has failed.", Icons.NON);
                                 }
                             }
                         });
@@ -210,49 +213,20 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
     }
-    private void showSnackbar(final String message) {
-        Snackbar.make(findViewById(android.R.id.content),message,
-                Snackbar.LENGTH_LONG).show();
+
+    private void showSnackBar(String message, int icon){
+        UINotificationHelpers.showTopSnackBar(findViewById(android.R.id.content), message, icon);
     }
 
     private void setError(TextView textView, String error){
         textView.setError(error);
         textView.requestFocus();
     }
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        UINotificationHelpers.showProgress(show, mRegistrationFormView,mProgressView,
+                getResources().getInteger(android.R.integer.config_shortAnimTime));
 
-            mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mRegistrationFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override

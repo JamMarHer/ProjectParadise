@@ -9,16 +9,17 @@ import java.util.Map;
 import java.util.Set;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
+import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 public class AppManager implements Manager{
 
     private Map<String, Manager> managers = new HashMap<String, Manager>(){
         {
-            put(WaveManager.TYPE, new WaveManager());
-            put(CredentialsManager.TYPE, new CredentialsManager());
-            put(ModeManager.TYPE, new ModeManager());
-            put(SettingsManager.TYPE, new SettingsManager());
-            put(LocationManager.TYPE, new LocationManager());
+            put(ManagersInfo.W_TYPE, new WaveManager());
+            put(ManagersInfo.C_TYPE, new CredentialsManager());
+            put(ManagersInfo.M_TYPE, new ModeManager());
+            put(ManagersInfo.S_TYPE, new SettingsManager());
+            put(ManagersInfo.L_TYPE, new LocationManager());
         }
     };
 
@@ -51,23 +52,23 @@ public class AppManager implements Manager{
     }
 
     public CredentialsManager getCredentialM(){
-        return (CredentialsManager)managers.get(CredentialsManager.TYPE);
+        return (CredentialsManager)managers.get(ManagersInfo.C_TYPE);
     }
 
     public SettingsManager getSettingsM(){
-        return (SettingsManager)managers.get(SettingsManager.TYPE);
+        return (SettingsManager)managers.get(ManagersInfo.S_TYPE);
     }
 
     public ModeManager getModeM(){
-        return (ModeManager) managers.get(ModeManager.TYPE);
+        return (ModeManager) managers.get(ManagersInfo.M_TYPE);
     }
 
     public WaveManager getWaveM(){
-        return (WaveManager) managers.get(WaveManager.TYPE);
+        return (WaveManager) managers.get(ManagersInfo.W_TYPE);
     }
 
     public LocationManager getLocationM(){
-        return (LocationManager) managers.get(LocationManager.TYPE);
+        return (LocationManager) managers.get(ManagersInfo.L_TYPE);
     }
 
     @Override

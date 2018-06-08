@@ -196,6 +196,62 @@ public class SettingsActivity extends AppCompatActivity {
             }else if (settingType.equals("STR")){
                 StringSetting ss = (StringSetting)settingsList.get(position);
                 holder.settingName.setText(SettingsManager.getSettingChildType(settingName));
+                if (settingName.equals(SettingsManager.EMAIL_TYPE)){
+                    holder.settingName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this, R.style.MyDialogTheme);
+                            builder.setTitle("Provide new email address");
+
+                            final EditText input = new EditText(getApplicationContext());
+                            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+                            input.setHint("Enter your desired email address");
+                            builder.setView(input);
+                            builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final FirebaseUser user = mAuth.getCurrentUser();
+                                    showProgress(true);
+                                    String newEmail = input.getText().toString();
+                                    if (TextUtils.isEmpty(newEmail)){
+                                        showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                    }else {
+                                        user.updateEmail(newEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()){
+                                                    showProgress(false);
+                                                    Log.d("CHANGING_EMAIL", "Failed");
+                                                }else {
+                                                    showProgress(false);
+                                                    showTopSnackBar(mSettingsView,"Email updated", Icons.COOL);
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.cancel();
+                                    showProgress(false);
+                                }
+                            });
+                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialogInterface) {
+                                    showProgress(false);
+                                }
+                            });
+                            showProgress(false);
+                            builder.show();
+                        }
+                    });
+
+                }
                 if (settingName.equals(SettingsManager.PASSWORD_TYPE)){
                     holder.settingName.setOnClickListener(new View.OnClickListener() {
                         @Override

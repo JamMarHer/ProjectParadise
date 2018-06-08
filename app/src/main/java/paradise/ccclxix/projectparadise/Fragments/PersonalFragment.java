@@ -20,13 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
@@ -75,13 +75,21 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
     AppManager appManager;
-
+    Picasso picasso;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getActivity().getCacheDir(), 25000000))
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
         firebase = new FirebaseBuilder();
     }
@@ -168,6 +176,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             }
         });
 
+
+
         pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext());
         highlightedPostsAdapter = new HighlightedPostsAdapter(getContext());
         mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
@@ -175,6 +185,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         LinearLayoutManager layoutManager= new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
         mPinnedWavesRecyclerV.setLayoutManager(layoutManager);
         mHightlightedPostsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mPinnedWavesRecyclerV.setItemViewCacheSize(20);
+        mPinnedWavesRecyclerV.setDrawingCacheEnabled(true);
+        mPinnedWavesRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        mHightlightedPostsRecyclerV.setItemViewCacheSize(20);
+        mHightlightedPostsRecyclerV.setDrawingCacheEnabled(true);
+        mHightlightedPostsRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         return inflater1;
 
@@ -215,7 +231,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
 
-                        Picasso.with(profilePicture.getContext()).load(dataSnapshot.getValue().toString())
+                        picasso.load(dataSnapshot.getValue().toString())
+                                .fit()
+                                .centerInside()
                                 .transform(Transformations.getScaleDownWithView(profilePicture))
                                 .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
                     }
@@ -261,7 +279,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
-            waveThumbnail = itemView.findViewById(R.id.wave_overview_thumbnail);
+            waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
 
             mView = itemView;
         }
@@ -413,7 +431,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.postComments.setText(postNumComments);
 
             if (postType.equals("image")) {
-                Picasso.with(holder.postImage.getContext()).load(postMessage2)
+                picasso.load(postMessage2)
+                        .fit()
+                        .centerInside()
                         .placeholder(R.drawable.idaelogo6_full).into(holder.postImage);
 
             }else {
@@ -439,8 +459,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
-                        Picasso.with(holder.postWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(holder.postWaveThumbnail))
+                        picasso.load(dataSnapshot.getValue().toString())
+                                .fit()
+                                .centerInside()
                                 .placeholder(R.drawable.idaelogo6_full).into(holder.postWaveThumbnail);
                     }
                 }
@@ -551,8 +572,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final long currentWavePostsNum  = Long.valueOf(wavePinned.get(position).get("wavePosts"));
             holder.waveName.setText(waveName);
             if (waveImageURL != null){
-                Picasso.with(holder.waveThumbnail.getContext()).load(waveImageURL)
-                        .transform(Transformations.getScaleDownWithView(holder.waveThumbnail))
+                picasso.load(waveImageURL)
+                        .fit()
+                        .centerInside()
                         .placeholder(R.drawable.idaelogo6_full).into(holder.waveThumbnail);
             }
 

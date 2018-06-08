@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.WaveRelated.WavePostActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/background_light"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:elevation=".5dp"
+            android:foregroundGravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view4">
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left|center_vertical|start"
+                android:foregroundGravity="left"
+                app:srcCompat="@drawable/baseline_lens_black_24" />
+
+            <TextView
+                android:id="@+id/wave_post_num_echos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="1dp"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="12"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="15sp"
+                android:textStyle="normal|bold"
+                app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
+                app:layout_constraintTop_toTopOf="@+id/wave_post_echo"
+                tools:layout_editor_absoluteX="56dp" />
+
+            <ImageView
+                android:id="@+id/wave_post_view_comments"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="21dp"
+                app:srcCompat="@drawable/baseline_comment_black_24" />
+
+            <TextView
+                android:id="@+id/wave_post_num_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="1dp"
+                android:elevation="1dp"
+                android:gravity="center_vertical"
+                android:text="6"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="15sp"
+                android:textStyle="normal|bold"
+                app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
+                app:layout_constraintTop_toTopOf="@+id/wave_post_open_comments"
+                tools:layout_editor_absoluteX="140dp" />
+
+            <ImageView
+                android:id="@+id/wave_post_time_to_live_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="21dp"
+                android:elevation="1dp"
+                android:foregroundGravity="center_vertical"
+                android:src="@drawable/baseline_timelapse_black_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch_main" />
+
+            <TextView
+                android:id="@+id/wave_post_time_to_live"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="1dp"
+                android:elevation="1dp"
+                android:foregroundGravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:text="6"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="15sp"
+                android:textStyle="normal|bold"
+                app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
+                app:layout_constraintStart_toEndOf="@+id/wave_post_time_to_live_icon"
+                app:layout_constraintTop_toTopOf="@+id/wave_post_open_comments" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="@+id/wave_post_message"
+            app:layout_constraintStart_toStartOf="@+id/wave_post_message"
+            app:layout_constraintTop_toBottomOf="@+id/wave_post_message" />
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toTopOf="@+id/wave_post_open_comments"
+            app:layout_constraintEnd_toEndOf="@+id/wave_post_message"
+            app:layout_constraintStart_toStartOf="@+id/wave_post_message" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="6dp"
+            android:layout_height="39dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
+            app:layout_constraintEnd_toStartOf="@+id/wave_post_open_comments"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_echo"
+            app:srcCompat="@drawable/circle_holder_main_colors" />
+
+        <ImageView
+            android:id="@+id/wave_post_echo"
+            android:layout_width="45dp"
+            android:layout_height="39dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle"
+            android:elevation="1dp"
+            android:src="@drawable/baseline_panorama_fish_eye_black_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/wave_post_open_comments"
+            android:layout_width="45dp"
+            android:layout_height="39dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle"
+            android:elevation="1dp"
+            android:foregroundGravity="center_vertical"
+            android:src="@drawable/baseline_add_comment_black_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/wave_post_echo" />
+
+        <TextView
+            android:id="@+id/wave_post_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:foregroundGravity="left"
+            android:gravity="start"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_light_pressed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/wave_post_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/wave_post_thumbnail" />
+
+        <TextView
+            android:id="@+id/wave_post_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_username"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_username" />
+
+        <ImageView
+            android:id="@+id/wave_post_image_main"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:elevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/wave_post_thumbnail"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="9dp"
+            android:src="@drawable/icon_sad"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/wave_post_username"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_post_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/wave_post_thumbnail"
+            app:layout_constraintTop_toTopOf="@+id/wave_post_thumbnail" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

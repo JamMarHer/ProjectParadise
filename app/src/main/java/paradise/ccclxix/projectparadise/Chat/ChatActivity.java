@@ -113,7 +113,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages = findViewById(R.id.chat_messages);
         swipeRefreshLayout = findViewById(R.id.chat_swipe_layout);
         linearLayoutManager = new LinearLayoutManager(this);
-        messageAdapter = new MessageAdapter(messagesList, mauth.getUid());
+        messageAdapter = new MessageAdapter(messagesList, mauth.getUid(), getApplicationContext());
         chatMessages.setHasFixedSize(false);
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);

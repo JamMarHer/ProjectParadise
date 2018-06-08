@@ -28,12 +28,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -57,9 +60,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
     AppManager appManager;
 
+    Picasso picasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         setContentView(R.layout.activity_edit_profile);
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
@@ -97,7 +106,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
         if (appManager.getCredentialM().getProfilePic() != null){
-            Picasso.with(profilePicture.getContext()).load(appManager.getCredentialM().getProfilePic())
+            picasso.load(appManager.getCredentialM().getProfilePic())
                     .transform(Transformations.getScaleDownWithView(profilePicture))
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
         }

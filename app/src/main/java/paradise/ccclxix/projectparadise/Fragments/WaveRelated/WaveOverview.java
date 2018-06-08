@@ -14,8 +14,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -56,6 +59,7 @@ public class WaveOverview extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    Picasso picasso;
     public WaveOverview() {
         // Required empty public constructor
     }
@@ -87,6 +91,11 @@ public class WaveOverview extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getActivity().getCacheDir(), 250000000))
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         if (getArguments() != null) {
             waveID = getArguments().getString(ARG_ID);
             waveName = getArguments().getString(ARG_NAME);
@@ -107,7 +116,7 @@ public class WaveOverview extends Fragment {
         mWaveMembers = inflater1.findViewById(R.id.wave_overview_number_members);
         mWavePosts = inflater1.findViewById(R.id.wave_overview_number_posts);
         mWavePoints = inflater1.findViewById(R.id.wave_overview_number_points);
-        mWaveThumbnail = inflater1.findViewById(R.id.wave_overview_thumbnail);
+        mWaveThumbnail = inflater1.findViewById(R.id.main_wave_thumbnail);
 
 
         mWaveName.setText(waveName);
@@ -124,7 +133,7 @@ public class WaveOverview extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
-                    Picasso.with(mWaveThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                    picasso.load(dataSnapshot.getValue().toString())
                             .transform(Transformations.getScaleDownWithView(mWaveThumbnail))
                             .placeholder(R.drawable.idaelogo6_full).into(mWaveThumbnail);
                 }

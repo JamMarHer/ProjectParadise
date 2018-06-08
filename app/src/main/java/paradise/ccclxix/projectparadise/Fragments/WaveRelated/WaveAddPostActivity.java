@@ -28,12 +28,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -59,6 +62,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
     AppManager appManager;
 
+    Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,10 @@ public class WaveAddPostActivity extends AppCompatActivity {
         appManager.initialize(getApplicationContext());
 
         mAuth = FirebaseAuth.getInstance();
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -238,8 +246,9 @@ public class WaveAddPostActivity extends AppCompatActivity {
                     if (dataSnapshot.getValue() != null){
 
                         appManager.getCredentialM().updateProfilePic(dataSnapshot.getValue().toString());
-                        Picasso.with(waveAddPostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
-                                .transform(Transformations.getScaleDownWithView(waveAddPostThumbnail))
+                        picasso.load(dataSnapshot.getValue().toString())
+                                .fit()
+                                .centerInside()
                                 .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostThumbnail);
                     }
                 }

@@ -1,15 +1,12 @@
 package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 
-
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,19 +19,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
-public class WavePost extends Fragment {
+public class WavePostActivity extends AppCompatActivity {
+
 
     TextView wavePostUsername;
     TextView wavePostMessage;
@@ -67,38 +67,49 @@ public class WavePost extends Fragment {
 
     AppManager appManager;
 
+    Picasso picasso;
+
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_wave_post);
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getApplicationContext().getCacheDir(), 25000000))
+                .build();
+        picasso = new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(okHttpClient)).build();
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        ImageView mainInfo = toolbar.getRootView().findViewById(R.id.main_info);
+        ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
+        mainSettings.setVisibility(View.INVISIBLE);
+        mainInfo.setVisibility(View.INVISIBLE);
         mAuth = FirebaseAuth.getInstance();
-        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
-            MainActivity mainActivity = (MainActivity)getActivity();
-            appManager = mainActivity.getAppManager();
-        }
-    }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View inflater1 = inflater.inflate(R.layout.fragment_post, null);
-
-        mAuth = FirebaseAuth.getInstance();
 
 
-        wavePostUsername = inflater1.findViewById(R.id.wave_post_username);
-        wavePostMessage = inflater1.findViewById(R.id.wave_post_message);
-        wavePostNumEchos = inflater1.findViewById(R.id.wave_post_num_echos);
-        wavePostTime = inflater1.findViewById(R.id.wave_post_time);
-        wavePostThumbnail = inflater1.findViewById(R.id.wave_post_thumbnail);
-        wavePostNumComments = inflater1.findViewById(R.id.wave_post_num_comments);
-        wavePostImage = inflater1.findViewById(R.id.wave_post_image_main);
-        wavePostEcho = inflater1.findViewById(R.id.wave_post_echo);
-        wavePostOpenComments = inflater1.findViewById(R.id.wave_post_open_comments);
-        wavePostViewComments = inflater1.findViewById(R.id.wave_post_view_comments);
+        wavePostUsername = findViewById(R.id.wave_post_username);
+        wavePostMessage = findViewById(R.id.wave_post_message);
+        wavePostNumEchos = findViewById(R.id.wave_post_num_echos);
+        wavePostTime = findViewById(R.id.wave_post_time);
+        wavePostThumbnail = findViewById(R.id.wave_post_thumbnail);
+        wavePostNumComments = findViewById(R.id.wave_post_num_comments);
+        wavePostImage = findViewById(R.id.wave_post_image_main);
+        wavePostEcho = findViewById(R.id.wave_post_echo);
+        wavePostOpenComments = findViewById(R.id.wave_post_open_comments);
+        wavePostViewComments = findViewById(R.id.wave_post_view_comments);
 
 
-        Bundle postInfo = getArguments();
+        Bundle postInfo = getIntent().getExtras();
 
         postID = postInfo.getString("postID");
         this.username = postInfo.getString("username");
@@ -125,8 +136,10 @@ public class WavePost extends Fragment {
 
         if (type.equals("image")){
 
-            Picasso.with(wavePostImage.getContext()).load(message2).transform(Transformations.getScaleDownWithMaxWidthDP(getContext()))
-                    .placeholder(R.drawable.idaelogo6_full).into(wavePostImage);
+            picasso.load(message2)
+                    .fit()
+                    .centerInside()
+                    .placeholder(R.drawable.ic_import_export).into(wavePostImage);
         }
 
 
@@ -305,11 +318,11 @@ public class WavePost extends Fragment {
         wavePostOpenComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), WavePostCommentsActivity.class);
+                Intent intent = new Intent(WavePostActivity.this, WavePostCommentsActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString("postID", postID);
                 intent.putExtras(extras);
-                getActivity().startActivity(intent);
+                WavePostActivity.this.startActivity(intent);
             }
         });
 
@@ -318,11 +331,11 @@ public class WavePost extends Fragment {
         wavePostViewComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), WavePostCommentsActivity.class);
+                Intent intent = new Intent(WavePostActivity.this, WavePostCommentsActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString("postID", postID);
                 intent.putExtras(extras);
-                getActivity().startActivity(intent);
+                WavePostActivity.this.startActivity(intent);
             }
         });
 
@@ -335,7 +348,7 @@ public class WavePost extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
 
-                    Picasso.with(wavePostThumbnail.getContext()).load(dataSnapshot.getValue().toString())
+                    picasso.load(dataSnapshot.getValue().toString())
                             .transform(Transformations.getScaleDownWithView(wavePostThumbnail))
                             .placeholder(R.drawable.baseline_person_black_24).into(wavePostThumbnail);
                 }
@@ -362,9 +375,5 @@ public class WavePost extends Fragment {
         });
 
 
-        return inflater1;
-
     }
-
-
 }

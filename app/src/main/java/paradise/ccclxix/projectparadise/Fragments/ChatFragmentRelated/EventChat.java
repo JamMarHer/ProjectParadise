@@ -154,7 +154,7 @@ public class EventChat extends Fragment{
 
 
         linearLayoutManager = new LinearLayoutManager(getContext());
-        messageAdapter = new MessageAdapter(messagesList, mauth.getUid());
+        messageAdapter = new MessageAdapter(messagesList, mauth.getUid(), getContext());
         chatMessages.setHasFixedSize(false);
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);

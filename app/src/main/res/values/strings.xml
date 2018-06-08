@@ -26,7 +26,7 @@
     <string name="title_activity_registration">Create Account</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_email_not_available">This email address has been already used</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_password">This Password needs a number, uppercase letter, lowercase letter, and a special symbol</string>
     <string name="error_username_not_available">This username has been already used</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>

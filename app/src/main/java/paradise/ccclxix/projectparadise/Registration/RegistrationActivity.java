@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
@@ -146,66 +147,67 @@ public class RegistrationActivity extends AppCompatActivity {
             focusView = rePasswordView;
             cancel = true;
         }
-        usernameExist(username, focusView, cancel, new MyCallback() {
-            @Override
-            public void onCallback(boolean value, View focusView, boolean cancel) {
-                if(value){
-                    usernameView.setError(getString(R.string.error_field_required));
-                    focusView = usernameView;
-                    cancel = true;
-                    showSnackbar("Username already exist");
-                }
-                else{
-                    firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
-                                Log.d("AUTH", "Starting to setup Users");
-                                FirebaseUser current_user = firebase.auth().getCurrentUser();
-                                String userID = current_user.getUid();
-                                DatabaseReference databaseReference = firebase.get("users", userID);
-                                User new_user = new User(username);
-                                firebase.setValue(firebase.get("users", userID), new_user.render(),
-                                        new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()){
-                                                    Log.d("Setup User", "Starting to setup Users");
-                                                    credentialsManager.updateUsername(username);
-                                                    if (credentialsManager.getToken() != null){
-                                                        DatabaseReference eventDatabaseReference  = firebase.get_user("token");
-                                                        firebase.setValue(eventDatabaseReference, credentialsManager.getToken(),
-                                                                new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            Log.d("UPDATED_TOKEN", "New token has been added to db.");
+        if(!cancel) {
+            usernameExist(username, focusView, cancel, new MyCallback() {
+                @Override
+                public void onCallback(boolean value, View focusView, boolean cancel) {
+                    if (value) {
+                        usernameView.setError(getString(R.string.error_field_required));
+                        focusView = usernameView;
+                        cancel = true;
+                        showSnackbar("Username already exist");
+                    } else {
+                        firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("AUTH", "Starting to setup Users");
+                                    FirebaseUser current_user = firebase.auth().getCurrentUser();
+                                    String userID = current_user.getUid();
+                                    DatabaseReference databaseReference = firebase.get("users", userID);
+                                    User new_user = new User(username);
+                                    firebase.setValue(firebase.get("users", userID), new_user.render(),
+                                            new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("Setup User", "Starting to setup Users");
+                                                        credentialsManager.updateUsername(username);
+                                                        if (credentialsManager.getToken() != null) {
+                                                            DatabaseReference eventDatabaseReference = firebase.get_user("token");
+                                                            firebase.setValue(eventDatabaseReference, credentialsManager.getToken(),
+                                                                    new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                Log.d("UPDATED_TOKEN", "New token has been added to db.");
+                                                                            }
                                                                         }
                                                                     }
-                                                                }
-                                                        );
+                                                            );
+                                                        }
+                                                        Intent mainIntent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                                        mainIntent.putExtra("source", "registration");
+                                                        startActivity(mainIntent);
+                                                        running = false;
+                                                        finish();
                                                     }
-                                                    Intent mainIntent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                                    mainIntent.putExtra("source", "registration");
-                                                    startActivity(mainIntent);
-                                                    running = false;
-                                                    finish();
                                                 }
-                                            }
-                                        });
+                                            });
 
-                            }else {
-                                showProgress(false);
-                                running = false;
-                                Log.d("ELSE", "Something went wrong");
-                                showSnackbar("The authentication has failed.");
+                                } else {
+                                    showProgress(false);
+                                    running = false;
+                                    Log.d("ELSE", "Something went wrong");
+                                    showSnackbar("The authentication has failed.");
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
 
-            }
-        });
+                }
+            });
+        }
 
     }
     private void showSnackbar(final String message) {
@@ -269,8 +271,10 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password){
-        return password.length() > 4;
-
+        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}";
+        Log.d("REGEX", Boolean.toString(password.matches(pattern)));
+        boolean yes = password.matches(pattern);
+        return password.length() > 4 && yes;
     }
 
 

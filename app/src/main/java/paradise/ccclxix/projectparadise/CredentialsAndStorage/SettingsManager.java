@@ -77,7 +77,6 @@ public class SettingsManager implements Manager {
         return this;
     }
 
-    // TODO some regular expressssssssssssssssssssssssssssssion.
     public static String getSettingParentType(String setting){
         if(setting.contains("_")){
             return setting.split("_")[0];

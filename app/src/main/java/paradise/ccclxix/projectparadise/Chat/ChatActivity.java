@@ -43,6 +43,8 @@ import java.util.Map;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -69,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
     private int itemPosition = 0;
     private String lastKey = "";
     private String prevKey = "";
+    SnackBar snackbar;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
     /*
@@ -175,7 +178,7 @@ public class ChatActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showSnackbar("You are good son.");
+                snackbar.showEmojiBar("You are good son.", Icons.COOL);
                 swipeRefreshLayout.setRefreshing(false);
 
             }
@@ -192,17 +195,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 
     @Override

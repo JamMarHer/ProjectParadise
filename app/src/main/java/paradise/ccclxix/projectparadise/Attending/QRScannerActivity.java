@@ -37,6 +37,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -50,6 +51,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
 
     FirebaseAuth mAuth;
+    SnackBar snackbar;
 
     AppManager appManager;
 
@@ -76,7 +78,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkPermission()){
-                showSnackbar("Scan the QR code from one of the event hosts.");
+                snackbar.showWhiteBar("Scan the QR code from one of the event hosts.");
             }else {
                 requestPermission();
             }
@@ -196,14 +198,14 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    showSnackbar("Something went wrong");
+                    snackbar.showWhiteBar("Something went wrong");
                     scannerView.resumeCameraPreview(QRScannerActivity.this);
                     System.out.println(databaseError.getMessage());
                 }
             });
 
         }catch (Exception e){
-            showSnackbar("Invalid Event.");
+            snackbar.showWhiteBar("Invalid Event.");
             scannerView.resumeCameraPreview(QRScannerActivity.this);
         }
     }
@@ -267,7 +269,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                 }
                             });
                         }else{
-                            showSnackbar("Something went wrong");
+                            snackbar.showWhiteBar("Something went wrong");
                             scannerView.resumeCameraPreview(QRScannerActivity.this);
                         }
 
@@ -280,15 +282,5 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         
-    }
-
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.WHITE);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#27000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 }

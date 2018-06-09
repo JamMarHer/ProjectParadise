@@ -30,6 +30,7 @@ import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private Toolbar mainToolbar;
     private FirebaseBuilder firebase;
-
+    private SnackBar snackbar;
 
 
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
             appManager.getModeM().setModeToExplore();
-            showSnackbar("Welcome fam :)", Icons.COOL);
+            snackbar.showEmojiBar("Welcome fam :)", Icons.COOL);
             loadFragments();
         }else if (source.equals("event_created")) {
             appManager.getModeM().setModeToHost();
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }else if (source.equals("joined_event")) {
             appManager.getModeM().setModeToAttendant();
             loadFragments();
-            showSnackbar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
+            snackbar.showEmojiBar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
             appManager.getModeM().setModeToExplore();
             loadFragments();
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadFragments();
             }
-            showSnackbar("Working without internet. Trying to reconnect.", Icons.POOP);
+            snackbar.showEmojiBar("Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appManager.getModeM().getMode().equals("host")){
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadFragments();
             }
-            showSnackbar("Server didn't respond. Trying to communicate.", Icons.POOP);
+            snackbar.showEmojiBar("Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
         if(source.equals("postAdded")){
@@ -148,18 +149,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public AppManager getAppManager() {
         return appManager;
     }
-
-    private void showSnackbar(final String message, int icon) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(icon, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
-    }
-
 
     public void loadFragments(){
         personalFragment =  new PersonalFragment();

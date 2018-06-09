@@ -74,8 +74,6 @@ public class InitialAcitivity extends AppCompatActivity {
 
     }
 
-
-
     public void register (View view){
         Intent intent = new Intent(InitialAcitivity.this, RegistrationActivity.class);
         InitialAcitivity.this.startActivity(intent);
@@ -84,17 +82,5 @@ public class InitialAcitivity extends AppCompatActivity {
     public void login (View view){
         Intent intent = new Intent(InitialAcitivity.this, LoginActivity.class);
         InitialAcitivity.this.startActivity(intent);
-    }
-
-
-
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.WHITE);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 }

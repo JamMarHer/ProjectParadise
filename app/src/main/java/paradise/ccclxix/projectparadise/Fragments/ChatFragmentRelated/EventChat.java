@@ -46,6 +46,8 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -78,6 +80,7 @@ public class EventChat extends Fragment{
 
     private Query messageQuery;
     private ChildEventListener eventListener;
+    private SnackBar snackbar;
 
     AppManager appManager;
 
@@ -172,14 +175,7 @@ public class EventChat extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TSnackbar snackbar = TSnackbar.make(inflater1.getRootView().findViewById(android.R.id.content), "You are good, son.", TSnackbar.LENGTH_SHORT);
-                snackbar.setActionTextColor(Color.WHITE);
-                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
+                snackbar.showEmojiBar(inflater1.getRootView().findViewById(android.R.id.content),"You are good, son.", Icons.FIRE);
                 swipeRefreshLayout.setRefreshing(false);
 
             }

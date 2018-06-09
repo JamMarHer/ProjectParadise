@@ -49,6 +49,7 @@ import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class ExploreFragment extends HolderFragment implements EnhancedFragment {
 
@@ -56,6 +57,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     RecyclerView listWaves;
     FirebaseAuth mAuth;
     private ViewGroup container;
+    SnackBar snackbar;
 
     AppManager appManager;
 
@@ -269,7 +271,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
-                        showTopSnackBar(getView(), "You are already riding this wave.", Icons.POOP);
+                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
                     }else {
                         appManager.getWaveM().updateEventID(waveID);
                         appManager.getWaveM().updateEventName(waveName);
@@ -335,17 +337,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         public int getItemCount() {
             return waveList.size();
         }
-    }
-
-    public void showTopSnackBar(View view, String message, int icon){
-        TSnackbar snackbar = TSnackbar.make(view, "You are already riding this wave.", TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(icon, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 
     private Bitmap getEventQR(String eventID){
@@ -435,14 +426,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    TSnackbar snackbar = TSnackbar.make(container, "Something went wrong.", TSnackbar.LENGTH_SHORT);
-                    snackbar.setActionTextColor(Color.WHITE);
-                    snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                    TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                    textView.setTextColor(Color.WHITE);
-                    snackbar.show();
+                    snackbar.showEmojiBar("Something wen wrong.", Icons.FIRE);
                 }
             });
         }

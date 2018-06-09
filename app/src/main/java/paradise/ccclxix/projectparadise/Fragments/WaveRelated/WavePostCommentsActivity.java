@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +39,8 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WavePostCommentsActivity extends AppCompatActivity {
@@ -53,6 +54,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
     WavePostCommentsAdapter wavesPostCommentsAdapter;
 
     FirebaseAuth mAuth;
+    SnackBar snackbar;
 
     AppManager appManager;
 
@@ -134,14 +136,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null){
                                 Log.d("ADDING_COMMENT", databaseError.getMessage());
-                                TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), "There was a problem adding comment.", TSnackbar.LENGTH_SHORT);
-                                snackbar.setActionTextColor(Color.WHITE);
-                                snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                                View snackbarView = snackbar.getView();
-                                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                                textView.setTextColor(Color.WHITE);
-                                snackbar.show();
+                                snackbar.showEmojiBar("There was a problem adding your comment", Icons.POOP);
                             }else {
                                 wavePostAddCommentMessage.setText("");
                             }

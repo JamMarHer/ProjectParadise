@@ -49,6 +49,7 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
@@ -77,6 +78,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     AppManager appManager;
     Picasso picasso;
+    SnackBar snackbar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -539,7 +542,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
-                        showTopSnackBar(getView(), "You are already riding this wave.", Icons.POOP);
+                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
                     }else {
                         appManager.getWaveM().updateEventID(waveID);
                         appManager.getWaveM().updateEventName(waveName);
@@ -562,17 +565,5 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         public int getItemCount() {
             return wavePinned.size();
         }
-    }
-
-
-    public void showTopSnackBar(View view, String message, int icon){
-        TSnackbar snackbar = TSnackbar.make(view, "You are already riding this wave.", TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(icon, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 }

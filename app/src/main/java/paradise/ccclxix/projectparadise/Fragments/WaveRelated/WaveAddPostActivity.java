@@ -41,6 +41,8 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WaveAddPostActivity extends AppCompatActivity {
@@ -56,7 +58,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
     private Uri imageUriGeneral = null;
 
     FirebaseAuth mAuth;
-
+    SnackBar snackbar;
 
     public static final int GALLERY_PICK = 1;
 
@@ -160,14 +162,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                             if(databaseError != null){
                                                 Log.d("POSTING_IN_WAVE", databaseError.getMessage());
-                                                TSnackbar snackbar = TSnackbar.make(view, "Something went wrong.", TSnackbar.LENGTH_SHORT);
-                                                snackbar.setActionTextColor(Color.WHITE);
-                                                snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                                                View snackbarView = snackbar.getView();
-                                                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                                                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                                                textView.setTextColor(Color.WHITE);
-                                                snackbar.show();
+                                                snackbar.showErrorBar(view);
                                                 view.clearAnimation();
                                             }else{
                                                 Intent intent = new Intent(WaveAddPostActivity.this, MainActivity.class);
@@ -207,14 +202,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if(databaseError != null){
                                     Log.d("POSTING_IN_WAVE", databaseError.getMessage());
-                                    TSnackbar snackbar = TSnackbar.make(view, "Something went wrong.", TSnackbar.LENGTH_SHORT);
-                                    snackbar.setActionTextColor(Color.WHITE);
-                                    snackbar.setIconLeft(R.drawable.poop_icon, 24);
-                                    View snackbarView = snackbar.getView();
-                                    snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                                    TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                                    textView.setTextColor(Color.WHITE);
-                                    snackbar.show();
+                                    snackbar.showErrorBar(view);
                                     view.clearAnimation();
                                 }else{
                                     Intent intent = new Intent(WaveAddPostActivity.this, MainActivity.class);

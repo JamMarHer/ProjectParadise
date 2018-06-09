@@ -34,6 +34,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 import paradise.ccclxix.projectparadise.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 /**
  * A login screen that offers login via email/password.
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private FirebaseBuilder firebase;
+    private SnackBar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,21 +183,11 @@ public class LoginActivity extends AppCompatActivity {
                     }else {
                         showProgress(false);
                         running = false;
-                        showSnackbar("There has been a problem login you in.");
+                        snackbar.showDefaultBar("Failed at logging you in");
                     }
                 }
             });
         }
-    }
-
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.WHITE);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 
     private void setError(TextView textView, String error){

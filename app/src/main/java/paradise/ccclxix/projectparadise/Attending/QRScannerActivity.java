@@ -246,7 +246,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            DatabaseReference userDatabaseReference =  firebase.get("waves", "in", eventID);
+                            DatabaseReference userDatabaseReference =  firebase.get_user_authId("waves", "in", eventID);;
                             userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

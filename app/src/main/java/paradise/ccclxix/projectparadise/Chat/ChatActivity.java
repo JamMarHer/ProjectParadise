@@ -134,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
                     chatUserMap.put("chat/"+ firebase.auth_id()+"/"+mChatUserID,chatAddMap);
                     chatUserMap.put("chat/"+ mChatUserID + "/" + firebase.auth_id(),chatAddMap);
 
-                    chatDb.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
+                    firebase.getDatabase().updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if(databaseError != null){

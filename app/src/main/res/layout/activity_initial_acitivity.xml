@@ -25,6 +25,7 @@
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:layout_gravity="center_vertical"
+            android:elevation="1dp"
             android:foregroundGravity="center_vertical"
             android:src="@drawable/idaelogo6_full"
             app:layout_constraintTop_toTopOf="parent"
@@ -35,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginBottom="3dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="3dp"
             android:fontFamily="@font/aleo_regular"
@@ -51,8 +53,8 @@
         android:id="@+id/registration_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +67,11 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/circle_holder_grey_white"
-            android:fontFamily="@font/lobster_regular"
+            android:background="@drawable/circle_holder_gray"
+            android:fontFamily="@font/aleo_regular"
             android:onClick="login"
             android:text="Login"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/background_light"
             android:textSize="24sp" />
 
         <Button
@@ -80,11 +82,11 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="9dp"
-            android:background="@drawable/circle_holder_grey_white"
-            android:fontFamily="@font/lobster_regular"
+            android:background="@drawable/circle_holder_gray"
+            android:fontFamily="@font/aleo_regular"
             android:onClick="register"
-            android:text="Create Account"
-            android:textColor="@color/colorPrimary"
+            android:text="Join"
+            android:textColor="@android:color/background_light"
             android:textSize="24sp" />
 
     </LinearLayout>

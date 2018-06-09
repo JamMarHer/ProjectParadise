@@ -63,8 +63,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private RecyclerView mPinnedWavesRecyclerV;
     private RecyclerView mHightlightedPostsRecyclerV;
 
-    Button createWave;
-    Button joinWave;
     View generalView;
 
 
@@ -113,26 +111,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
 
-
-        createWave = inflater1.findViewById(R.id.createWave);
-        joinWave = inflater1.findViewById(R.id.joinWave);
-
-
-        createWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        joinWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                startActivity(intent);
-            }
-        });
 
         generalView = inflater1;
         setupUserCard();

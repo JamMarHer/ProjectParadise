@@ -5,20 +5,16 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 
 public class TokenAuthentication  extends FirebaseInstanceIdService{
 
-    FirebaseBuilder firebase;
+    FirebaseBuilder firebase = new FirebaseBuilder();
 
     @Override
     public void onTokenRefresh() {
@@ -35,8 +31,8 @@ public class TokenAuthentication  extends FirebaseInstanceIdService{
     private void updateToken(String newToken){
         CredentialsManager credentialsManager =  new CredentialsManager();
         credentialsManager.initialize(getApplicationContext());
-        if (firebase.auth().getCurrentUser() != null && firebase.auth().getUid() != null){
-            DatabaseReference eventDatabaseReference = firebase.get("users", firebase.auth().getUid(), "token");
+        if (firebase.auth().getCurrentUser() != null && firebase.auth_id() != null){
+            DatabaseReference eventDatabaseReference = firebase.get("users", firebase.auth_id(), "token");
             firebase.setValue(eventDatabaseReference, newToken,
                     new OnCompleteListener<Void>() {
                         @Override

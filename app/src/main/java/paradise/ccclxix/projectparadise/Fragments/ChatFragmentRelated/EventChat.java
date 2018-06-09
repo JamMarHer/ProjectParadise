@@ -46,14 +46,15 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 import static android.app.Activity.RESULT_OK;
 
 public class EventChat extends Fragment{
 
     private Toolbar toolbar;
-    private FirebaseAuth mauth;
-
 
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
@@ -78,13 +79,14 @@ public class EventChat extends Fragment{
 
     private Query messageQuery;
     private ChildEventListener eventListener;
+    private SnackBar snackbar;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
     AppManager appManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mauth = FirebaseAuth.getInstance();
 
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
@@ -154,7 +156,7 @@ public class EventChat extends Fragment{
 
 
         linearLayoutManager = new LinearLayoutManager(getContext());
-        messageAdapter = new MessageAdapter(messagesList, mauth.getUid(), getContext());
+        messageAdapter = new MessageAdapter(messagesList, firebase.auth_id(), getContext());
         chatMessages.setHasFixedSize(false);
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);
@@ -172,14 +174,7 @@ public class EventChat extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TSnackbar snackbar = TSnackbar.make(inflater1.getRootView().findViewById(android.R.id.content), "You are good, son.", TSnackbar.LENGTH_SHORT);
-                snackbar.setActionTextColor(Color.WHITE);
-                snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-                TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.WHITE);
-                snackbar.show();
+                snackbar.showEmojiBar(inflater1.getRootView().findViewById(android.R.id.content),"You are good, son.", Icons.FIRE);
                 swipeRefreshLayout.setRefreshing(false);
 
             }
@@ -257,9 +252,8 @@ public class EventChat extends Fragment{
         if (!TextUtils.isEmpty(message)){
             String currentUserRef = "events_us/"+appManager.getWaveM().getEventID()+"/messages/";
 
-            DatabaseReference databaseReference = firebaseDatabase.getReference();
 
-            String pushID = databaseReference.child("events_us").child(mauth.getUid()).push().getKey();
+            String pushID = firebase.getEvents_authId().push().getKey();
 
             Map messageMap = new HashMap();
 
@@ -267,14 +261,14 @@ public class EventChat extends Fragment{
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
-            messageMap.put("from", mauth.getUid());
+            messageMap.put("from", firebase.auth_id());
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef +pushID, messageMap);
 
             chatMessageText.setText("");
 
-            databaseReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+            firebase.getDatabase().updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError !=null){

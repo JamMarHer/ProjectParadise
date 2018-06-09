@@ -43,13 +43,15 @@ import java.util.Map;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class ChatActivity extends AppCompatActivity {
 
     private String mChatUserID;
     private String mChatUserName;
     private Toolbar toolbar;
-    private FirebaseAuth mauth;
     private String username;
 
     private Button chatAddButton;
@@ -69,7 +71,8 @@ public class ChatActivity extends AppCompatActivity {
     private int itemPosition = 0;
     private String lastKey = "";
     private String prevKey = "";
-    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private SnackBar snackbar;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
     /*
         TODO Enhance this class so it can also handle the chats inside the events.
@@ -96,8 +99,7 @@ public class ChatActivity extends AppCompatActivity {
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         setContentView(R.layout.activity_chat);
-        mauth = FirebaseAuth.getInstance();
-        if(mauth.getCurrentUser() != null){
+        if(firebase.getCurrentUser() != null){
             username = appManager.getCredentialM().getUsername();
         }
         mChatUserID = getIntent().getStringExtra("user_id");
@@ -113,15 +115,14 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages = findViewById(R.id.chat_messages);
         swipeRefreshLayout = findViewById(R.id.chat_swipe_layout);
         linearLayoutManager = new LinearLayoutManager(this);
-        messageAdapter = new MessageAdapter(messagesList, mauth.getUid(), getApplicationContext());
+        messageAdapter = new MessageAdapter(messagesList, firebase.auth_id(), getApplicationContext());
         chatMessages.setHasFixedSize(false);
         chatMessages.setLayoutManager(linearLayoutManager);
         chatMessages.setAdapter(messageAdapter);
 
         loadMessages();
-
-        final DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child("chat").child(mauth.getUid()).addValueEventListener(new ValueEventListener() {
+        final DatabaseReference chatDb = firebase.get("chat", firebase.auth_id());
+        chatDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(mChatUserID)){
@@ -130,10 +131,10 @@ public class ChatActivity extends AppCompatActivity {
                     chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
 
                     Map chatUserMap = new HashMap();
-                    chatUserMap.put("chat/"+ mauth.getUid()+"/"+mChatUserID,chatAddMap);
-                    chatUserMap.put("chat/"+ mChatUserID + "/" + mauth.getUid(),chatAddMap);
+                    chatUserMap.put("chat/"+ firebase.auth_id()+"/"+mChatUserID,chatAddMap);
+                    chatUserMap.put("chat/"+ mChatUserID + "/" + firebase.auth_id(),chatAddMap);
 
-                    databaseReference.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
+                    chatDb.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if(databaseError != null){
@@ -175,7 +176,7 @@ public class ChatActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showSnackbar("You are good son.");
+                snackbar.showEmojiBar("You are good son.", Icons.COOL);
                 swipeRefreshLayout.setRefreshing(false);
 
             }
@@ -194,32 +195,18 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void showSnackbar(final String message) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.setIconLeft(R.drawable.fire_emoji, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_PICK && resultCode == RESULT_OK){
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference();
             StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
             Uri imageUri = data.getData();
 
-            final String currentUser = "messages/"+mauth.getUid()+"/" + mChatUserID;
-            final String chatUserRef = "messages/"+mChatUserID+"/" + mauth.getUid();
+            final String currentUser = "messages/"+firebase.auth_id()+"/" + mChatUserID;
+            final String chatUserRef = "messages/"+mChatUserID+"/" + firebase.auth_id();
 
-            DatabaseReference userMessagePush = databaseReference.child("messages")
-                    .child(mauth.getUid()).child(mChatUserID).push();
+            DatabaseReference userMessagePush = firebase.getMessages(mChatUserID).push();
 
             final String pushID = userMessagePush.getKey();
 
@@ -235,7 +222,7 @@ public class ChatActivity extends AppCompatActivity {
                         messageMap.put("seen", false);
                         messageMap.put("type", "image");
                         messageMap.put("time", ServerValue.TIMESTAMP);
-                        messageMap.put("from", mauth.getUid());
+                        messageMap.put("from", firebase.auth_id());
 
                         Map messageUserMap = new HashMap();
                         messageUserMap.put(currentUser + "/" + pushID, messageMap);
@@ -243,7 +230,7 @@ public class ChatActivity extends AppCompatActivity {
 
                         chatMessageText.setText("");
 
-                        databaseReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                        firebase.getDatabase().updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if (databaseError != null){
@@ -260,7 +247,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadMessages(){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("messages").child(mauth.getUid()).child(mChatUserID);
+        DatabaseReference databaseReference = firebase.getMessages(mChatUserID);
         Query messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
@@ -305,13 +292,11 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage(){
         final String message = chatMessageText.getText().toString();
         if (!TextUtils.isEmpty(message)){
-            String currentUserRef = "messages/" + mauth.getUid()+ "/"+ mChatUserID;
-            String chatUserRef = "messages/" + mChatUserID + "/" + mauth.getUid();
+            String currentUserRef = "messages/" + firebase.auth_id()+ "/"+ mChatUserID;
+            String chatUserRef = "messages/" + mChatUserID + "/" + firebase.auth_id();
 
-            DatabaseReference databaseReference = firebaseDatabase.getReference();
-            DatabaseReference userMessagePush = databaseReference.child("messages")
-                    .child(mauth.getUid())
-                    .child(mChatUserID).push();
+            DatabaseReference userMessagePush = firebase.getMessages(mChatUserID).push();
+
 
             String pushID = userMessagePush.getKey();
 
@@ -321,7 +306,7 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
-            messageMap.put("from", mauth.getUid());
+            messageMap.put("from", firebase.auth_id());
             messageMap.put("fromUsername", username);
             messageMap.put("toUsername", mChatUserName);
 
@@ -331,7 +316,7 @@ public class ChatActivity extends AppCompatActivity {
 
             chatMessageText.setText("");
 
-            databaseReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+            firebase.getDatabase().updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError !=null){

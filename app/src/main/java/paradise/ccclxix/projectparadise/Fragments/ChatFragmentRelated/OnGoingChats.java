@@ -28,12 +28,13 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 
 public class OnGoingChats extends Fragment{
 
     UsersAdapter usersAdapter;
     RecyclerView listAttendingUsers;
-    private FirebaseAuth mAuth;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
 
     AppManager appManager;
@@ -41,7 +42,7 @@ public class OnGoingChats extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
+
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
@@ -50,7 +51,7 @@ public class OnGoingChats extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
+
         View inflater1 = inflater.inflate(R.layout.consersations_fragments, null);
         listAttendingUsers = inflater1.findViewById(R.id.conversations_recyclerView);
         usersAdapter = new UsersAdapter(getContext());
@@ -90,7 +91,7 @@ public class OnGoingChats extends Fragment{
         private List<String> usernameList;
 
         public UsersAdapter(final Context context){
-            if (mAuth.getUid() == null){
+            if (firebase.auth_id() == null){
                 return;
             }
             userIdsList = new ArrayList<>();
@@ -99,7 +100,7 @@ public class OnGoingChats extends Fragment{
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
                     .child("messages")
-                    .child(mAuth.getUid());
+                    .child(firebase.auth_id());
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

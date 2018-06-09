@@ -1,12 +1,13 @@
 package paradise.ccclxix.projectparadise.Models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class Post {
     /*
-    User Schema
+    Post Schema
     -------------------------
     id              :String
     author          :String
@@ -21,10 +22,15 @@ public class Post {
     */
 
     private String id;
-    private String author;
-    private String caption;
-    private String attachments;
-    private List<User> echoed_by;
+    private String author = "";
+    private String caption = "";
+    private String attachments = null;
+    private ArrayList<Comment> comments;
+    private User last_echo;
+    private Date date_created;
+    private ArrayList<Wave> waves;
+    private Date death;
+    private ArrayList<User> echoed_by;
 
     public Post(String title, String u){
 

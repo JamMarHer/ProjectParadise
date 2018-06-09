@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WavePostActivity extends AppCompatActivity {
@@ -61,10 +62,7 @@ public class WavePostActivity extends AppCompatActivity {
     String type;
 
     boolean working = false;
-
-
-    FirebaseAuth mAuth;
-
+    FirebaseBuilder firebase = new FirebaseBuilder();
     AppManager appManager;
 
     Picasso picasso;
@@ -84,7 +82,7 @@ public class WavePostActivity extends AppCompatActivity {
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
         mainSettings.setVisibility(View.INVISIBLE);
-        mAuth = FirebaseAuth.getInstance();
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +171,7 @@ public class WavePostActivity extends AppCompatActivity {
 
         DatabaseReference personalTableGet = dbPlainReference
                 .child("users")
-                .child(mAuth.getUid())
+                .child(firebase.auth_id())
                 .child("echos")
                 .child(appManager.getWaveM().getEventID());
         personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -205,7 +203,7 @@ public class WavePostActivity extends AppCompatActivity {
 
                     DatabaseReference personalTableGet = dbPlainReference
                             .child("users")
-                            .child(mAuth.getUid())
+                            .child(firebase.auth_id())
                             .child("echos")
                             .child(appManager.getWaveM().getEventID());
                     personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -220,11 +218,11 @@ public class WavePostActivity extends AppCompatActivity {
                                         .child("posts")
                                         .child(postID)
                                         .child("echos")
-                                        .child(mAuth.getUid()).push();
+                                        .child(firebase.auth_id()).push();
                                 String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
                                 final String pushID = dbWave.getKey();
                                 Map postMap = new HashMap();
-                                postMap.put("from", mAuth.getUid());
+                                postMap.put("from", firebase.auth_id());
                                 postMap.put("pushID", pushID);
                                 postMap.put("fromUsername", appManager.getCredentialM().getUsername()); // TODO For now.
                                 postMap.put("time", ServerValue.TIMESTAMP);
@@ -237,7 +235,7 @@ public class WavePostActivity extends AppCompatActivity {
                                         if (databaseError == null) {
                                             DatabaseReference personalTable = dbPlainReference
                                                     .child("users")
-                                                    .child(mAuth.getUid())
+                                                    .child(firebase.auth_id())
                                                     .child("echos")
                                                     .child(appManager.getWaveM().getEventID())
                                                     .child(postID);
@@ -265,7 +263,7 @@ public class WavePostActivity extends AppCompatActivity {
                                         .child(postID).child("pushID").getValue().toString();
                                 final DatabaseReference deleteFromUserEcho = dbPlainReference
                                         .child("users")
-                                        .child(mAuth.getUid())
+                                        .child(firebase.auth_id())
                                         .child("echos")
                                         .child(appManager.getWaveM().getEventID())
                                         .child(postID);

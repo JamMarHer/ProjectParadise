@@ -51,11 +51,10 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.Bo
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
-
-import static java.security.AccessController.getContext;
-import static paradise.ccclxix.projectparadise.utils.UINotificationHelpers.showTopSnackBar;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -64,14 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView appVersion;
 
 
-    private FirebaseAuth mAuth;
     RecyclerView settingsRecyclerView;
     SettingsAdapter settingsAdapter;
 
-
-
-
     AppManager appManager;
+    SnackBar snackbar;
+    FirebaseBuilder firebase = new FirebaseBuilder();
 
     ArrayList<Setting> settingsList;
 
@@ -85,8 +82,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
-
-        mAuth = FirebaseAuth.getInstance();
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -115,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
+                firebase.auth().signOut();
 
                 try{
                     appManager.logout();
@@ -210,11 +205,11 @@ public class SettingsActivity extends AppCompatActivity {
                             builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    final FirebaseUser user = mAuth.getCurrentUser();
+                                    final FirebaseUser user = firebase.getCurrentUser();
                                     showProgress(true);
                                     String newEmail = input.getText().toString();
                                     if (TextUtils.isEmpty(newEmail)){
-                                        showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                        snackbar.showEmojiBar(mSettingsView," ...", Icons.POOP);
                                     }else {
                                         user.updateEmail(newEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
@@ -224,7 +219,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                     Log.d("CHANGING_EMAIL", "Failed");
                                                 }else {
                                                     showProgress(false);
-                                                    showTopSnackBar(mSettingsView,"Email updated", Icons.COOL);
+                                                    snackbar.showEmojiBar(mSettingsView,"Email updated", Icons.COOL);
                                                 }
                                             }
                                         });
@@ -256,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
                     holder.settingName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            final FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = firebase.getCurrentUser();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this, R.style.MyDialogTheme);
                             builder.setTitle("Provide old password");
@@ -274,7 +269,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     showProgress(true);
                                     String oldPass = input.getText().toString();
                                     if (TextUtils.isEmpty(oldPass)){
-                                        showTopSnackBar(mSettingsView, " ...", Icons.POOP);
+                                        snackbar.showEmojiBar(mSettingsView, " ...", Icons.POOP);
                                         return;
                                     }
                                     AuthCredential authCredential = EmailAuthProvider.getCredential(
@@ -300,7 +295,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                         showProgress(true);
                                                         String newPass = input.getText().toString();
                                                         if (TextUtils.isEmpty(newPass)){
-                                                            showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                                            snackbar.showEmojiBar(mSettingsView," ...", Icons.POOP);
                                                        }else {
                                                             user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
@@ -310,7 +305,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                                         Log.d("CHANGING_PASSWORD", "Failed");
                                                                     }else {
                                                                         showProgress(false);
-                                                                        showTopSnackBar(mSettingsView,"Password updated", Icons.COOL);
+                                                                        snackbar.showEmojiBar(mSettingsView,"Password updated", Icons.COOL);
                                                                     }
                                                                 }
                                                             });
@@ -338,7 +333,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                                             }else{
-                                                showTopSnackBar(mSettingsView, "Password incorrect", Icons.POOP);
+                                                snackbar.showEmojiBar(mSettingsView, "Password incorrect", Icons.POOP);
                                                 showProgress(false);
                                             }
                                         }

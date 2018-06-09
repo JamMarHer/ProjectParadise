@@ -1,14 +1,8 @@
 package paradise.ccclxix.projectparadise.Registration;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,23 +18,19 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.regex.Pattern;
-
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Models.User;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
 
@@ -58,7 +48,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passwordView;
     private EditText rePasswordView;
 
-    private FirebaseBuilder firebase;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
+    private SnackBar snackbar;
 
 
     @Override
@@ -158,7 +149,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         usernameView.setError(getString(R.string.error_field_required));
                         focusView = usernameView;
                         cancel = true;
-                        showSnackBar("Username already exist", Icons.NON);
+                        snackbar.showEmojiBar("Username already exist", Icons.NON);
                     } else {
                         firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -177,7 +168,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                         Log.d("Setup User", "Starting to setup Users");
                                                         credentialsManager.updateUsername(username);
                                                         if (credentialsManager.getToken() != null) {
-                                                            DatabaseReference eventDatabaseReference = firebase.get_user("token");
+                                                            DatabaseReference eventDatabaseReference = firebase.get_user_authId("token");
                                                             firebase.setValue(eventDatabaseReference, credentialsManager.getToken(),
                                                                     new OnCompleteListener<Void>() {
                                                                         @Override
@@ -202,7 +193,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     showProgress(false);
                                     running = false;
                                     Log.d("ELSE", "Something went wrong");
-                                    showSnackBar("The authentication has failed.", Icons.NON);
+                                    snackbar.showEmojiBar("The authentication has failed.", Icons.NON);
                                 }
                             }
                         });
@@ -212,10 +203,6 @@ public class RegistrationActivity extends AppCompatActivity {
             });
         }
 
-    }
-
-    private void showSnackBar(String message, int icon){
-        UINotificationHelpers.showTopSnackBar(findViewById(android.R.id.content), message, icon);
     }
 
     private void setError(TextView textView, String error){
@@ -278,6 +265,7 @@ public class RegistrationActivity extends AppCompatActivity {
     public interface MyCallback {
         void onCallback(boolean value, View view, boolean cancel);
     }
+
 
 
 }

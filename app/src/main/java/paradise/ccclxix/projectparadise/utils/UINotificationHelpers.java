@@ -12,19 +12,6 @@ import com.androidadvance.topsnackbar.TSnackbar;
 
 public class UINotificationHelpers {
 
-    public static void showTopSnackBar(View view, String message, int icon){
-        TSnackbar snackbar = TSnackbar.make(view, message, TSnackbar.LENGTH_SHORT);
-        snackbar.setActionTextColor(Color.WHITE);
-        if(Icons.isIcon(icon))
-            snackbar.setIconLeft(icon, 24);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.parseColor("#CC000000"));
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
-    }
-
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static void showProgress(final boolean show, final View viewToHide, final View mProgressView, final int aniTime) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

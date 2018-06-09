@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class WavePostActivity extends AppCompatActivity {
@@ -61,10 +62,7 @@ public class WavePostActivity extends AppCompatActivity {
     String type;
 
     boolean working = false;
-
-
-
-
+    FirebaseBuilder firebase = new FirebaseBuilder();
     AppManager appManager;
 
     Picasso picasso;

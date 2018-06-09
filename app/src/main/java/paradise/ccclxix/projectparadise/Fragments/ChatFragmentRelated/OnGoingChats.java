@@ -28,12 +28,13 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 
 public class OnGoingChats extends Fragment{
 
     UsersAdapter usersAdapter;
     RecyclerView listAttendingUsers;
-    private
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
 
     AppManager appManager;

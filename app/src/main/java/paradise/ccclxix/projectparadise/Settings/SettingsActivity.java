@@ -53,6 +53,7 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -66,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     SettingsAdapter settingsAdapter;
 
     AppManager appManager;
+    SnackBar snackbar;
     FirebaseBuilder firebase = new FirebaseBuilder();
 
     ArrayList<Setting> settingsList;
@@ -207,7 +209,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     showProgress(true);
                                     String newEmail = input.getText().toString();
                                     if (TextUtils.isEmpty(newEmail)){
-                                        showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                        snackbar.showEmojiBar(mSettingsView," ...", Icons.POOP);
                                     }else {
                                         user.updateEmail(newEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
@@ -217,7 +219,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                     Log.d("CHANGING_EMAIL", "Failed");
                                                 }else {
                                                     showProgress(false);
-                                                    showTopSnackBar(mSettingsView,"Email updated", Icons.COOL);
+                                                    snackbar.showEmojiBar(mSettingsView,"Email updated", Icons.COOL);
                                                 }
                                             }
                                         });
@@ -267,7 +269,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     showProgress(true);
                                     String oldPass = input.getText().toString();
                                     if (TextUtils.isEmpty(oldPass)){
-                                        showTopSnackBar(mSettingsView, " ...", Icons.POOP);
+                                        snackbar.showEmojiBar(mSettingsView, " ...", Icons.POOP);
                                         return;
                                     }
                                     AuthCredential authCredential = EmailAuthProvider.getCredential(
@@ -293,7 +295,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                         showProgress(true);
                                                         String newPass = input.getText().toString();
                                                         if (TextUtils.isEmpty(newPass)){
-                                                            showTopSnackBar(mSettingsView," ...", Icons.POOP);
+                                                            snackbar.showEmojiBar(mSettingsView," ...", Icons.POOP);
                                                        }else {
                                                             user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
@@ -303,7 +305,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                                         Log.d("CHANGING_PASSWORD", "Failed");
                                                                     }else {
                                                                         showProgress(false);
-                                                                        showTopSnackBar(mSettingsView,"Password updated", Icons.COOL);
+                                                                        snackbar.showEmojiBar(mSettingsView,"Password updated", Icons.COOL);
                                                                     }
                                                                 }
                                                             });
@@ -331,7 +333,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                                             }else{
-                                                showTopSnackBar(mSettingsView, "Password incorrect", Icons.POOP);
+                                                snackbar.showEmojiBar(mSettingsView, "Password incorrect", Icons.POOP);
                                                 showProgress(false);
                                             }
                                         }

@@ -110,8 +110,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);
         }
 
-
-
         profilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

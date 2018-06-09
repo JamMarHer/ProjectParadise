@@ -1,7 +1,6 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -13,22 +12,17 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
-
-import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.firebase.auth.FirebaseAuth;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
@@ -45,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     AppManager appManager;
 
     private Toolbar mainToolbar;
-    private FirebaseBuilder firebase;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
     private SnackBar snackbar;
 
 

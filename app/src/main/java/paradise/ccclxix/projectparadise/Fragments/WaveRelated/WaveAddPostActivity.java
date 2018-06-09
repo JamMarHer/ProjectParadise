@@ -41,6 +41,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
@@ -56,8 +57,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
     private ImageView waveAddPostCreatePost;
 
     private Uri imageUriGeneral = null;
-
-    FirebaseAuth mAuth;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
     SnackBar snackbar;
 
     public static final int GALLERY_PICK = 1;
@@ -73,7 +73,6 @@ public class WaveAddPostActivity extends AppCompatActivity {
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
 
-        mAuth = FirebaseAuth.getInstance();
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .build();
 
@@ -128,8 +127,6 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         String imageName = String.format("%s_.%s.jpg",String.valueOf(System.currentTimeMillis()),appManager.getCredentialM().getUsername());
 
 
-                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = firebaseDatabase.getReference();
                         StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
                         StorageReference filePath = imageStorage.child(appManager.getWaveM().getEventID()).child("images").child(imageName);
                         filePath.putFile(imageUriGeneral).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -137,12 +134,8 @@ public class WaveAddPostActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()){
                                     String downloadURL = task.getResult().getDownloadUrl().toString();
-                                    DatabaseReference dbWave = databaseReference
-                                            .child("events_us")
-                                            .child(appManager.getWaveM().getEventID())
-                                            .child("wall")
-                                            .child("posts")
-                                            .child(mAuth.getUid()).push();
+                                    DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                            "wall", "posts", firebase.auth_id()).push();
                                     String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                                     String pushID = dbWave.getKey();
                                     Map postMap = new HashMap();
@@ -152,12 +145,12 @@ public class WaveAddPostActivity extends AppCompatActivity {
                                     postMap.put("numEchos", 0);
                                     postMap.put("type", "image");
                                     postMap.put("time", ServerValue.TIMESTAMP);
-                                    postMap.put("from", mAuth.getUid());
+                                    postMap.put("from", firebase.auth_id());
                                     postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                                     Map postUserMap = new HashMap();
                                     postUserMap.put(chatUserRef + "/"+ pushID, postMap);
-                                    databaseReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                                    firebase.getDatabase().updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                             if(databaseError != null){
@@ -176,13 +169,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
                             }
                         });
                     }else {
-                        DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
-                        DatabaseReference dbWave = baseReference
-                                .child("events_us")
-                                .child(appManager.getWaveM().getEventID())
-                                .child("wall")
-                                .child("posts")
-                                .child(mAuth.getUid()).push();
+                        DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(), "wall", "posts", firebase.auth_id()).push();
                         String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                         String pushID = dbWave.getKey();
                         Map postMap = new HashMap();
@@ -192,12 +179,12 @@ public class WaveAddPostActivity extends AppCompatActivity {
                         postMap.put("numEchos", 0);
                         postMap.put("type", "text");
                         postMap.put("time", ServerValue.TIMESTAMP);
-                        postMap.put("from", mAuth.getUid());
+                        postMap.put("from", firebase.auth_id());
                         postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                         Map postUserMap = new HashMap();
                         postUserMap.put(chatUserRef + "/"+ pushID, postMap);
-                        baseReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                        firebase.getDatabase().updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if(databaseError != null){
@@ -221,11 +208,11 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
 
 
-        if (mAuth.getUid() != null){
+        if (firebase.auth_id() != null){
             FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = firebaseDatabase1.getReference()
                     .child("users")
-                    .child(mAuth.getUid());
+                    .child(firebase.auth_id());
             databaseReference.child("profile_picture").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

@@ -37,6 +37,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 import static android.Manifest.permission.CAMERA;
@@ -49,8 +50,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     ValueEventListener valueEventListener;
     DatabaseReference databaseReference;
 
-
-    FirebaseAuth mAuth;
+    FirebaseBuilder firebase = new FirebaseBuilder();
     SnackBar snackbar;
 
     AppManager appManager;
@@ -61,7 +61,6 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
         super.onCreate(savedInstanceState);
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
-        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_qrscanner);
         scannerView = (ZXingScannerView) findViewById(R.id.zxscan);
 
@@ -243,7 +242,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                         .child("events_us")
                         .child(eventID)
                         .child("attending")
-                        .child(mAuth.getUid());
+                        .child(firebase.auth_id());
                 HashMap<String, Long> in = new HashMap<>();
                 final long timeIn = System.currentTimeMillis();
                 in.put("in", timeIn);
@@ -251,7 +250,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            DatabaseReference userDatabaseReference = database.getReference().child("users").child(mAuth.getUid()).child("waves").child("in").child(eventID);
+                            DatabaseReference userDatabaseReference =  firebase.get("waves", "in", eventID);
                             userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

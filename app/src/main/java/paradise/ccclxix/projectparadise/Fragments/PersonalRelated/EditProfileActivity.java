@@ -41,6 +41,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -51,7 +52,7 @@ public class EditProfileActivity extends AppCompatActivity {
     ImageView profilePicture;
     ImageView done;
 
-    FirebaseAuth mAuth;
+
 
     boolean[] updated = {true, true, true, true};
     private Uri imageUriGeneral = null;
@@ -59,7 +60,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public static final int GALLERY_PICK = 1;
 
     AppManager appManager;
-
+    FirebaseBuilder firebase = new FirebaseBuilder();
     Picasso picasso;
 
     @Override
@@ -91,7 +92,7 @@ public class EditProfileActivity extends AppCompatActivity {
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
         mainSettings.setVisibility(View.INVISIBLE);
 
-        mAuth = FirebaseAuth.getInstance();
+
 
         username.setText(appManager.getCredentialM().getUsername());
 
@@ -125,12 +126,12 @@ public class EditProfileActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mAuth.getUid() != null) {
+                if (firebase.auth_id() != null) {
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
                     final DatabaseReference dbPersonal = firebaseDatabase.getReference()
                             .child("users")
-                            .child(mAuth.getUid());
+                            .child(firebase.auth_id());
 
                     if (!TextUtils.isEmpty(username.getText()) && !appManager.getCredentialM().getUsername().equals(username.getText().toString())) {
                         updated[0] = false;
@@ -217,7 +218,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         StorageReference imageStorage = FirebaseStorage.getInstance().getReference();
-                        StorageReference filePath = imageStorage.child("profile_pictures").child(mAuth.getUid()).child(imageName);
+                        StorageReference filePath = imageStorage.child("profile_pictures").child(firebase.auth_id()).child(imageName);
                         filePath.putFile(imageUriGeneral).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -225,7 +226,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     final String downloadURL = task.getResult().getDownloadUrl().toString();
                                     databaseReference
                                             .child("users")
-                                            .child(mAuth.getUid())
+                                            .child(firebase.auth_id())
                                             .child("profile_picture")
                                             .setValue(downloadURL).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

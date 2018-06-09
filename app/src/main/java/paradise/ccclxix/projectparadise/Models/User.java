@@ -1,7 +1,6 @@
 package paradise.ccclxix.projectparadise.Models;
 
 import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,8 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
-import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 
 public class User {
     /*

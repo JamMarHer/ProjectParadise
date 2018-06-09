@@ -48,6 +48,7 @@ import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
@@ -55,8 +56,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
     WavesAdapter wavesAdapter;
     RecyclerView listWaves;
-    FirebaseAuth mAuth;
     private ViewGroup container;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
     SnackBar snackbar;
 
     AppManager appManager;
@@ -66,7 +67,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
             appManager = mainActivity.getAppManager();
@@ -83,7 +83,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
 
         listWaves = inflater1.findViewById(R.id.myWaves);
-        mAuth = FirebaseAuth.getInstance();
         this.container = container;
 
         ItemTouchHelper.Callback itemTouchHelperCB = new ItemTouchHelper.Callback() {
@@ -168,8 +167,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         private HashMap<String, Integer> record;
         public WavesAdapter(final Context context){
             waveList = new ArrayList<>();
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference().child("users").child(mAuth.getUid()).child("waves").child("in");
+            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "in");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -178,7 +176,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
-                        DatabaseReference waveDBReference = firebaseDatabase.getReference().child("events_us").child(waveID);
+                        DatabaseReference waveDBReference = firebase.getEvents(waveID);
                         waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -344,35 +342,20 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     }
 
     private void leaveWave(final String waveID){
-        if (mAuth.getCurrentUser() != null) {
-            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = firebaseDatabase.getReference()
-                    .child("events_us")
-                    .child(waveID)
-                    .child("attending")
-                    .child(mAuth.getUid());
+        if (firebase.getCurrentUser() != null) {
+            final DatabaseReference databaseReference = firebase.getEvents(waveID, "attending", firebase.auth_id());
             // Gets the time the user logged into the wave.
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     final long inTime = Long.valueOf(dataSnapshot.child("in").getValue().toString());
-                    final DatabaseReference userDatabaseReference = firebaseDatabase.getReference()
-                            .child("users")
-                            .child(mAuth.getUid())
-                            .child("waves")
-                            .child("in")
-                            .child(waveID);
+                    final DatabaseReference userDatabaseReference = firebase.get_user_authId("waves", "in", waveID);
                     // Removes the wave from personal waves
                     userDatabaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                DatabaseReference dbFUsers = firebaseDatabase.getReference()
-                                        .child("users")
-                                        .child(mAuth.getUid())
-                                        .child("waves")
-                                        .child("out")
-                                        .child(waveID);
+                                DatabaseReference dbFUsers = firebase.get_user_authId("waves", "out", waveID);
                                 final HashMap<String, Long> inoutInfo = new HashMap<>();
                                 inoutInfo.put("in", inTime);
                                 inoutInfo.put("out", System.currentTimeMillis());
@@ -381,11 +364,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            DatabaseReference dbWaves = firebaseDatabase.getReference()
-                                                    .child("events_us")
-                                                    .child(waveID)
-                                                    .child("attended")
-                                                    .child(mAuth.getUid());
+                                            DatabaseReference dbWaves = firebase.getEvents(waveID, "attended", firebase.auth_id());
                                             // Updates the wave table of attended.
                                             dbWaves.setValue(inoutInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override

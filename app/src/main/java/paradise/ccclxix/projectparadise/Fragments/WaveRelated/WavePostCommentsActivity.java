@@ -39,6 +39,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
@@ -53,7 +54,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
     RecyclerView wavePostListComments;
     WavePostCommentsAdapter wavesPostCommentsAdapter;
 
-    FirebaseAuth mAuth;
+    FirebaseBuilder firebase = new FirebaseBuilder();
     SnackBar snackbar;
 
     AppManager appManager;
@@ -77,7 +78,6 @@ public class WavePostCommentsActivity extends AppCompatActivity {
 
 
         postID = getIntent().getExtras().getString("postID");
-        mAuth = FirebaseAuth.getInstance();
 
         wavePostAddCommentMessage = findViewById(R.id.wave_post_add_message);
         wavePostAddCommentSend =findViewById(R.id.wave_post_add_send);
@@ -117,7 +117,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                             .child("posts")
                             .child(postID)
                             .child("comments")
-                            .child(mAuth.getUid()).push();
+                            .child(firebase.auth_id()).push();
                     String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/"+postID
                             +"/comments";
                     String pushID = dbAddComment.getKey();
@@ -126,7 +126,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                     postMap.put("seen", false);
                     postMap.put("type", "text");
                     postMap.put("time", ServerValue.TIMESTAMP);
-                    postMap.put("from", mAuth.getUid());
+                    postMap.put("from", firebase.auth_id());
                     postMap.put("fromUsername", appManager.getCredentialM().getUsername());
 
                     Map postUserMap = new HashMap();

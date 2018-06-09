@@ -51,11 +51,9 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.Bo
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
-
-import static java.security.AccessController.getContext;
-import static paradise.ccclxix.projectparadise.utils.UINotificationHelpers.showTopSnackBar;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -64,14 +62,11 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView appVersion;
 
 
-    private FirebaseAuth mAuth;
     RecyclerView settingsRecyclerView;
     SettingsAdapter settingsAdapter;
 
-
-
-
     AppManager appManager;
+    FirebaseBuilder firebase = new FirebaseBuilder();
 
     ArrayList<Setting> settingsList;
 
@@ -85,8 +80,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
-
-        mAuth = FirebaseAuth.getInstance();
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -115,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
+                firebase.auth().signOut();
 
                 try{
                     appManager.logout();
@@ -210,7 +203,7 @@ public class SettingsActivity extends AppCompatActivity {
                             builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    final FirebaseUser user = mAuth.getCurrentUser();
+                                    final FirebaseUser user = firebase.getCurrentUser();
                                     showProgress(true);
                                     String newEmail = input.getText().toString();
                                     if (TextUtils.isEmpty(newEmail)){
@@ -256,7 +249,7 @@ public class SettingsActivity extends AppCompatActivity {
                     holder.settingName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            final FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = firebase.getCurrentUser();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this, R.style.MyDialogTheme);
                             builder.setTitle("Provide old password");

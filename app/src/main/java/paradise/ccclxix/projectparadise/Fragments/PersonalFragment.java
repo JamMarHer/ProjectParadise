@@ -3,7 +3,6 @@ package paradise.ccclxix.projectparadise.Fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -20,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +39,7 @@ import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
@@ -54,7 +52,7 @@ import paradise.ccclxix.projectparadise.utils.SnackBar;
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
 
-    private FirebaseBuilder firebase;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
     private TextView personalUsername;
     private ImageView settingsImageView;
@@ -285,7 +283,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private HashMap<String, Integer> record;
         public HighlightedPostsAdapter(final Context context){
             highlightPosts = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user("waves", "in");
+            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "in");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -450,7 +448,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private HashMap<String, Integer> record;
         public WaveCardPinnedAdapter(final Context context){
             wavePinned = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user("waves", "pinned");
+            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

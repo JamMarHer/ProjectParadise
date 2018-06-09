@@ -8,11 +8,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.User;
 import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
@@ -23,8 +22,7 @@ public class CredentialsManager  implements Manager{
 
     private Context context;
     private SharedPreferences sharedPreferences;
-    private FirebaseAuth mAuth;
-    private FirebaseBuilder fb;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
     private boolean initialized = false;
 
@@ -49,8 +47,6 @@ public class CredentialsManager  implements Manager{
         if (!initialized) {
             this.context = context;
             this.sharedPreferences = this.context.getSharedPreferences(ManagersInfo.C_TYPE, MODE_PRIVATE);
-            this.fb = new FirebaseBuilder();
-            this.mAuth = FirebaseAuth.getInstance();
             this.initialized = true;
             this.listener = null;
             updateCredentials();
@@ -66,8 +62,8 @@ public class CredentialsManager  implements Manager{
     }
 
     private void updateCredentials(){
-        if(mAuth.getCurrentUser() != null){
-            DatabaseReference userDatabaseReference = fb.get_user();
+        if(firebase.getCurrentUser() != null){
+            DatabaseReference userDatabaseReference = firebase.get_user();
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +101,7 @@ public class CredentialsManager  implements Manager{
                 }
             });
 
-            DatabaseReference userMessages = fb.getMessages();
+            DatabaseReference userMessages = firebase.getMessages();
             userMessages.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,8 +135,8 @@ public class CredentialsManager  implements Manager{
     public String getProfilePic(){return  sharedPreferences.getString("profile_picture", "");}
 
     public String getEmail(){
-        if (mAuth.getCurrentUser() != null){
-            return  mAuth.getCurrentUser().getEmail();
+        if (firebase.getCurrentUser() != null){
+            return  firebase.getCurrentUser().getEmail();
         }
         return "";
     }

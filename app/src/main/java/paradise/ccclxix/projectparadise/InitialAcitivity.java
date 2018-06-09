@@ -1,7 +1,6 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,16 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
-import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Login.LoginActivity;
 import paradise.ccclxix.projectparadise.Registration.RegistrationActivity;
-
-
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 
 
 public class InitialAcitivity extends AppCompatActivity {
@@ -28,7 +23,7 @@ public class InitialAcitivity extends AppCompatActivity {
     private ImageView logo_welcome;
     private TextView idae_title;
     private LinearLayout loginRegisterLayout;
-    private FirebaseBuilder firebase;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
 
 

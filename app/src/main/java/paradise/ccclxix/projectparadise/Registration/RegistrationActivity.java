@@ -1,14 +1,8 @@
 package paradise.ccclxix.projectparadise.Registration;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,19 +18,14 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.regex.Pattern;
-
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Models.User;
 import paradise.ccclxix.projectparadise.R;
@@ -58,7 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText passwordView;
     private EditText rePasswordView;
 
-    private FirebaseBuilder firebase;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
 
     @Override
@@ -177,7 +166,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                         Log.d("Setup User", "Starting to setup Users");
                                                         credentialsManager.updateUsername(username);
                                                         if (credentialsManager.getToken() != null) {
-                                                            DatabaseReference eventDatabaseReference = firebase.get_user("token");
+                                                            DatabaseReference eventDatabaseReference = firebase.get_user_authId("token");
                                                             firebase.setValue(eventDatabaseReference, credentialsManager.getToken(),
                                                                     new OnCompleteListener<Void>() {
                                                                         @Override

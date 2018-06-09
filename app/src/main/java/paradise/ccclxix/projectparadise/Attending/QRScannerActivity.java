@@ -238,11 +238,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                 final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 appManager.getWaveM().updateEventID(eventID);
                 appManager.getWaveM().updateEventName((String)event.get("event_name"));
-                DatabaseReference eventDatabaseReference = database.getReference()
-                        .child("events_us")
-                        .child(eventID)
-                        .child("attending")
-                        .child(firebase.auth_id());
+                DatabaseReference eventDatabaseReference = firebase.getEvents(eventID, "attending", firebase.auth_id());
                 HashMap<String, Long> in = new HashMap<>();
                 final long timeIn = System.currentTimeMillis();
                 in.put("in", timeIn);

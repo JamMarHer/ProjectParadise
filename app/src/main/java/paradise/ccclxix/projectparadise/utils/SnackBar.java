@@ -1,6 +1,7 @@
 package paradise.ccclxix.projectparadise.utils;
 
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -66,5 +67,10 @@ public class SnackBar extends AppCompatActivity {
         TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
+    }
+    public void showActionBar(final int mainTextStringId, final int actionStringId, View.OnClickListener listener) {
+        Snackbar.make(findViewById(android.R.id.content), getString(mainTextStringId), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener)
+                .show();
     }
 }

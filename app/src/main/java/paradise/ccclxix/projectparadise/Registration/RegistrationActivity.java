@@ -30,6 +30,7 @@ import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Models.User;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
 
@@ -48,6 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText rePasswordView;
 
     private FirebaseBuilder firebase = new FirebaseBuilder();
+    private SnackBar snackbar;
 
 
     @Override
@@ -147,7 +149,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         usernameView.setError(getString(R.string.error_field_required));
                         focusView = usernameView;
                         cancel = true;
-                        showSnackBar("Username already exist", Icons.NON);
+                        snackbar.showEmojiBar("Username already exist", Icons.NON);
                     } else {
                         firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -191,7 +193,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     showProgress(false);
                                     running = false;
                                     Log.d("ELSE", "Something went wrong");
-                                    showSnackBar("The authentication has failed.", Icons.NON);
+                                    snackbar.showEmojiBar("The authentication has failed.", Icons.NON);
                                 }
                             }
                         });
@@ -201,10 +203,6 @@ public class RegistrationActivity extends AppCompatActivity {
             });
         }
 
-    }
-
-    private void showSnackBar(String message, int icon){
-        UINotificationHelpers.showTopSnackBar(findViewById(android.R.id.content), message, icon);
     }
 
     private void setError(TextView textView, String error){

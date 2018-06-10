@@ -61,7 +61,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     RecyclerView listWaves;
     private ViewGroup container;
     private FirebaseBuilder firebase = new FirebaseBuilder();
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
     private Button joinWave;
     private Button createWave;
 
@@ -433,7 +433,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    snackbar.showEmojiBar("Something wen wrong.", Icons.FIRE);
+                    snackbar.showEmojiBar(container,"Something wen wrong.", Icons.FIRE);
                 }
             });
         }

@@ -9,28 +9,12 @@ import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
 
-public class SnackBar extends AppCompatActivity {
+public class SnackBar{
 
     private static int BACKGROUND_COLOR = Color.parseColor("#CC000000");
 
     public void showErrorBar(View view){
         showEmojiBar(view, "Something went wrong.", Icons.POOP);
-    }
-
-    public void showEmojiBar(String message, int emoji) {
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(Color.WHITE);
-        if(Icons.isIcon(emoji)){
-            snackbar.setIconLeft(emoji, 24);
-        }
-        else{
-            Log.e("SNACK", "Icon was not an icon");
-        }
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(BACKGROUND_COLOR);
-        TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        snackbar.show();
     }
 
     public void showEmojiBar(View view, String message, int emoji) {
@@ -49,8 +33,8 @@ public class SnackBar extends AppCompatActivity {
         snackbar.show();
     }
 
-    public void showDefaultBar(String message){
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
+    public void showDefaultBar(View view, String message){
+        TSnackbar snackbar = TSnackbar.make(view, message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(BACKGROUND_COLOR);
@@ -59,8 +43,8 @@ public class SnackBar extends AppCompatActivity {
         snackbar.show();
     }
 
-    public void showWhiteBar(String message){
-        TSnackbar snackbar = TSnackbar.make(findViewById(android.R.id.content), message, TSnackbar.LENGTH_LONG);
+    public void showWhiteBar(View view, String message){
+        TSnackbar snackbar = TSnackbar.make(view, message, TSnackbar.LENGTH_LONG);
         snackbar.setActionTextColor(Color.WHITE);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.parseColor("#27000000"));
@@ -68,9 +52,10 @@ public class SnackBar extends AppCompatActivity {
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }
-    public void showActionBar(final int mainTextStringId, final int actionStringId, View.OnClickListener listener) {
-        Snackbar.make(findViewById(android.R.id.content), getString(mainTextStringId), Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(actionStringId), listener)
+    public void showActionBar(View.OnClickListener listener,
+                              View view, String mainTextStringId, String actionStringId) {
+        Snackbar.make(view, mainTextStringId, Snackbar.LENGTH_INDEFINITE)
+                .setAction(actionStringId, listener)
                 .show();
     }
 }

@@ -51,7 +51,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
     DatabaseReference databaseReference;
 
     FirebaseBuilder firebase = new FirebaseBuilder();
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
 
     AppManager appManager;
 
@@ -77,7 +77,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkPermission()){
-                snackbar.showWhiteBar("Scan the QR code from one of the event hosts.");
+                snackbar.showWhiteBar(findViewById(android.R.id.content),"Scan the QR code from one of the event hosts.");
             }else {
                 requestPermission();
             }
@@ -197,14 +197,14 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    snackbar.showWhiteBar("Something went wrong");
+                    snackbar.showWhiteBar(findViewById(android.R.id.content),"Something went wrong");
                     scannerView.resumeCameraPreview(QRScannerActivity.this);
                     System.out.println(databaseError.getMessage());
                 }
             });
 
         }catch (Exception e){
-            snackbar.showWhiteBar("Invalid Event.");
+            snackbar.showWhiteBar(findViewById(android.R.id.content),"Invalid Event.");
             scannerView.resumeCameraPreview(QRScannerActivity.this);
         }
     }
@@ -264,7 +264,7 @@ public class QRScannerActivity extends AppCompatActivity  implements ZXingScanne
                                 }
                             });
                         }else{
-                            snackbar.showWhiteBar("Something went wrong");
+                            snackbar.showWhiteBar(findViewById(android.R.id.content),"Something went wrong");
                             scannerView.resumeCameraPreview(QRScannerActivity.this);
                         }
 

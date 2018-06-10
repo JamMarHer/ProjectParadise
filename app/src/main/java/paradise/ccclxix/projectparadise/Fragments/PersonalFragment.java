@@ -74,7 +74,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     AppManager appManager;
     Picasso picasso;
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

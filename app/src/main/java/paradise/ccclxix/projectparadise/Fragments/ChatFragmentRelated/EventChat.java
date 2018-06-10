@@ -79,7 +79,7 @@ public class EventChat extends Fragment{
 
     private Query messageQuery;
     private ChildEventListener eventListener;
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
     AppManager appManager;

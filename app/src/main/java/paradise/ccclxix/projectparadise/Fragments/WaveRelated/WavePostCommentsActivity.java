@@ -55,7 +55,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
     WavePostCommentsAdapter wavesPostCommentsAdapter;
 
     FirebaseBuilder firebase = new FirebaseBuilder();
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
 
     AppManager appManager;
 
@@ -136,7 +136,7 @@ public class WavePostCommentsActivity extends AppCompatActivity {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null){
                                 Log.d("ADDING_COMMENT", databaseError.getMessage());
-                                snackbar.showEmojiBar("There was a problem adding your comment", Icons.POOP);
+                                snackbar.showEmojiBar(findViewById(android.R.id.content),"There was a problem adding your comment", Icons.POOP);
                             }else {
                                 wavePostAddCommentMessage.setText("");
                             }

@@ -71,7 +71,7 @@ public class ChatActivity extends AppCompatActivity {
     private int itemPosition = 0;
     private String lastKey = "";
     private String prevKey = "";
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
     /*
@@ -176,7 +176,7 @@ public class ChatActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                snackbar.showEmojiBar("You are good son.", Icons.COOL);
+                snackbar.showEmojiBar(findViewById(android.R.id.content),"You are good son.", Icons.COOL);
                 swipeRefreshLayout.setRefreshing(false);
 
             }

@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private FirebaseBuilder firebase = new FirebaseBuilder();
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else {
                         showProgress(false);
                         running = false;
-                        snackbar.showDefaultBar("Failed at logging you in");
+                        snackbar.showDefaultBar(findViewById(android.R.id.content),"Failed at logging you in");
                     }
                 }
             });

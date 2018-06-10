@@ -49,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText rePasswordView;
 
     private FirebaseBuilder firebase = new FirebaseBuilder();
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
 
 
     @Override
@@ -149,7 +149,9 @@ public class RegistrationActivity extends AppCompatActivity {
                         usernameView.setError(getString(R.string.error_field_required));
                         focusView = usernameView;
                         cancel = true;
-                        snackbar.showEmojiBar("Username already exist", Icons.NON);
+                        View blue = findViewById(android.R.id.content);
+                        snackbar.showEmojiBar(blue,"Username already exist", Icons.NON);
+                        Log.d("BAR", "Username already Exist");
                     } else {
                         firebase.auth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -193,7 +195,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     showProgress(false);
                                     running = false;
                                     Log.d("ELSE", "Something went wrong");
-                                    snackbar.showEmojiBar("The authentication has failed.", Icons.NON);
+                                    //snackbar.showEmojiBar(findViewById(android.R.id.content),"The authentication has failed.", Icons.NON);
                                 }
                             }
                         });

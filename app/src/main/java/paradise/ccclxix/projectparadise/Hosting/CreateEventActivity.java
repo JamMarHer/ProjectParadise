@@ -59,7 +59,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final String TAG = CreateEventActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String lastLocationFormated;
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
     AppManager appManager;
@@ -164,7 +164,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (!task.isSuccessful()){
-                                    snackbar.showDefaultBar("Something went wrong");
+                                    snackbar.showDefaultBar(findViewById(android.R.id.content),"Something went wrong");
                                 }
                             }
                         });
@@ -200,7 +200,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
                     }else {
-                        snackbar.showDefaultBar("Something went wrong creating your event.");
+                        snackbar.showDefaultBar(findViewById(android.R.id.content), "Something went wrong creating your event.");
                         eventCreateButtonLaunch.clearAnimation();
                     }
                 }
@@ -256,7 +256,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 // again" prompts). Therefore, a user interface affordance is typically implemented
                 // when permissions are denied. Otherwise, your app could appear unresponsive to
                 // touches or interactions which have required permissions.
-                snackbar.showActionBar(R.string.notice_location_needed, R.string.settings,
+                snackbar.showActionBar(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -270,7 +270,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
-                        });
+                        }, findViewById(android.R.id.content),getString(R.string.notice_location_needed), getString(R.string.settings));
             }
         }
     }
@@ -297,14 +297,17 @@ public class CreateEventActivity extends AppCompatActivity {
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
 
-            snackbar.showActionBar(R.string.notice_location_needed, android.R.string.ok,
+            snackbar.showActionBar(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // Request permission
                             startLocationPermissionRequest();
                         }
-                    });
+                    }, findViewById(android.R.id.content),
+                        getString(R.string.notice_location_needed),
+                        getString(android.R.string.ok)
+            );
 
         } else {
             Log.i(TAG, "Requesting permission");

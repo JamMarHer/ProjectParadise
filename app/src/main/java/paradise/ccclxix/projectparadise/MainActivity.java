@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        snackbar = new SnackBar();
 
         appManager = (AppManager) new AppManager().initialize(getApplicationContext());
 
@@ -62,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             @Override
             public void onLogout(boolean loggedOut) {
                 if (loggedOut){
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                    mAuth.signOut();
+                    firebase.auth().signOut();
                     Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

@@ -38,6 +38,7 @@ public class FirebaseBuilder {
     }
 
     public String auth_id(){
+
         return this.auth().getUid();
     }
 

@@ -3,13 +3,10 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.firebase.database.DatabaseReference;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
-import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 public class AppManager implements Manager{
@@ -24,16 +21,7 @@ public class AppManager implements Manager{
         }
     };
 
-    private LoggedOut listener;
 
-    public interface LoggedOut{
-        public void onLogout(boolean loggedOut);
-    }
-
-    public void setLoggedOutListener(LoggedOut listener){
-        this.listener = listener;
-
-    }
 
     private static final String TYPE = "APP_MANAGER";
     // TODO
@@ -43,8 +31,6 @@ public class AppManager implements Manager{
     private boolean initialized = false;
 
     private Context  context;
-    private String source;
-
 
     public AppManager(){
 
@@ -58,39 +44,7 @@ public class AppManager implements Manager{
                 managers.get(managerKey).initialize(this.context);
             }
             initialized = true;
-            FirebaseBuilder firebaseBuilder = new FirebaseBuilder();
 
-            DatabaseReference databaseReference = firebaseBuilder.get_user("session_token");
-            /*
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    CredentialsManager credentialsManager = (CredentialsManager)managers.get(ManagersInfo.C_TYPE);
-                    if (dataSnapshot.getValue() != null){
-
-                        if (!dataSnapshot.getValue().toString().equals(credentialsManager.getSessionToken())) {
-                            try {
-
-                                if (listener != null){
-                                    listener.onLogout(true);
-                                    logout();
-                                }
-
-                            }catch (Exception e){
-                                Log.d("LOGGINO_OUT", e.getMessage());
-                            }
-
-                        }
-                    }
-                }
-
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-                            */
         }
         return this;
     }

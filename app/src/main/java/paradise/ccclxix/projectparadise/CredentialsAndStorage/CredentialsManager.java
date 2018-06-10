@@ -92,22 +92,8 @@ public class CredentialsManager  implements Manager{
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
 
                     if (dataSnapshot.hasChild("session_token")){
-                        /*
-                        if (!TextUtils.isEmpty(getSessionToken()) && !getSessionToken().equals(dataSnapshot.child("session_token"))){
-                        }else {
-                            final String sessionToken = String.valueOf(System.currentTimeMillis());
-                            userDatabaseReference.child("session_token").setValue(sessionToken).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful())
-                                        updateSessionToken(sessionToken);
-                                }
-                            });
-                            updateSessionToken(dataSnapshot.child("session_token").getValue().toString());
-                        }
-                        */
-
-
+                        // TODO This will be used if we later decide to limit the number of devices
+                        // an user can be sign in at the same time.
                     }
 
                     if (dataSnapshot.hasChild("echos"))

@@ -56,18 +56,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         appManager = (AppManager) new AppManager().initialize(getApplicationContext());
 
-        appManager.setLoggedOutListener(new AppManager.LoggedOut() {
-            @Override
-            public void onLogout(boolean loggedOut) {
-                if (loggedOut){
-                    firebase.auth().signOut();
-                    Intent intent = new Intent(MainActivity.this, InitialAcitivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    MainActivity.this.finish();
-                }
-            }
-        });
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);

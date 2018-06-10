@@ -1,8 +1,10 @@
 package paradise.ccclxix.projectparadise.Fragments.ExploreRelated;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -163,7 +165,7 @@ public class DiscoverFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(SearchViewHolder holder, int position) {
+        public void onBindViewHolder(SearchViewHolder holder, final int position) {
             holder.name.setText(name.get(position));
             if (!thumbnail.get(position).isEmpty()){
                 picasso.load(thumbnail.get(position))
@@ -171,6 +173,19 @@ public class DiscoverFragment extends Fragment {
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export).into(holder.thumbnail);
             }
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID", id.get(position));
+                    bundle.putString("thumbnail", thumbnail.get(position));
+                    bundle.putString("name", name.get(position));
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+
+                }
+            });
         }
 
         @Override
@@ -184,13 +199,13 @@ public class DiscoverFragment extends Fragment {
 
         ImageView thumbnail;
         TextView name;
-
+        ConstraintLayout view;
 
         public SearchViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.card_name);
             thumbnail = itemView.findViewById(R.id.card_thumbnail);
-
+            view = itemView.findViewById(R.id.card_single_view);
         }
     }
 }

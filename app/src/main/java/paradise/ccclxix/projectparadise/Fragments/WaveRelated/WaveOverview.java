@@ -115,7 +115,6 @@ public class WaveOverview extends Fragment {
         mWaveName = inflater1.findViewById(R.id.wave_overview_name);
         mWaveMembers = inflater1.findViewById(R.id.wave_overview_number_members);
         mWavePosts = inflater1.findViewById(R.id.wave_overview_number_posts);
-        mWavePoints = inflater1.findViewById(R.id.wave_overview_number_points);
         mWaveThumbnail = inflater1.findViewById(R.id.main_wave_thumbnail);
 
 

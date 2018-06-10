@@ -19,7 +19,7 @@
         android:id="@+id/pinned_waves_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient_main_colors"
+        android:background="@drawable/gradient_3"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

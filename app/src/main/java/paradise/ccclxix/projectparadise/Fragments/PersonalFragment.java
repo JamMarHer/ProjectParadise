@@ -3,10 +3,12 @@ package paradise.ccclxix.projectparadise.Fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -210,13 +212,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         TextView waveName;
         ImageView waveThumbnail;
+        ImageView waveActiveIndicator;
         View mView;
 
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
             waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
-
+            waveActiveIndicator = itemView.findViewById(R.id.active_indicator);
             mView = itemView;
         }
     }
@@ -418,7 +421,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
     }
 
-        private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
+    private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
 
         private LayoutInflater inflater;
 
@@ -512,6 +515,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         .fit()
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export).into(holder.waveThumbnail);
+            }
+
+            if (position != 0) {
+                holder.waveActiveIndicator.setVisibility(View.INVISIBLE);
             }
 
             holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {

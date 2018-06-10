@@ -42,7 +42,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostCommentsActivity;
@@ -56,15 +56,12 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     public static final String TYPE = "WAVE_FRAGMENT";
 
     private ModeManager modeManager;
-
-    FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-    FirebaseAuth mAuth;
+    private FirebaseBuilder firebase = new FirebaseBuilder();
     View generalView;
     AppManager appManager;
     boolean working = false;
 
 
-    private FirebaseBuilder firebase;
     private ViewGroup container;
 
     private PostsAdapter adapter;
@@ -90,7 +87,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             appManager.initialize(getContext());
         }
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
-        mAuth = FirebaseAuth.getInstance();
 
         firebase = new FirebaseBuilder();
    }
@@ -123,7 +119,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         waveRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         if (waveID != null){
 
-            final DatabaseReference databaseReference = firebase.get("events_us", waveID);
+            final DatabaseReference databaseReference = firebase.getEvents(waveID);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -320,10 +316,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             }
 
 
-            DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
-                    .child("users")
-                    .child(postFrom)
-                    .child("profile_picture");
+            DatabaseReference databaseReferenceWave = firebase.get_user(postFrom, "profile_picture");
             databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -341,11 +334,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
 
-            DatabaseReference personalTableGet = firebaseDatabase1.getReference()
-                    .child("users")
-                    .child(mAuth.getUid())
-                    .child("echos")
-                    .child(appManager.getWaveM().getEventID());
+            DatabaseReference personalTableGet = firebase.get_user_authId("echos", appManager.getWaveM().getEventID());
 
             personalTableGet.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -363,12 +352,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
 
-            DatabaseReference databaseReferencePost = firebaseDatabase1.getReference()
-                    .child("events_us")
-                    .child(waveID)
-                    .child("wall")
-                    .child("posts")
-                    .child(postID);
+            DatabaseReference databaseReferencePost = firebase.getEvents(waveID, "wall", "posts", postID);
             databaseReferencePost.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -416,47 +400,30 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     if (!working) {
                         working = true;
 
-                        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                        final DatabaseReference dbPlainReference = firebaseDatabase.getReference();
-
-                        DatabaseReference personalTableGet = dbPlainReference
-                                .child("users")
-                                .child(mAuth.getUid())
-                                .child("echos")
-                                .child(appManager.getWaveM().getEventID());
+                        DatabaseReference personalTableGet = firebase.get_user_authId("echos", appManager.getWaveM().getEventID());
                         personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot mainDataSnapshot) {
                                 if (!mainDataSnapshot.hasChild(postID)) {
 
-                                    DatabaseReference dbWave = dbPlainReference
-                                            .child("events_us")
-                                            .child(appManager.getWaveM().getEventID())
-                                            .child("wall")
-                                            .child("posts")
-                                            .child(postID)
-                                            .child("echos")
-                                            .child(mAuth.getUid()).push();
+                                    DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                            "wall", "posts", postID, "echos", firebase.auth_id()).push();
                                     String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
                                     final String pushID = dbWave.getKey();
                                     Map postMap = new HashMap();
-                                    postMap.put("from", mAuth.getUid());
+                                    postMap.put("from", firebase.auth_id());
                                     postMap.put("pushID", pushID);
                                     postMap.put("fromUsername", appManager.getCredentialM().getUsername()); // TODO For now.
                                     postMap.put("time", ServerValue.TIMESTAMP);
 
                                     Map postUserMap = new HashMap();
                                     postUserMap.put(chatUserRef + "/" + pushID, postMap);
-                                    dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                                    firebase.getDatabase().updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                             if (databaseError == null) {
-                                                DatabaseReference personalTable = dbPlainReference
-                                                        .child("users")
-                                                        .child(mAuth.getUid())
-                                                        .child("echos")
-                                                        .child(appManager.getWaveM().getEventID())
-                                                        .child(postID);
+                                                DatabaseReference personalTable = firebase.get_user_authId("echos",
+                                                        appManager.getWaveM().getEventID(), postID);
                                                 Map input = new HashMap<>();
                                                 input.put("pushID", pushID);
                                                 input.put("time", ServerValue.TIMESTAMP);
@@ -479,12 +446,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                                     final String postPushId = mainDataSnapshot
                                             .child(postID).child("pushID").getValue().toString();
-                                    final DatabaseReference deleteFromUserEcho = dbPlainReference
-                                            .child("users")
-                                            .child(mAuth.getUid())
-                                            .child("echos")
-                                            .child(appManager.getWaveM().getEventID())
-                                            .child(postID);
+                                    final DatabaseReference deleteFromUserEcho = firebase.get_user_authId("echos",
+                                            appManager.getWaveM().getEventID(), postID);
                                     deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {

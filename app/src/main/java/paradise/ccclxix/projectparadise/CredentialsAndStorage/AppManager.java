@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
-import paradise.ccclxix.projectparadise.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.ManagersInfo;
 
 public class AppManager implements Manager{

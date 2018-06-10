@@ -40,6 +40,8 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.LocationManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.Models.Event;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -57,8 +59,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final String TAG = CreateEventActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String lastLocationFormated;
-
-    private FirebaseAuth firebaseAuth;
+    private SnackBar snackbar = new SnackBar();
+    private FirebaseBuilder firebase = new FirebaseBuilder();
 
     AppManager appManager;
 
@@ -69,8 +71,6 @@ public class CreateEventActivity extends AppCompatActivity {
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         setContentView(R.layout.activity_create_event);
-
-        firebaseAuth = FirebaseAuth.getInstance();
 
         eventCreateName =               findViewById(R.id.createEventName);
         createWaveMode =                findViewById(R.id.createEventPrivate);
@@ -129,16 +129,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void addEvent(){
 
-        if (firebaseAuth.getCurrentUser() != null){
+        if (firebase.getCurrentUser() != null){
             final HashMap<String, String> eventMap = new HashMap<>();
             FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
             final String userID = current_user.getUid();
             final long timeStamp = System.currentTimeMillis();
             final String eventID = String.format("%s_%s", userID, String.valueOf(timeStamp));
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(
-                    eventID);
-            eventMap.put("host", firebaseAuth.getUid());
+            DatabaseReference eventDatabaseReference = firebase.getEvents(eventID);
+            eventMap.put("host", firebase.auth_id());
             eventMap.put("name_event", eventCreateName.getText().toString());
             eventMap.put("event_id", eventID);
             eventMap.put("privacy", getPrivacy());
@@ -156,8 +155,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
                         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference eventDatabaseReference = database.getReference().child("events_us").child(eventID).child("attending").child(firebaseAuth.getUid());
-                        DatabaseReference eventDatabaseReference1 = database.getReference().child("events_us").child(eventID).child("attended");
+                        DatabaseReference eventDatabaseReference = firebase.getEvents(eventID, "attending", firebase.auth_id());
+                        DatabaseReference eventDatabaseReference1 = firebase.getEvents(eventID, "attended");
                         HashMap<String, HashMap<String, Long>> attended = new HashMap<>();
                         HashMap<String, Long> in = new HashMap<>();
                         in.put("in", timeStamp);
@@ -165,7 +164,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (!task.isSuccessful()){
-                                    showSnackbar("Something went wrong");
+                                    snackbar.showDefaultBar(findViewById(android.R.id.content),"Something went wrong");
                                 }
                             }
                         });
@@ -174,7 +173,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
 
-                                    DatabaseReference userDatabaseReference = database.getReference().child("users").child(firebaseAuth.getUid()).child("waves").child("in").child(eventID);
+                                    DatabaseReference userDatabaseReference = firebase.get_user_authId("waves", "in", eventID);
                                     userDatabaseReference.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
@@ -201,7 +200,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
                     }else {
-                        showSnackbar("Something went wrong creating your event.");
+                        snackbar.showDefaultBar(findViewById(android.R.id.content), "Something went wrong creating your event.");
                         eventCreateButtonLaunch.clearAnimation();
                     }
                 }
@@ -233,16 +232,6 @@ public class CreateEventActivity extends AppCompatActivity {
         return !eventCreateName.getText().toString().equals("");
     }
 
-
-
-    // TODO properly integrate the new snack bar.
-    private void showSnackbar(final String message) {
-        Snackbar.make(findViewById(android.R.id.content),message,
-                Snackbar.LENGTH_LONG).show();
-    }
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -267,7 +256,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 // again" prompts). Therefore, a user interface affordance is typically implemented
                 // when permissions are denied. Otherwise, your app could appear unresponsive to
                 // touches or interactions which have required permissions.
-                showSnackbar(R.string.notice_location_needed, R.string.settings,
+                snackbar.showActionBar(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -281,17 +270,9 @@ public class CreateEventActivity extends AppCompatActivity {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
-                        });
+                        }, findViewById(android.R.id.content),getString(R.string.notice_location_needed), getString(R.string.settings));
             }
         }
-    }
-
-    private void showSnackbar(final int mainTextStringId, final int actionStringId,
-                              View.OnClickListener listener) {
-        Snackbar.make(findViewById(android.R.id.content),
-                getString(mainTextStringId),
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(actionStringId), listener).show();
     }
 
     private boolean checkPermissions() {
@@ -316,14 +297,17 @@ public class CreateEventActivity extends AppCompatActivity {
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
 
-            showSnackbar(R.string.notice_location_needed, android.R.string.ok,
+            snackbar.showActionBar(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // Request permission
                             startLocationPermissionRequest();
                         }
-                    });
+                    }, findViewById(android.R.id.content),
+                        getString(R.string.notice_location_needed),
+                        getString(android.R.string.ok)
+            );
 
         } else {
             Log.i(TAG, "Requesting permission");

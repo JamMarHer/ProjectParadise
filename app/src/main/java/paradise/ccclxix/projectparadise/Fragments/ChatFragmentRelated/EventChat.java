@@ -79,7 +79,7 @@ public class EventChat extends Fragment{
 
     private Query messageQuery;
     private ChildEventListener eventListener;
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
     AppManager appManager;
@@ -87,7 +87,6 @@ public class EventChat extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        snackbar = new SnackBar();
 
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();

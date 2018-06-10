@@ -74,12 +74,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     AppManager appManager;
     Picasso picasso;
-    SnackBar snackBar;
+    SnackBar snackbar = new SnackBar();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        snackBar = new SnackBar();
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .cache(new Cache(getActivity().getCacheDir(), 25000000))
                 .build();
@@ -519,7 +518,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
-                        snackBar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
+                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
                     }else {
                         appManager.getWaveM().updateEventID(waveID);
                         appManager.getWaveM().updateEventName(waveName);

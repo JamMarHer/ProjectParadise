@@ -122,9 +122,13 @@ public class WaveOverviewActivity extends AppCompatActivity {
                     if (dataSnapshot.hasChild("name_event")){
                         if (dataSnapshot.hasChild("attending")){
                             waveMembers = String.valueOf(dataSnapshot.child("attending").getChildrenCount());
+                        }else {
+                            waveMembers = "0";
                         }
                         if (dataSnapshot.hasChild("wall") && dataSnapshot.child("wall").hasChild("posts")){
                             wavePosts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
+                        }else {
+                            wavePosts = "0";
                         }
                         mWaveMembers.setText(waveMembers);
                         mWavePosts.setText(wavePosts);

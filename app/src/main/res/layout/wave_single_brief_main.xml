@@ -29,13 +29,13 @@
         android:layout_height="39dp"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
         android:src="@drawable/baseline_panorama_fish_eye_black_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
 
     <ImageView
         android:id="@+id/imageView9"
@@ -85,7 +85,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main">
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main">
 
         <ImageView
             android:id="@+id/imageView8"
@@ -187,7 +187,7 @@
         android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_launch_main" />
 
     <TextView
         android:id="@+id/wave_single_brief_message_main"
@@ -195,9 +195,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="6dp"
+        android:elevation="3dp"
+        android:maxLines="6"
         android:text="TextView"
+        android:verticalScrollbarPosition="defaultPosition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_launch_main" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_post_image_main" />
 </android.support.constraint.ConstraintLayout>

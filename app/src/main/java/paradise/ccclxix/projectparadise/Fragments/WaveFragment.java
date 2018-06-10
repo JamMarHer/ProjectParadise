@@ -123,7 +123,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChildren()){
+                    if(dataSnapshot.hasChild("name_event")){
                         String members = String.valueOf(dataSnapshot.child("attending").getChildrenCount());
                         String posts = String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount());
                         String thumbnail = null;
@@ -218,7 +218,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     posts.clear();
                     record = new HashMap<>();
-                    if (dataSnapshot.hasChildren()){
+                    if (dataSnapshot.hasChild("name_event")){
                         final String waveName = dataSnapshot.child("name_event").getValue().toString();
 
                         Query lastQuery = firebaseDatabase.getReference().child("events_us")

@@ -104,7 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
             status.setText(appManager.getCredentialM().getStatus());
 
 
-        if (appManager.getCredentialM().getProfilePic() != null){
+        if (!TextUtils.isEmpty(appManager.getCredentialM().getProfilePic())){
             picasso.load(appManager.getCredentialM().getProfilePic())
                     .transform(Transformations.getScaleDownWithView(profilePicture))
                     .placeholder(R.drawable.idaelogo6_full).into(profilePicture);

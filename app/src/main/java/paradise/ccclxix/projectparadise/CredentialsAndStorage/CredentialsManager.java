@@ -67,7 +67,7 @@ public class CredentialsManager  implements Manager{
 
     private void updateCredentials(){
         if(firebase.getCurrentUser() != null){
-            DatabaseReference userDatabaseReference = firebase.get_user();
+            DatabaseReference userDatabaseReference = firebase.get_user_authId();
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

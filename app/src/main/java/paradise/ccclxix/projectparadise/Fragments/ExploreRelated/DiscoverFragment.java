@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +29,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
 public class DiscoverFragment extends Fragment {
 
@@ -44,6 +46,7 @@ public class DiscoverFragment extends Fragment {
     int MAX_SEARCH = 15;
     Picasso picasso;
     SearchAdapter searchAdapter;
+    ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -52,6 +55,7 @@ public class DiscoverFragment extends Fragment {
         firebase = new FirebaseBuilder();
         searchText = inflater1.findViewById(R.id.search_edit);
         results = inflater1.findViewById(R.id.results_recycler_view);
+        progressBar = inflater1.findViewById(R.id.search_progress);
         results.setHasFixedSize(true);
         results.setLayoutManager(new LinearLayoutManager(getContext()));
         results.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
@@ -99,7 +103,7 @@ public class DiscoverFragment extends Fragment {
     private void setAdapter(final String s){
 
 
-
+        UINotificationHelpers.showProgress(true,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
         firebase.getEvents().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -108,17 +112,16 @@ public class DiscoverFragment extends Fragment {
                 id.clear();
                 type.clear();
                 results.removeAllViews();
-
                 if (dataSnapshot.hasChildren()){
                     int currentCount = 0;
-                    for (DataSnapshot users : dataSnapshot.getChildren()){
+                    for (DataSnapshot waves : dataSnapshot.getChildren()){
 
-                        String currentId = users.getKey();
-                        if (users.child("privacy").getValue().toString().equals("false")){
-                            String currentUsername = users.child("name_event").getValue().toString();
+                        String currentId = waves.getKey();
+                        if (waves.child("privacy").getValue().toString().equals("false")){
+                            String currentUsername = waves.child("name_event").getValue().toString();
                             String currentThumbnail = "";
-                            if (users.hasChild("thumbnail")){
-                                currentThumbnail = users.child("thumbnail").getValue().toString();
+                            if (waves.hasChild("thumbnail")){
+                                currentThumbnail = waves.child("thumbnail").getValue().toString();
                             }
                             if (currentUsername.toLowerCase().contains(s.toLowerCase())){
                                 id.add(currentId);
@@ -128,10 +131,11 @@ public class DiscoverFragment extends Fragment {
                                 currentCount++;
                             }
                             if (currentCount == MAX_SEARCH)
-                                break;
+                            break;
                         }
-
                     }
+                    UINotificationHelpers.showProgress(false,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+
                 }
 
                 searchAdapter = new SearchAdapter(getContext());

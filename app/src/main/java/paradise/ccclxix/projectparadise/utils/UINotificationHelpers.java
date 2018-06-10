@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidadvance.topsnackbar.TSnackbar;
@@ -43,4 +45,5 @@ public class UINotificationHelpers {
             viewToHide.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
 }

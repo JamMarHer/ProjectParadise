@@ -448,7 +448,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 updateAdapter(dataSnapshot, waveID, context);
-
                             }
 
                             @Override
@@ -509,12 +508,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     record.put(wavePinned.get(toExchange).get("waveID"), wavePinned.size()-1);
                 }
             }else {
-                try{
-                    wavePinned.set(record.get(waveID), eventInfo);
-                }
-                catch(Exception e){
-                    wavePinned.add(record.get(waveID), eventInfo);
-                }
+                    wavePinned.add(eventInfo);
             }
             pinnedWavesAdapter.notifyDataSetChanged();
             inflater = LayoutInflater.from(context);

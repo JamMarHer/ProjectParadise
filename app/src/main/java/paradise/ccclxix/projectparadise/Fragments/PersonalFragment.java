@@ -447,6 +447,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                record.clear();
                                 updateAdapter(dataSnapshot, waveID, context);
                             }
 
@@ -467,7 +468,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
         private void createAddButton(Context context){
-            // Don't show the button
             pinnedAddButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {

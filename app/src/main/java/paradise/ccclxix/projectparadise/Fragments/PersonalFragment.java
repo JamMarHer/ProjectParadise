@@ -127,11 +127,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
 
-        View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-        if (appManager.getWaveM().getEventID() == null){
-            //TODO
-        }
-
 
         settingsImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,20 +139,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
         // Views inside settings Popup window.
-        final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
 
 
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebase.auth().signOut();
-                Intent intent = new Intent(getContext(), InitialAcitivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+
 
 
 

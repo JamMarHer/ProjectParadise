@@ -14,28 +14,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/circle_holder_grey_white"
-        android:elevation="3dp"
+        android:background="@drawable/circle"
+        android:elevation="2dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/circle_holder_white"
-            android:elevation="2dp"
-            android:fontFamily="@font/lobster_regular"
-            android:foregroundGravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:text="Wave"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/waveName"
@@ -45,6 +30,7 @@
             android:layout_marginTop="12dp"
             android:gravity="center_horizontal"
             android:text="No wave to share."
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -56,28 +42,74 @@
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/circle_holder_white"
-            android:elevation="1dp"
+            android:background="@drawable/circle"
+            android:elevation=".5dp"
             android:src="@drawable/rsz_sad" />
 
-        <Button
-            android:id="@+id/leave_wave"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/circle_holder_grey_white"
-            android:elevation="1dp"
-            android:gravity="center"
-            android:text="Leave Wave"
-            android:textColor="@color/viewfinder_laser"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
 
-        <Button
+            <TextView
+                android:id="@+id/leave_wave"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Leave"
+                android:textColor="@color/viewfinder_laser"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/view7"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp"
+                android:background="#27000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/wave_post_comment_message"
+                app:layout_constraintStart_toStartOf="@+id/wave_post_comment_message"
+                app:layout_constraintTop_toBottomOf="@+id/wave_post_comment_message" />
+
+            <TextView
+                android:id="@+id/enter_wave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Enter"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="120dp"
+            android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:background="#27000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/wave_post_comment_message"
+            app:layout_constraintStart_toStartOf="@+id/wave_post_comment_message"
+            app:layout_constraintTop_toBottomOf="@+id/wave_post_comment_message" />
+
+        <TextView
             android:id="@+id/close_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,14 +117,13 @@
             android:layout_marginBottom="3dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/circle_holder_white"
-            android:elevation="2dp"
-            android:fontFamily="@font/lobster_regular"
+            android:layout_marginTop="6dp"
+            android:elevation="1dp"
+            android:fontFamily="@font/aleo_regular"
             android:gravity="center"
             android:text="Close"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
 

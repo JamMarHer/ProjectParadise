@@ -133,8 +133,7 @@ public class MyWavesFragment extends Fragment {
         TextView waveAttending;
         ImageView waveThumbnail;
         ImageView waveJoin;
-        ImageView waveDrag;
-        ImageView waveNotification;
+        ConstraintLayout waveLayout;
         View mView;
 
         public WaveViewHolder(View itemView) {
@@ -142,10 +141,8 @@ public class MyWavesFragment extends Fragment {
             waveName = itemView.findViewById(R.id.wave_name_single_layout);
             waveThumbnail = itemView.findViewById(R.id.profile_wave_single_layout);
             waveAttending = itemView.findViewById(R.id.wave_attending_single_layout);
-            waveNotification = itemView.findViewById(R.id.wave_notification);
-            waveDrag = itemView.findViewById(R.id.wave_drag);
             waveJoin = itemView.findViewById(R.id.wave_join);
-
+            waveLayout = itemView.findViewById(R.id.wave_single_layout);
 
             mView = itemView;
         }
@@ -234,18 +231,9 @@ public class MyWavesFragment extends Fragment {
             holder.waveName.setText(waveName);
             holder.waveAttending.setText(waveAttending);
 
-            if (appManager.getWaveM().getWavePosts(waveID) != -1){
-                if (appManager.getWaveM().getWavePosts(waveID) != currentWavePostsNum){
-                    holder.waveNotification.setVisibility(View.VISIBLE);
-                }else {
-                    holder.waveNotification.setVisibility(View.INVISIBLE);
-                }
-            }else {
-                appManager.getWaveM().updateWavePosts(waveID, currentWavePostsNum);
-            }
-
 
             if (waveID.equals(appManager.getWaveM().getEventID())){
+                holder.waveJoin.setVisibility(View.VISIBLE);
                 holder.waveJoin.setImageResource(R.drawable.baseline_radio_button_checked_white_36);
                 final int sdk = android.os.Build.VERSION.SDK_INT;
                 if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -253,28 +241,9 @@ public class MyWavesFragment extends Fragment {
                 } else {
                     holder.waveJoin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.circle_holder_main_colors));
                 }
-                holder.waveDrag.setVisibility(View.INVISIBLE);
             }else {
                 holder.waveJoin.setVisibility(View.INVISIBLE);
             }
-            holder.waveJoin.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (waveID.equals(appManager.getWaveM().getEventID())){
-                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
-                    }else {
-                        appManager.getWaveM().updateEventID(waveID);
-                        appManager.getWaveM().updateEventName(waveName);
-
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.putExtra("source", "joined_event");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                    return true;
-                }
-            });
 
             View waveSettignsPopupView = inflater.inflate(R.layout.share_wave_popup, null);
             ImageView qrCode = waveSettignsPopupView.findViewById(R.id.qrCode);
@@ -288,7 +257,7 @@ public class MyWavesFragment extends Fragment {
             final PopupWindow waveSettingsPopupWindow = new PopupWindow(waveSettignsPopupView, width,height);
             waveSettingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
 
-            holder.waveName.setOnTouchListener(new View.OnTouchListener() {
+            holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
@@ -298,10 +267,29 @@ public class MyWavesFragment extends Fragment {
                 }
             });
 
-            final Button closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
-            final Button leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
+            final TextView closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
+            final TextView leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
+            final TextView enterWave = waveSettignsPopupView.findViewById(R.id.enter_wave);
 
 
+            enterWave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (waveID.equals(appManager.getWaveM().getEventID())){
+                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
+                    }else {
+                        appManager.getWaveM().updateEventID(waveID);
+                        appManager.getWaveM().updateEventName(waveName);
+
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        intent.putExtra("source", "joined_event");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+
+                }
+            });
 
             closeWaveSettings.setOnClickListener(new View.OnClickListener() {
                 @Override

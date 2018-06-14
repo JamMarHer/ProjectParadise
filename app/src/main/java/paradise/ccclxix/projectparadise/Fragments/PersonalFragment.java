@@ -296,7 +296,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                         postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
                                         postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
                                         postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
-                                        postInfo.put("postEchos", dataSnapshot2.child("numEchos").getValue().toString());
+                                        postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
                                         postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
                                         postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
                                         postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
@@ -419,7 +419,19 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             });
 
 
+            DatabaseReference db =  firebase.getEvents(waveID,"wall", "posts", postID);
+            db.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    holder.postEchos.setText(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
+                    holder.postComments.setText(String.valueOf(dataSnapshot.child("comments").getChildrenCount()));
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         }
         @Override

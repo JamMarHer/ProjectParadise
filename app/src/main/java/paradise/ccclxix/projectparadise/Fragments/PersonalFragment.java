@@ -43,6 +43,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.PinnedWavesActivity;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -395,6 +396,25 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
+                }
+            });
+
+            holder.postLaunch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), WavePostActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("postID", postID);
+                    bundle.putString("username", postFromUsername);
+                    bundle.putString("message", postMessage);
+                    bundle.putString("message2", postMessage2);
+                    bundle.putString("numEchos", postNumEchos);
+                    bundle.putString("numComments", postNumComments);
+                    bundle.putString("time", postTime);
+                    bundle.putString("type", postType);
+                    bundle.putString("from", postFrom);
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
                 }
             });
 

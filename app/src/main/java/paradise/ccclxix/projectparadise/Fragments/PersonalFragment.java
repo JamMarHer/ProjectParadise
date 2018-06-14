@@ -262,72 +262,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
 
         private LayoutInflater inflater;
-
-
         private HashMap<String, Integer> record;
+
         public HighlightedPostsAdapter(final Context context){
             highlightPosts = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "in");
+            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    highlightPosts.clear();
-                    record = new HashMap<>();
-
-                    for (final  DataSnapshot wave: dataSnapshot.getChildren()){
-                        final String waveID = wave.getKey();
-
-                        DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
-                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.hasChildren()){
-                                    final String waveName = dataSnapshot.child("name_event").getValue().toString();
-
-                                    Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
-                                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot2) {
-                                            HashMap<String, String> postInfo = new HashMap<>();
-                                            if (dataSnapshot2.hasChildren()){
-
-                                                String postID = dataSnapshot2.getChildren().iterator().next().getKey();
-                                                dataSnapshot2 = dataSnapshot2.child(postID);
-                                                postInfo.put("waveName", waveName);
-                                                postInfo.put("waveID", waveID);
-                                                postInfo.put("postID", postID);
-                                                postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
-                                                postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
-                                                postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
-                                                postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
-                                                postInfo.put("postEchos", dataSnapshot2.child("numEchos").getValue().toString());
-                                                postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
-                                                postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
-                                                postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
-
-                                                highlightPosts.add(postInfo);
-                                                highlightedPostsAdapter.notifyDataSetChanged();
-                                                inflater = LayoutInflater.from(context);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d("MY_WAVES", databaseError.getMessage());
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-
-                    }
+                    updateOnChange(dataSnapshot, context);
                 }
 
                 @Override
@@ -336,6 +279,66 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
+        }
+
+        private void updateOnChange(DataSnapshot dataSnapshot, final Context context){
+            highlightPosts.clear();
+            record = new HashMap<>();
+
+            for (final  DataSnapshot wave: dataSnapshot.getChildren()){
+                final String waveID = wave.getKey();
+                DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
+                waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()){
+
+                            final String waveName = dataSnapshot.child("name_event").getValue().toString();
+
+                            Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
+                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    HashMap<String, String> postInfo = new HashMap<>();
+                                    if (dataSnapshot2.hasChildren()){
+
+                                        String postID = dataSnapshot2.getChildren().iterator().next().getKey();
+                                        dataSnapshot2 = dataSnapshot2.child(postID);
+                                        postInfo.put("waveName", waveName);
+                                        postInfo.put("waveID", waveID);
+                                        postInfo.put("postID", postID);
+                                        postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
+                                        postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
+                                        postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
+                                        postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
+                                        postInfo.put("postEchos", dataSnapshot2.child("numEchos").getValue().toString());
+                                        postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
+                                        postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
+                                        postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
+
+                                        highlightPosts.add(postInfo);
+                                        highlightedPostsAdapter.notifyDataSetChanged();
+                                        inflater = LayoutInflater.from(context);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d("MY_WAVES", databaseError.getMessage());
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
         }
 
 
@@ -388,10 +391,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
             }
 
-
-
             FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-
 
             DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
                     .child("events_us")

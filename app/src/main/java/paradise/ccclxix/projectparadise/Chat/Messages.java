@@ -6,11 +6,14 @@ public class Messages {
     private boolean seen;
     private long time;
     private String type;
+    private String thumbnail;
     private String from;
 
     public String getMessage() {
         return message;
     }
+
+
 
     public void setMessage(String message) {
         this.message = message;
@@ -51,5 +54,13 @@ public class Messages {
 
     public void setFrom(String from) {
         this.from = from;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

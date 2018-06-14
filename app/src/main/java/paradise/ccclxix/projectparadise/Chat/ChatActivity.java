@@ -33,6 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.R;
@@ -91,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView otherUsernameTitle;
 
     AppManager appManager;
+    Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +104,42 @@ public class ChatActivity extends AppCompatActivity {
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         setContentView(R.layout.activity_chat);
+
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .cache(new Cache(getApplicationContext().getCacheDir(), 25000000))
+                .build();
+
+        picasso = new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(okHttpClient)).build();
+
         if(firebase.getCurrentUser() != null){
             username = appManager.getCredentialM().getUsername();
         }
         mChatUserID = getIntent().getStringExtra("user_id");
         mChatUserName = getIntent().getStringExtra("username_other");
 
+
         otherThumbnailTitle = findViewById(R.id.other_thumbnail_title);
+
+        DatabaseReference databaseReference = firebase.get_user(mChatUserID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("profile_picture")){
+                    picasso.load(dataSnapshot.child("profile_picture").getValue().toString())
+                            .fit()
+                            .centerInside()
+                            .placeholder(R.drawable.ic_import_export).into(otherThumbnailTitle);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         otherUsernameTitle = findViewById(R.id.other_username_title);
         otherUsernameTitle.setText(mChatUserName);
 
@@ -253,18 +287,34 @@ public class ChatActivity extends AppCompatActivity {
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Messages message =  dataSnapshot.getValue(Messages.class);
+                final Messages message =  dataSnapshot.getValue(Messages.class);
+                DatabaseReference db = firebase.get_user(message.getFrom());
+                db.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("profile_picture")){
+                            message.setThumbnail(dataSnapshot.child("profile_picture").getValue().toString());
+                        }else {
+                            message.setThumbnail("");
+                        }
+                        itemPosition++;
+                        if (itemPosition ==1){
+                            String key = dataSnapshot.getKey();
+                            lastKey = key;
+                            prevKey = key;
+                        }
+                        messagesList.add(message);
+                        messageAdapter.notifyDataSetChanged();
+                        chatMessages.scrollToPosition(messagesList.size()-1);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
 
-                itemPosition++;
-                if (itemPosition ==1){
-                    String key = dataSnapshot.getKey();
-                    lastKey = key;
-                    prevKey = key;
-                }
-                messagesList.add(message);
-                messageAdapter.notifyDataSetChanged();
-                chatMessages.scrollToPosition(messagesList.size()-1);
-                swipeRefreshLayout.setRefreshing(false);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
 
             @Override

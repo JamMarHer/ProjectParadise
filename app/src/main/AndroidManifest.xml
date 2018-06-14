@@ -63,6 +63,7 @@
         <activity android:name=".Settings.SettingsActivity" />
         <activity android:name=".Fragments.WaveRelated.WavePostActivity" />
         <activity android:name=".Fragments.ExploreRelated.WaveOverviewActivity"></activity>
+        <activity android:name=".Fragments.WaveRelated.PinnedWavesActivity"></activity>
     </application>
 
 </manifest>

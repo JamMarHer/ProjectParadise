@@ -66,7 +66,7 @@ public class ChatFragment extends HolderFragment implements EnhancedFragment {
     private void setUpAttending(ViewPager viewPager) {
 
         FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
-        adapter.addFragment(new OnGoingChats(), "Chats");
+        adapter.addFragment(new OnGoingChats(), "Contacts");
         adapter.addFragment(new AttendantsInEvent(), "Waving");
         adapter.addFragment(new EventChat(), "Wave Chat");
         viewPager.setAdapter(adapter);

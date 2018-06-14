@@ -74,7 +74,6 @@ public class OnGoingChats extends Fragment{
         TextView username;
         ImageView thumpnail;
 
-        ImageView notification;
 
         View mView;
 
@@ -82,7 +81,6 @@ public class OnGoingChats extends Fragment{
             super(itemView);
             username = itemView.findViewById(R.id.username_single_user_layout);
             thumpnail = itemView.findViewById(R.id.profile_image_single_user_layout);
-            notification = itemView.findViewById(R.id.notification_icon_single_user_layout);
             mView = itemView;
         }
     }

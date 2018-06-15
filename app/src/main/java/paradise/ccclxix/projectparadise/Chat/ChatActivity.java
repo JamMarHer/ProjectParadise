@@ -280,7 +280,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadMessages(){
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebase.getMessages(mChatUserID);
         Query messageQuery = databaseReference.limitToLast(ITEMS_TO_LOAD);
 

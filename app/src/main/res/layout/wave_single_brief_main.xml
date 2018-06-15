@@ -199,6 +199,7 @@
         android:elevation="3dp"
         android:maxLines="6"
         android:text="TextView"
+        android:textIsSelectable="true"
         android:verticalScrollbarPosition="defaultPosition"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

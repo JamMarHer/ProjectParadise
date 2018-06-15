@@ -153,7 +153,7 @@ public class EventChat extends Fragment{
         chatMessageText = inflater1.findViewById(R.id.event_chat_message);
         chatMessages = inflater1.findViewById(R.id.event_chat_messages);
         swipeRefreshLayout = inflater1.findViewById(R.id.event_chat_swipe_layout);
-
+        firebase = new FirebaseBuilder();
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         messageAdapter = new MessageAdapter(messagesList, firebase.auth_id(), getContext());

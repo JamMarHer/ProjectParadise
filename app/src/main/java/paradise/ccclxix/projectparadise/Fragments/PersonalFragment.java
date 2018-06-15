@@ -404,6 +404,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), WavePostActivity.class);
                     Bundle bundle = new Bundle();
+                    bundle.putString("waveID", waveID);
                     bundle.putString("postID", postID);
                     bundle.putString("username", postFromUsername);
                     bundle.putString("message", postMessage);

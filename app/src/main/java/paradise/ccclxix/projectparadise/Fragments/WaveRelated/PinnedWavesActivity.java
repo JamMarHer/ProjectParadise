@@ -3,6 +3,7 @@ package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -41,8 +43,10 @@ public class PinnedWavesActivity extends AppCompatActivity {
     private AppManager appManager;
 
     private TextView pinnedTitle;
-    private Button pinnedDone;
     private RecyclerView pinnedWavesView;
+
+    final int sdk = android.os.Build.VERSION.SDK_INT;
+
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
@@ -52,10 +56,13 @@ public class PinnedWavesActivity extends AppCompatActivity {
         appManager.initialize(getApplicationContext());
 
 
+
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        settings.setVisibility(View.INVISIBLE);
 
         pinnedTitle = findViewById(R.id.pinned_title);
-        pinnedDone = findViewById(R.id.pinned_done);
         pinnedWavesView = findViewById(R.id.pinned_wave_recycleView);
 
         pinnedOptionAdapter = new PinnedOptionAdapter(getApplicationContext());
@@ -63,7 +70,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
         pinnedWavesView.setAdapter(pinnedOptionAdapter);
         pinnedWavesView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        pinnedDone.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -91,10 +98,20 @@ public class PinnedWavesActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.hasChild(waveID) && !isChecked){
                                 firebase.get_user_authId("waves", "pinned", waveID).removeValue();
+                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                    pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_gray) );
+                                } else {
+                                    pinnedSwitch.setBackground(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_gray));
+                                }
                             }
                             else if (!dataSnapshot.hasChild(waveID) && isChecked){
                                 firebase.get_user_authId("waves", "pinned", waveID)
                                         .setValue(ServerValue.TIMESTAMP);
+                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                    pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_main_color) );
+                                } else {
+                                    pinnedSwitch.setBackground(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_main_color));
+                                }
                             }
                         }
                         @Override
@@ -198,9 +215,19 @@ public class PinnedWavesActivity extends AppCompatActivity {
             // Does any presetting
             if(waves.get(position).get("pinned").equals("true")){
                 holder.pinnedSwitch.setChecked(true);
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_main_color) );
+                } else {
+                    holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_main_color));
+                }
             }
             else{
                 holder.pinnedSwitch.setChecked(false);
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_gray) );
+                } else {
+                    holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_gray));
+                }
             }
 
 

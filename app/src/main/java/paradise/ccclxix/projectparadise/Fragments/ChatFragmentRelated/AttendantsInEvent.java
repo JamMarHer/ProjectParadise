@@ -7,21 +7,27 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
@@ -35,11 +41,18 @@ public class AttendantsInEvent extends Fragment{
 
     AppManager appManager;
 
+    Picasso picasso;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflater1 = inflater.inflate(R.layout.attendants_event_fragment, null);
         listAttendingUsers = inflater1.findViewById(R.id.usersAttending);
+
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
+
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
         if (getActivity().getClass().getSimpleName().equals("MainActivity")){
             MainActivity mainActivity = (MainActivity)getActivity();
@@ -73,10 +86,12 @@ public class AttendantsInEvent extends Fragment{
 
         private List<String> userIdsList;
         private List<String> usernameList;
+        private List<String> userThumbnail;
 
         public UsersAdapter(final Context context){
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();
+            userThumbnail = new ArrayList<>();
             final String personalUN = appManager.getCredentialM().getUsername();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
@@ -87,6 +102,7 @@ public class AttendantsInEvent extends Fragment{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userIdsList.clear();
                     usernameList.clear();
+                    userThumbnail.clear();
                     for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
                         FirebaseDatabase firebaseDatabase =  FirebaseDatabase.getInstance();
@@ -98,6 +114,19 @@ public class AttendantsInEvent extends Fragment{
                                 if(!personalUN.equals(otherUN)){
                                     usernameList.add(otherUN);
                                     userIdsList.add(dataSnapshot1.getKey());
+                                    if(dataSnapshot.hasChild("profile_picture"))
+                                        userThumbnail.add(dataSnapshot.child("profile_picture").getValue().toString());
+                                    else
+                                        userThumbnail.add("");
+
+
+                                }else {
+                                    usernameList.add(appManager.getCredentialM().getUsername());
+                                    userIdsList.add(FirebaseAuth.getInstance().getUid());
+                                    if (!TextUtils.isEmpty(appManager.getCredentialM().getProfilePic()))
+                                        userThumbnail.add(appManager.getCredentialM().getProfilePic());
+                                    else
+                                        userThumbnail.add("");
                                 }
 
                                 usersAdapter.notifyDataSetChanged();
@@ -133,8 +162,15 @@ public class AttendantsInEvent extends Fragment{
         @Override
         public void onBindViewHolder(UsersViewHolder holder, int position) {
             final String userID = userIdsList.get(position);
+            final String thumbnail = userThumbnail.get(position);
             final String username = usernameList.get(position);
             holder.username.setText(username);
+
+            if (!TextUtils.isEmpty(thumbnail))
+                picasso.load(thumbnail)
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export).into(holder.thumpnail);
 
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

@@ -58,7 +58,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
     private Uri imageUriGeneral = null;
     private FirebaseBuilder firebase = new FirebaseBuilder();
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
 
     public static final int GALLERY_PICK = 1;
 

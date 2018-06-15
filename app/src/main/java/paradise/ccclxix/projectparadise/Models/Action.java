@@ -17,7 +17,7 @@ public class Action {
     */
 
     enum Type{
-        MESSAGE, POST, COMMENT, WAVE;
+        MESSAGE, POST, COMMENT, WAVE
     }
 
     private String id;

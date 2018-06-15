@@ -3,10 +3,12 @@ package paradise.ccclxix.projectparadise.Fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +42,8 @@ import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.PinnedWavesActivity;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -62,9 +67,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView mStatus;
     private RecyclerView mPinnedWavesRecyclerV;
     private RecyclerView mHightlightedPostsRecyclerV;
+    private LinearLayout pinnedAddButton;
 
-    Button createWave;
-    Button joinWave;
     View generalView;
 
 
@@ -76,7 +80,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     AppManager appManager;
     Picasso picasso;
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,27 +116,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mStatus = inflater1.findViewById(R.id.personal_status);
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
-
-
-        createWave = inflater1.findViewById(R.id.createWave);
-        joinWave = inflater1.findViewById(R.id.joinWave);
-
-
-        createWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        joinWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                startActivity(intent);
-            }
-        });
+        pinnedAddButton = inflater1.findViewById(R.id.pinnedWaves);
 
         generalView = inflater1;
         setupUserCard();
@@ -143,11 +127,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         }
 
-
-        View settingsPopupView = inflater.inflate(R.layout.settings_popup, null);
-        if (appManager.getWaveM().getEventID() == null){
-            //TODO
-        }
 
 
         settingsImageView.setOnClickListener(new View.OnClickListener() {
@@ -161,20 +140,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
         // Views inside settings Popup window.
-        final Button logoutButton = settingsPopupView.findViewById(R.id.logoutButton);
 
 
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebase.auth().signOut();
-                Intent intent = new Intent(getContext(), InitialAcitivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+
 
 
 
@@ -232,13 +201,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         TextView waveName;
         ImageView waveThumbnail;
+        ImageView waveActiveIndicator;
         View mView;
 
         public WaveCardViewHolder(View itemView) {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_card_name);
             waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
-
+            waveActiveIndicator = itemView.findViewById(R.id.active_indicator);
             mView = itemView;
         }
     }
@@ -274,76 +244,18 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-
     private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
 
         private LayoutInflater inflater;
-
-
         private HashMap<String, Integer> record;
+
         public HighlightedPostsAdapter(final Context context){
             highlightPosts = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "in");
+            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    highlightPosts.clear();
-                    record = new HashMap<>();
-
-                    for (final  DataSnapshot wave: dataSnapshot.getChildren()){
-                        final String waveID = wave.getKey();
-
-                        DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
-                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.hasChildren()){
-                                    final String waveName = dataSnapshot.child("name_event").getValue().toString();
-
-                                    Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
-                                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot2) {
-                                            HashMap<String, String> postInfo = new HashMap<>();
-                                            if (dataSnapshot2.hasChildren()){
-
-                                                String postID = dataSnapshot2.getChildren().iterator().next().getKey();
-                                                dataSnapshot2 = dataSnapshot2.child(postID);
-                                                postInfo.put("waveName", waveName);
-                                                postInfo.put("waveID", waveID);
-                                                postInfo.put("postID", postID);
-                                                postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
-                                                postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
-                                                postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
-                                                postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
-                                                postInfo.put("postEchos", dataSnapshot2.child("numEchos").getValue().toString());
-                                                postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
-                                                postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
-                                                postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
-
-                                                highlightPosts.add(postInfo);
-                                                highlightedPostsAdapter.notifyDataSetChanged();
-                                                inflater = LayoutInflater.from(context);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d("MY_WAVES", databaseError.getMessage());
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-
-                    }
+                    updateOnChange(dataSnapshot, context);
                 }
 
                 @Override
@@ -352,6 +264,66 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
+        }
+
+        private void updateOnChange(DataSnapshot dataSnapshot, final Context context){
+            highlightPosts.clear();
+            record = new HashMap<>();
+
+            for (final  DataSnapshot wave: dataSnapshot.getChildren()){
+                final String waveID = wave.getKey();
+                DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
+                waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()){
+
+                            final String waveName = dataSnapshot.child("name_event").getValue().toString();
+
+                            Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
+                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    HashMap<String, String> postInfo = new HashMap<>();
+                                    if (dataSnapshot2.hasChildren()){
+
+                                        String postID = dataSnapshot2.getChildren().iterator().next().getKey();
+                                        dataSnapshot2 = dataSnapshot2.child(postID);
+                                        postInfo.put("waveName", waveName);
+                                        postInfo.put("waveID", waveID);
+                                        postInfo.put("postID", postID);
+                                        postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
+                                        postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
+                                        postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
+                                        postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
+                                        postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
+                                        postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
+                                        postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
+                                        postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
+
+                                        highlightPosts.add(postInfo);
+                                        highlightedPostsAdapter.notifyDataSetChanged();
+                                        inflater = LayoutInflater.from(context);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d("MY_WAVES", databaseError.getMessage());
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
         }
 
 
@@ -404,10 +376,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
             }
 
-
-
             FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-
 
             DatabaseReference databaseReferenceWave = firebaseDatabase1.getReference()
                     .child("events_us")
@@ -430,8 +399,40 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 }
             });
 
+            holder.postLaunch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), WavePostActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("waveID", waveID);
+                    bundle.putString("postID", postID);
+                    bundle.putString("username", postFromUsername);
+                    bundle.putString("message", postMessage);
+                    bundle.putString("message2", postMessage2);
+                    bundle.putString("numEchos", postNumEchos);
+                    bundle.putString("numComments", postNumComments);
+                    bundle.putString("time", postTime);
+                    bundle.putString("type", postType);
+                    bundle.putString("from", postFrom);
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                }
+            });
 
 
+            DatabaseReference db =  firebase.getEvents(waveID,"wall", "posts", postID);
+            db.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    holder.postEchos.setText(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
+                    holder.postComments.setText(String.valueOf(dataSnapshot.child("comments").getChildrenCount()));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         }
         @Override
@@ -440,63 +441,36 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
     }
 
-        private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
+    private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
 
         private LayoutInflater inflater;
+        private HashMap<String, Integer> record = new HashMap<>();
 
-
-        private HashMap<String, Integer> record;
         public WaveCardPinnedAdapter(final Context context){
+            updatePinnedWaves(context);
+            createAddButton(context);
+        }
+
+        private void updatePinnedWaves(final Context context){
             wavePinned = new ArrayList<>();
             final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     wavePinned.clear();
-                    record = new HashMap<>();
-
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebase.get("events_us", waveID);
                         waveDBReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                int waveAttending = (int)dataSnapshot.child("attending").getChildrenCount();
-                                HashMap<String, String> eventInfo = new HashMap<>();
-                                eventInfo.put("waveID", waveID);
-                                eventInfo.put("waveName", dataSnapshot.child("name_event").getValue().toString());
-                                // TODO add function (algo) for trending.
-
-                                if (dataSnapshot.hasChild("image_url")){
-                                    eventInfo.put("waveImageURL", dataSnapshot.child("image_url").getValue().toString());
-                                }else {
-                                    eventInfo.put("waveImageURL", null);
-                                }
-
-                                eventInfo.put("waveTrend", "trending");
-                                eventInfo.put("wavePosts", String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount()));
-                                eventInfo.put("waveAttending", String.valueOf(waveAttending));
-
-                                if(!record.containsKey(waveID)) {
-                                    wavePinned.add(eventInfo);
-                                    record.put(waveID, wavePinned.size()-1);
-                                    if(waveID.equals(appManager.getWaveM().getEventID())){
-                                        int toExchange = wavePinned.size()-1;
-                                        Collections.swap(wavePinned,0, toExchange);
-                                        record.put(waveID, 0);
-                                        record.put(wavePinned.get(toExchange).get("waveID"), wavePinned.size()-1);
-                                    }
-                                }else {
-                                    wavePinned.set(record.get(waveID), eventInfo);
-                                }
-                                pinnedWavesAdapter.notifyDataSetChanged();
-                                inflater = LayoutInflater.from(context);
+                                record.clear();
+                                updateAdapter(dataSnapshot, waveID, context);
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.d("MY_WAVES", databaseError.getMessage());
+
                             }
                         });
                     }
@@ -510,7 +484,53 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             });
         }
 
+        private void createAddButton(Context context){
+            pinnedAddButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(v.getContext(), PinnedWavesActivity.class);
+                    startActivityForResult(myIntent, 0);
+                }
+            });
+        }
 
+        private List<HashMap<String, String >>  updateAdapter(DataSnapshot dataSnapshot, String waveID, Context context){
+            int waveAttending = (int)dataSnapshot.child("attending").getChildrenCount();
+            HashMap<String, String> eventInfo = new HashMap<>();
+
+            eventInfo.put("waveID", waveID);
+            eventInfo.put("waveName", dataSnapshot.child("name_event").getValue().toString());
+            // TODO add function (algo) for trending.
+
+            // Checks if wave has a logo
+            if (dataSnapshot.hasChild("image_url")){
+                eventInfo.put("waveImageURL", dataSnapshot.child("image_url").getValue().toString());
+            }else {
+                eventInfo.put("waveImageURL", null);
+            }
+
+            // Hydrating event
+            eventInfo.put("waveTrend", "trending");
+            eventInfo.put("wavePosts", String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount()));
+            eventInfo.put("waveAttending", String.valueOf(waveAttending));
+
+            // Event is not in the record
+            if(!record.containsKey(waveID)) {
+                wavePinned.add(eventInfo);
+                record.put(waveID, wavePinned.size()-1);
+                if(waveID.equals(appManager.getWaveM().getEventID())){
+                    int toExchange = wavePinned.size()-1;
+                    Collections.swap(wavePinned,0, toExchange);
+                    record.put(waveID, 0);
+                    record.put(wavePinned.get(toExchange).get("waveID"), wavePinned.size()-1);
+                }
+            }else {
+                    wavePinned.add(eventInfo);
+            }
+            pinnedWavesAdapter.notifyDataSetChanged();
+            inflater = LayoutInflater.from(context);
+            return wavePinned;
+        }
 
         @Override
         public WaveCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -518,7 +538,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             WaveCardViewHolder holder = new WaveCardViewHolder(view);
             return holder;
         }
-
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onBindViewHolder(final WaveCardViewHolder holder, final int position) {
@@ -536,9 +555,13 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         .placeholder(R.drawable.ic_import_export).into(holder.waveThumbnail);
             }
 
+            if (position != 0) {
+                holder.waveActiveIndicator.setVisibility(View.INVISIBLE);
+            }
+
             holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
+                                                        @Override
+                                                        public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
                         snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
                     }else {
@@ -552,16 +575,17 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         getActivity().finish();
                     }
                     return true;
-                }
-            });
-
-
         }
+        });
 
 
-        @Override
-        public int getItemCount() {
-            return wavePinned.size();
-        }
+    }
+
+
+    @Override
+    public int getItemCount() {
+                            return wavePinned.size();
+                                                     }
+
     }
 }

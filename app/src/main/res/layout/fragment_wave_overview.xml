@@ -2,29 +2,63 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wave_overview_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.WaveRelated.WaveOverview">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="45dp"
+    <ProgressBar
+        android:id="@+id/join_progress"
+        style="@android:style/Widget.Material.Light.ProgressBar.Large"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/baseline_arrow_upward_black_24"
+        android:background="@drawable/circle_holder_main_colors"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/wave_overview_join"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/circle_holder_gray"
+        android:fontFamily="@font/aleo_regular"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Join"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout" />
+    </android.support.design.widget.AppBarLayout>
+
+    <!-- TODO: Update blank fragment layout -->
+
     <LinearLayout
         android:id="@+id/linearLayo"
-        android:layout_width="75dp"
+        android:layout_width="77dp"
         android:layout_height="45dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
@@ -33,14 +67,14 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout42">
 
         <ImageView
             android:id="@+id/textVie"
             android:layout_width="33dp"
             android:layout_height="match_parent"
             android:elevation="1dp"
-            android:src="@drawable/ic_people_black_24dp" />
+            android:src="@drawable/baseline_view_day_black_24" />
 
         <TextView
             android:id="@+id/wave_overview_number_posts"
@@ -53,47 +87,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical|end"
             android:text="0"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/heats"
-        android:layout_width="75dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:elevation="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayo"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout42"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
-
-        <ImageView
-            android:id="@+id/textView9"
-            android:layout_width="33dp"
-            android:layout_height="match_parent"
-            android:elevation="1dp"
-            android:src="@drawable/heart_like" />
-
-        <TextView
-            android:id="@+id/wave_overview_number_points"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|end"
-            android:text="0"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,13 +98,12 @@
         android:id="@+id/constraintLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/circle"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/view5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/main_wave_thumbnail"
@@ -143,25 +136,25 @@
         android:id="@+id/view5"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="3dp"
         android:background="#27000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/heats" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayo" />
 
     <LinearLayout
         android:id="@+id/linearLayout42"
         android:layout_width="77dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="41dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:elevation="1dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
         <ImageView
             android:id="@+id/textView99"
@@ -181,7 +174,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical|end"
             android:text="0"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

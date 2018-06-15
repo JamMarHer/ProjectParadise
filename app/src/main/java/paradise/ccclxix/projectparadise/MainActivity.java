@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private Toolbar mainToolbar;
     private FirebaseBuilder firebase = new FirebaseBuilder();
-    private SnackBar snackbar;
+    private SnackBar snackbar = new SnackBar();
 
 
 
@@ -50,8 +52,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        snackbar = new SnackBar();
 
         appManager = (AppManager) new AppManager().initialize(getApplicationContext());
+
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         String source = intent.getStringExtra("source");
         if (source.equals("registration")){
             appManager.getModeM().setModeToExplore();
-            snackbar.showEmojiBar("Welcome fam :)", Icons.COOL);
+            snackbar.showEmojiBar(findViewById(android.R.id.content),"Welcome fam :)", Icons.COOL);
             loadFragments();
         }else if (source.equals("event_created")) {
             appManager.getModeM().setModeToHost();
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }else if (source.equals("joined_event")) {
             appManager.getModeM().setModeToAttendant();
             loadFragments();
-            snackbar.showEmojiBar(" You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
+            snackbar.showEmojiBar(findViewById(android.R.id.content)," You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
         }else if (source.equals("login")){
             appManager.getModeM().setModeToExplore();
             loadFragments();
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadFragments();
             }
-            snackbar.showEmojiBar("Working without internet. Trying to reconnect.", Icons.POOP);
+            snackbar.showEmojiBar(findViewById(android.R.id.content), "Working without internet. Trying to reconnect.", Icons.POOP);
         } else if (source.equals("logged_in_server_problem")){
             // TODO constant check to get server going.
             if (appManager.getModeM().getMode().equals("host")){
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }else{
                 loadFragments();
             }
-            snackbar.showEmojiBar("Server didn't respond. Trying to communicate.", Icons.POOP);
+            snackbar.showEmojiBar(findViewById(android.R.id.content), "Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
         if(source.equals("postAdded")){

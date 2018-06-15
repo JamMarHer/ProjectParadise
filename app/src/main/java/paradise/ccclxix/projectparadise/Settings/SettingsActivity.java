@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     SettingsAdapter settingsAdapter;
 
     AppManager appManager;
-    SnackBar snackbar;
+    SnackBar snackbar = new SnackBar();
     FirebaseBuilder firebase = new FirebaseBuilder();
 
     ArrayList<Setting> settingsList;

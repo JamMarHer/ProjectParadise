@@ -19,7 +19,7 @@
         android:id="@+id/pinned_waves_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient_main_colors"
+        android:background="@drawable/gradient_3"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +108,7 @@
             android:text="TextView"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/pinnedWaves"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -139,8 +139,8 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@+id/linearLayout42"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout">
+            app:layout_constraintStart_toEndOf="@+id/pinnedWaves"
+            app:layout_constraintTop_toTopOf="@+id/pinnedWaves">
 
             <ImageView
                 android:id="@+id/textView9"
@@ -168,13 +168,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/pinnedWaves"
             android:layout_width="75dp"
             android:layout_height="27dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/circle"
+            android:clickable="true"
             android:elevation="1dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -209,50 +210,5 @@
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@android:color/background_light"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/createWave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_weight="1"
-            android:background="@android:color/background_light"
-            android:elevation=".5dp"
-            android:fontFamily="@font/lobster_regular"
-            android:text="Create Wave"
-            android:textColor="@color/common_google_signin_btn_text_light_focused"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/joinWave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="3dp"
-            android:layout_weight="1"
-            android:background="@android:color/background_light"
-            android:elevation=".5dp"
-            android:fontFamily="@font/lobster_regular"
-            android:text="Join Wave"
-            android:textColor="@color/common_google_signin_btn_text_light_focused"
-            android:textSize="18sp" />
-
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

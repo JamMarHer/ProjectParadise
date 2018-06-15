@@ -3,10 +3,8 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 import paradise.ccclxix.projectparadise.utils.ManagersInfo;
@@ -24,6 +22,7 @@ public class AppManager implements Manager{
     };
 
 
+
     private static final String TYPE = "APP_MANAGER";
     // TODO
     private static final String DESCRIPTION = "TODO";
@@ -32,8 +31,6 @@ public class AppManager implements Manager{
     private boolean initialized = false;
 
     private Context  context;
-    private String source;
-
 
     public AppManager(){
 
@@ -47,6 +44,7 @@ public class AppManager implements Manager{
                 managers.get(managerKey).initialize(this.context);
             }
             initialized = true;
+
         }
         return this;
     }

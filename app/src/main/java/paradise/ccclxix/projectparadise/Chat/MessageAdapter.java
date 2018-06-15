@@ -2,6 +2,7 @@ package paradise.ccclxix.projectparadise.Chat;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -26,10 +30,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private boolean personalPrev = false;
     private boolean otherPrev = false;
 
+
     Picasso picasso;
     public MessageAdapter(List<Messages> messageList, String currentUsername, Context context){
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .build();
+
+
 
         picasso = new Picasso.Builder(context).downloader(new OkHttp3Downloader(okHttpClient)).build();
         this.messageList = messageList;
@@ -50,8 +57,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Messages messages = messageList.get(position);
         String from  = messages.getFrom();
         String type = messages.getType();
+        String thumbnail = messages.getThumbnail();
+
 
         if(from.equals(currentUsername)){
+            if (!TextUtils.isEmpty(thumbnail))
+                picasso.load(thumbnail)
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export).into(holder.thumbnail_personal);
+
+
             holder.relativeLayout_other.setVisibility(View.INVISIBLE);
             if (position-1 >=0 && from.equals(messageList.get(position-1).getFrom())){
                 holder.thumbnail_personal.setVisibility(View.INVISIBLE);
@@ -69,6 +85,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             }
         }else {
+            if (!TextUtils.isEmpty(thumbnail)) {
+                picasso.load(thumbnail)
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export).into(holder.thumbnail_other);
+            }
+
             holder.relativeLayout_personal.setVisibility(View.INVISIBLE);
 
             if (position-1 >=0 && from.equals(messageList.get(position-1).getFrom())){

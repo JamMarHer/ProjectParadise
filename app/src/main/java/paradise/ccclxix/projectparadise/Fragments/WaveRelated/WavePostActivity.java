@@ -51,6 +51,7 @@ public class WavePostActivity extends AppCompatActivity {
     ImageView wavePostViewComments;
 
 
+    String waveID;
     String postID;      // ID of the post.
     String username;    // Username of the user that posted.
     String from;        // UserID ...^
@@ -107,6 +108,7 @@ public class WavePostActivity extends AppCompatActivity {
 
         Bundle postInfo = getIntent().getExtras();
 
+        waveID = postInfo.getString("waveID");
         postID = postInfo.getString("postID");
         this.username = postInfo.getString("username");
         this.message = postInfo.getString("message");
@@ -145,7 +147,7 @@ public class WavePostActivity extends AppCompatActivity {
 
         DatabaseReference waveTableGet = dbPlainReference
                 .child("events_us")
-                .child(appManager.getWaveM().getEventID())
+                .child(waveID)
                 .child("wall")
                 .child("posts")
                 .child(this.postID);
@@ -173,7 +175,7 @@ public class WavePostActivity extends AppCompatActivity {
                 .child("users")
                 .child(firebase.auth_id())
                 .child("echos")
-                .child(appManager.getWaveM().getEventID());
+                .child(waveID);
         personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -205,7 +207,7 @@ public class WavePostActivity extends AppCompatActivity {
                             .child("users")
                             .child(firebase.auth_id())
                             .child("echos")
-                            .child(appManager.getWaveM().getEventID());
+                            .child(waveID);
                     personalTableGet.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot mainDataSnapshot) {
@@ -213,13 +215,13 @@ public class WavePostActivity extends AppCompatActivity {
 
                                 DatabaseReference dbWave = dbPlainReference
                                         .child("events_us")
-                                        .child(appManager.getWaveM().getEventID())
+                                        .child(waveID)
                                         .child("wall")
                                         .child("posts")
                                         .child(postID)
                                         .child("echos")
                                         .child(firebase.auth_id()).push();
-                                String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
+                                String chatUserRef = "events_us/" + waveID + "/wall/posts/" + postID + "/echos";
                                 final String pushID = dbWave.getKey();
                                 Map postMap = new HashMap();
                                 postMap.put("from", firebase.auth_id());
@@ -237,7 +239,7 @@ public class WavePostActivity extends AppCompatActivity {
                                                     .child("users")
                                                     .child(firebase.auth_id())
                                                     .child("echos")
-                                                    .child(appManager.getWaveM().getEventID())
+                                                    .child(waveID)
                                                     .child(postID);
                                             Map input = new HashMap<>();
                                             input.put("pushID", pushID);
@@ -265,7 +267,7 @@ public class WavePostActivity extends AppCompatActivity {
                                         .child("users")
                                         .child(firebase.auth_id())
                                         .child("echos")
-                                        .child(appManager.getWaveM().getEventID())
+                                        .child(waveID)
                                         .child(postID);
                                 deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -274,7 +276,7 @@ public class WavePostActivity extends AppCompatActivity {
 
                                             DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
                                                     .child("events_us")
-                                                    .child(appManager.getWaveM().getEventID())
+                                                    .child(waveID)
                                                     .child("wall")
                                                     .child("posts")
                                                     .child(postID)

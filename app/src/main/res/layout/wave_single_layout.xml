@@ -6,20 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="1dp"
-    android:background="@color/colorWhite"
-    android:elevation="1dp">
-
-    <ImageView
-        android:id="@+id/wave_drag"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_drag_indicator_black_24" />
+    android:background="@color/colorWhite">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -43,33 +30,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profile_wave_single_layout" />
 
-    <ImageView
-        android:id="@+id/wave_notification"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_gravity="end"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle_holder_second_main_color"
-        android:src="@drawable/outline_notifications_active_white_48"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_wave_single_layout"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="3dp"
-        android:layout_marginStart="3dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="3dp"
         android:src="@drawable/icon_sad"
         app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp"
+        app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wave_notification"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

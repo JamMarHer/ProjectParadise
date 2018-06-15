@@ -2,8 +2,12 @@ package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,7 +67,7 @@ public class CredentialsManager  implements Manager{
 
     private void updateCredentials(){
         if(firebase.getCurrentUser() != null){
-            DatabaseReference userDatabaseReference = firebase.get_user();
+            DatabaseReference userDatabaseReference = firebase.get_user_authId();
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -87,6 +91,10 @@ public class CredentialsManager  implements Manager{
                     if (dataSnapshot.hasChild("waves") && dataSnapshot.child("waves").hasChild("in"))
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
 
+                    if (dataSnapshot.hasChild("session_token")){
+                        // TODO This will be used if we later decide to limit the number of devices
+                        // an user can be sign in at the same time.
+                    }
 
                     if (dataSnapshot.hasChild("echos"))
                         updateNumWaves(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
@@ -122,7 +130,9 @@ public class CredentialsManager  implements Manager{
         return new User(this.getEmail(), this.getToken());
     }
 
-
+    public String getSessionToken(){
+        return sharedPreferences.getString("session_token", "");
+    }
 
     public String getUsername(){
         return sharedPreferences.getString("username","");
@@ -156,6 +166,14 @@ public class CredentialsManager  implements Manager{
     public String getNumWaves(){
         return sharedPreferences.getString("num_waves","");
     }
+
+
+    public void updateSessionToken(String token){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("session_token", token);
+        editor.apply();
+    }
+
 
     public void updateNumWaves(String waves){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
@@ -36,7 +41,7 @@ public class OnGoingChats extends Fragment{
     RecyclerView listAttendingUsers;
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
-
+    Picasso picasso;
     AppManager appManager;
 
     @Override
@@ -51,7 +56,10 @@ public class OnGoingChats extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
+                .build();
 
+        picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         View inflater1 = inflater.inflate(R.layout.consersations_fragments, null);
         listAttendingUsers = inflater1.findViewById(R.id.conversations_recyclerView);
         usersAdapter = new UsersAdapter(getContext());
@@ -66,9 +74,6 @@ public class OnGoingChats extends Fragment{
         TextView username;
         ImageView thumpnail;
 
-        ImageView startChat;
-        ImageView sameWave;
-        ImageView notification;
 
         View mView;
 
@@ -76,9 +81,6 @@ public class OnGoingChats extends Fragment{
             super(itemView);
             username = itemView.findViewById(R.id.username_single_user_layout);
             thumpnail = itemView.findViewById(R.id.profile_image_single_user_layout);
-            startChat = itemView.findViewById(R.id.open_chatsingle_user_layout);
-            sameWave = itemView.findViewById(R.id.user_in_same_wave_single_user_layout);
-            notification = itemView.findViewById(R.id.notification_icon_single_user_layout);
             mView = itemView;
         }
     }
@@ -89,6 +91,7 @@ public class OnGoingChats extends Fragment{
 
         private List<String> userIdsList;
         private List<String> usernameList;
+        private List<String> userThumbnail;
 
         public UsersAdapter(final Context context){
             if (firebase.auth_id() == null){
@@ -96,6 +99,7 @@ public class OnGoingChats extends Fragment{
             }
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();
+            userThumbnail = new ArrayList<>();
             final String personalUN = appManager.getCredentialM().getUsername();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = firebaseDatabase.getReference()
@@ -106,6 +110,7 @@ public class OnGoingChats extends Fragment{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userIdsList.clear();
                     usernameList.clear();
+                    userThumbnail.clear();
                     for (final DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
                         FirebaseDatabase firebaseDatabase =  FirebaseDatabase.getInstance();
@@ -116,6 +121,11 @@ public class OnGoingChats extends Fragment{
                                 String otherUN = dataSnapshot.child("username").getValue().toString();
                                 if(!personalUN.equals(otherUN)){
                                     usernameList.add(otherUN);
+                                    if(dataSnapshot.hasChild("profile_picture")){
+                                        userThumbnail.add(dataSnapshot.child("profile_picture").getValue().toString());
+                                    }else {
+                                        userThumbnail.add("");
+                                    }
                                     userIdsList.add(dataSnapshot1.getKey());
                                 }
 
@@ -151,10 +161,18 @@ public class OnGoingChats extends Fragment{
 
 
         @Override
-        public void onBindViewHolder(OnGoingChats.UsersViewHolder holder, int position) {
+        public void onBindViewHolder(final OnGoingChats.UsersViewHolder holder, int position) {
             final String userID = userIdsList.get(position);
+            final String thumbnail = userThumbnail.get(position);
             final String username = usernameList.get(position);
             holder.username.setText(username);
+
+            if (!TextUtils.isEmpty(thumbnail))
+                picasso.load(thumbnail)
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export).into(holder.thumpnail);
+
 
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

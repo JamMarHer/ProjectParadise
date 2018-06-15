@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_3"
+    android:background="@drawable/gradient_list"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
@@ -29,7 +29,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/circle_holder_grey_white"
+            android:background="@drawable/circle_holder_gray"
             android:orientation="vertical">
 
             <ImageView
@@ -43,9 +43,8 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/circle_holder_white"
                 android:gravity="center"
-                android:textColorHint="@color/colorPrimary">
+                android:textColorHint="@color/colorWhite">
 
                 <AutoCompleteTextView
                     android:id="@+id/registration_username"
@@ -65,9 +64,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:background="@drawable/circle_holder_white"
                 android:gravity="center"
-                android:textColorHint="@color/colorPrimary">
+                android:textColorHint="@color/colorWhite">
 
                 <AutoCompleteTextView
                     android:id="@+id/registration_email"
@@ -87,9 +85,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:background="@drawable/circle_holder_white"
                 android:gravity="center"
-                android:textColorHint="@color/colorPrimary">
+                android:textColorHint="@color/colorWhite">
 
                 <AutoCompleteTextView
                     android:id="@+id/registration_password"
@@ -108,9 +105,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:background="@drawable/circle_holder_white"
                 android:gravity="center"
-                android:textColorHint="@color/colorPrimary">
+                android:textColorHint="@color/colorWhite">
 
                 <AutoCompleteTextView
                     android:id="@+id/registration_re_password"
@@ -131,10 +127,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/circle_holder_second_main_color"
-                android:fontFamily="@font/lobster_regular"
+                android:background="@drawable/circle_holder_gray"
+                android:fontFamily="@font/aleo_regular"
                 android:onClick="register"
-                android:text="@string/action_create_account"
+                android:text="Join"
                 android:textColor="@color/colorWhite"
                 android:textSize="24sp"
                 android:textStyle="bold" />

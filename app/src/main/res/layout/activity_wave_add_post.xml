@@ -57,15 +57,54 @@
     <ImageView
         android:id="@+id/wave_add_post_insert_image"
         android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="33dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:clickable="true"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
         app:srcCompat="@drawable/baseline_add_photo_alternate_black_24" />
+
+    <ImageView
+        android:id="@+id/wave_add_post_insert_youtube_video"
+        android:layout_width="45dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:clickable="true"
+        android:elevation="1dp"
+        app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_youtube_video2"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
+        app:srcCompat="@drawable/twitter_icon" />
+
+    <ImageView
+        android:id="@+id/wave_add_post_insert_youtube_video2"
+        android:layout_width="45dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:clickable="true"
+        android:elevation="1dp"
+        app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_link"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
+        app:srcCompat="@drawable/youtube_icon" />
+
+    <ImageView
+        android:id="@+id/wave_add_post_insert_link"
+        android:layout_width="45dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:clickable="true"
+        android:elevation="1dp"
+        app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_image"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
+        app:srcCompat="@drawable/baseline_link_black_24" />
 
     <View
         android:id="@+id/view"
@@ -123,6 +162,6 @@
         app:layout_constraintBottom_toTopOf="@+id/wave_add_post_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_insert_image" />
 
 </android.support.constraint.ConstraintLayout>

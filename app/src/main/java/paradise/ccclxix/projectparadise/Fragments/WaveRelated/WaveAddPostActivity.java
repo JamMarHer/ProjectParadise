@@ -54,6 +54,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
+import paradise.ccclxix.projectparadise.utils.Defaults;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
@@ -126,6 +127,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayerView.setVisibility(View.VISIBLE);
+                waveAddPostImage.setVisibility(View.INVISIBLE);
                 youTubePlayer.loadVideo(youtubeLink);
             }
 
@@ -144,7 +146,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(WaveAddPostActivity.this, R.style.MyDialogTheme);
-                builder.setTitle("Provide YouTube link");
+                builder.setTitle("YouTube link");
                 final EditText input = new EditText(getApplicationContext());
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
                 input.setHint("link");
@@ -152,15 +154,18 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                 builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+
+                                // TODO Add method to scrap the id of the given video.
                                 String[] youtubeVideoLinkEquals = input.getText().toString().split("=");
                                 String[] youtubeVideoLinkSlash = input.getText().toString().split("/");
                                 if (youtubeVideoLinkEquals.length > 1){
                                     youtubeLink = youtubeVideoLinkEquals[youtubeVideoLinkEquals.length-1];
-                                    youTubePlayerView.initialize("AIzaSyCS2SRUDlv_JjepPmr8j0m5veKkFBXfrzI", onInitializedListener);
+                                    youTubePlayerView.initialize(Defaults.YOUTUBE_TOKEN, onInitializedListener);
+
 
                                 }else if (youtubeVideoLinkSlash.length > 1){
                                     youtubeLink = youtubeVideoLinkSlash[youtubeVideoLinkSlash.length-1];
-                                    youTubePlayerView.initialize("AIzaSyCS2SRUDlv_JjepPmr8j0m5veKkFBXfrzI", onInitializedListener);
+                                    youTubePlayerView.initialize(Defaults.YOUTUBE_TOKEN, onInitializedListener);
                                 }
                                 dialogInterface.cancel();
 
@@ -186,6 +191,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             @Override
             public void onClick(View view) {
                 youTubePlayerView.setVisibility(View.INVISIBLE);
+                waveAddPostImage.setVisibility(View.VISIBLE);
                 Intent galleryIntent = new Intent();
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);

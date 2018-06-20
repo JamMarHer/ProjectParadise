@@ -129,6 +129,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                 youTubePlayerView.setVisibility(View.VISIBLE);
                 waveAddPostImage.setVisibility(View.INVISIBLE);
                 youTubePlayer.loadVideo(youtubeLink);
+                youTubePlayer.pause();
             }
 
             @Override
@@ -190,6 +191,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         waveAddPostInsertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                youtubeLink = "";
                 youTubePlayerView.setVisibility(View.INVISIBLE);
                 waveAddPostImage.setVisibility(View.VISIBLE);
                 Intent galleryIntent = new Intent();
@@ -255,15 +257,19 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                             }
                         });
                     }else {
+                        String message2 = "Null";
+                        String messageType = "text";
+                        if (!TextUtils.isEmpty(youtubeLink))
+                            messageType = "youtube";
                         DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(), "wall", "posts", firebase.auth_id()).push();
                         String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                         String pushID = dbWave.getKey();
                         Map postMap = new HashMap();
                         postMap.put("message", waveAddPostMessage.getText().toString());
-                        postMap.put("message2", "No Image"); // TODO For now.
+                        postMap.put("message2", message2); // TODO For now.
                         postMap.put("seen", false);
                         postMap.put("numEchos", 0);
-                        postMap.put("type", "text");
+                        postMap.put("type", messageType);
                         postMap.put("time", ServerValue.TIMESTAMP);
                         postMap.put("from", firebase.auth_id());
                         postMap.put("fromUsername", appManager.getCredentialM().getUsername());

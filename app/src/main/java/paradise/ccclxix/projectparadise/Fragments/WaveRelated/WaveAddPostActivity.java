@@ -1,24 +1,31 @@
 package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +38,13 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import net.glxn.qrgen.core.scheme.YouTube;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Cache;
@@ -41,12 +53,14 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
-public class WaveAddPostActivity extends AppCompatActivity {
+
+public class WaveAddPostActivity extends YouTubeBaseActivity{
 
     private TextView waveAddPostUsername;
     private TextView waveAddPostWave;
@@ -55,6 +69,12 @@ public class WaveAddPostActivity extends AppCompatActivity {
     private ImageView waveAddPostInsertImage;
     private ImageView waveAddPostImage;
     private ImageView waveAddPostCreatePost;
+    private ImageView waveAddYoutubeVideo;
+
+    private String youtubeLink  = "";
+
+    YouTubePlayerView youTubePlayerView;
+    YouTubePlayer.OnInitializedListener onInitializedListener;
 
     private Uri imageUriGeneral = null;
     private FirebaseBuilder firebase = new FirebaseBuilder();
@@ -66,6 +86,7 @@ public class WaveAddPostActivity extends AppCompatActivity {
 
     Picasso picasso;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,16 +117,75 @@ public class WaveAddPostActivity extends AppCompatActivity {
         waveAddPostInsertImage = findViewById(R.id.wave_add_post_insert_image);
         waveAddPostImage = findViewById(R.id.wave_add_post_image);
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
+        waveAddYoutubeVideo = findViewById(R.id.wave_add_post_insert_youtube_video);
+        youTubePlayerView = findViewById(R.id.create_post_youtube_view);
+
+        youTubePlayerView.setVisibility(View.INVISIBLE);
+
+        onInitializedListener = new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayerView.setVisibility(View.VISIBLE);
+                youTubePlayer.loadVideo(youtubeLink);
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                youTubePlayerView.setVisibility(View.INVISIBLE);
+            }
+        };
 
         if(appManager.getWaveM().getEventID() != null){
             waveAddPostUsername.setText(appManager.getCredentialM().getUsername());
             waveAddPostWave.setText(appManager.getWaveM().getEventName());
         }
 
+        waveAddYoutubeVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(WaveAddPostActivity.this, R.style.MyDialogTheme);
+                builder.setTitle("Provide YouTube link");
+                final EditText input = new EditText(getApplicationContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+                input.setHint("link");
+                builder.setView(input);
+                builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String[] youtubeVideoLinkEquals = input.getText().toString().split("=");
+                                String[] youtubeVideoLinkSlash = input.getText().toString().split("/");
+                                if (youtubeVideoLinkEquals.length > 1){
+                                    youtubeLink = youtubeVideoLinkEquals[youtubeVideoLinkEquals.length-1];
+                                    youTubePlayerView.initialize("AIzaSyCS2SRUDlv_JjepPmr8j0m5veKkFBXfrzI", onInitializedListener);
+
+                                }else if (youtubeVideoLinkSlash.length > 1){
+                                    youtubeLink = youtubeVideoLinkSlash[youtubeVideoLinkSlash.length-1];
+                                    youTubePlayerView.initialize("AIzaSyCS2SRUDlv_JjepPmr8j0m5veKkFBXfrzI", onInitializedListener);
+                                }
+                                dialogInterface.cancel();
+
+                            }
+                        });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         waveAddPostInsertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                youTubePlayerView.setVisibility(View.INVISIBLE);
                 Intent galleryIntent = new Intent();
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);

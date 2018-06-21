@@ -183,6 +183,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         ImageView postLaunch;
         ImageView postWaveThumbnail;
         ImageView postFromThumbnail;
+        ImageView source;
 
         ConstraintLayout briefConstraintL;
 
@@ -199,6 +200,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail_main);
             postEcho = itemView.findViewById(R.id.main_echo_post);
             postComment = itemView.findViewById(R.id.main_comment_post);
+            source = itemView.findViewById(R.id.wave_single_brief_source);
         }
 
     }
@@ -303,6 +305,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             holder.postMessage.setText(postMessage);
             holder.postEchos.setText(postNumEchos);
             holder.postComments.setText(postNumComments);
+            holder.source.setVisibility(View.INVISIBLE);
+
 
             if (postType.equals("image")) {
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
@@ -333,7 +337,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
-
+                holder.source.setVisibility(View.VISIBLE);
             }
 
 

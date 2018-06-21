@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,7 +35,7 @@ import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
-public class WavePostActivity extends AppCompatActivity {
+public class WavePostActivity extends YouTubeBaseActivity {
 
 
     TextView wavePostUsername;

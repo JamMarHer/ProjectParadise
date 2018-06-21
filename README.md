@@ -1,6 +1,6 @@
 <img src="app/src/main/res/drawable-v24/idaelogo6_fullsmall.png" width="90" height="90" />
 
-# foli (Project Paradise)
+<img src="design/paradise_font.png" width="180"/>
 
 foli transforms the current social media model into a more filtered and controllable environment. foli is a mobile application that is currently in development.
 

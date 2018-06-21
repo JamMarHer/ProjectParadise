@@ -59,6 +59,7 @@ import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.Transformations;
+import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
 public class WaveAddPostActivity extends YouTubeBaseActivity{
@@ -155,20 +156,12 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                 builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
-                                // TODO Add method to scrap the id of the given video.
-                                String[] youtubeVideoLinkEquals = input.getText().toString().split("=");
-                                String[] youtubeVideoLinkSlash = input.getText().toString().split("/");
-                                if (youtubeVideoLinkEquals.length > 1){
-                                    youtubeLink = youtubeVideoLinkEquals[youtubeVideoLinkEquals.length-1];
-                                    youTubePlayerView.initialize(Defaults.YOUTUBE_TOKEN, onInitializedListener);
-
-
-                                }else if (youtubeVideoLinkSlash.length > 1){
-                                    youtubeLink = youtubeVideoLinkSlash[youtubeVideoLinkSlash.length-1];
+                                String videoID = YoutubeHelpers.getVideoID(input.getText().toString());
+                                if (!TextUtils.isEmpty(videoID)){
+                                    youtubeLink = videoID;
                                     youTubePlayerView.initialize(Defaults.YOUTUBE_TOKEN, onInitializedListener);
                                 }
-                                dialogInterface.cancel();
+                                dialogInterface.dismiss();
 
                             }
                         });
@@ -257,10 +250,14 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                             }
                         });
                     }else {
-                        String message2 = "Null";
                         String messageType = "text";
-                        if (!TextUtils.isEmpty(youtubeLink))
+                        String message2 = "Null";
+                        if (!TextUtils.isEmpty(youtubeLink)){
                             messageType = "youtube";
+                            message2 = youtubeLink;
+                        }
+
+
                         DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(), "wall", "posts", firebase.auth_id()).push();
                         String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts";
                         String pushID = dbWave.getKey();

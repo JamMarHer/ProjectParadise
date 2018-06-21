@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +53,7 @@ import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostCommentsAc
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
@@ -308,6 +313,22 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 params.width = width;
                 holder.postImage.setLayoutParams(params);
                 picasso.load(postMessage2)
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export)
+                        .into(holder.postImage);
+
+            }
+
+            if (postType.equals("youtube")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int width = displayMetrics.widthPixels;
+                int height = (int) convertPixelsToDp(displayMetrics.heightPixels, getContext());
+                params.width = width;
+                holder.postImage.setLayoutParams(params);
+                picasso.load(YoutubeHelpers.getVideoThumbnail(postMessage2))
                         .fit()
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export)

@@ -31,6 +31,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.TweetUtils;
+import com.twitter.sdk.android.tweetui.TweetView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -228,6 +234,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         ImageView postFromThumbnail;
         ImageView source;
 
+        LinearLayout optionalLayout;
+
         ConstraintLayout briefConstraintL;
 
         public HighlightPostViewHolder(View itemView){
@@ -241,6 +249,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
             briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);
+            optionalLayout = itemView.findViewById(R.id.wave_single_bried_optional_layout);
+
             source = itemView.findViewById(R.id.wave_single_brief_source);
         }
 
@@ -365,6 +375,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             holder.postComments.setText(postNumComments);
             holder.postImage.setVisibility(View.INVISIBLE);
             holder.source.setVisibility(View.INVISIBLE);
+            holder.optionalLayout.setVisibility(View.VISIBLE);
 
             if (postType.equals("image")) {
                 holder.postImage.setVisibility(View.VISIBLE);
@@ -373,7 +384,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export).into(holder.postImage);
 
-            }else if(postType.equals("youtube")){
+            }else if(postType.equals("youtube")) {
                 holder.postImage.setVisibility(View.VISIBLE);
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
                 DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -387,6 +398,19 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
                 holder.source.setVisibility(View.VISIBLE);
+            }else if(postType.equals("twitter")){
+                holder.optionalLayout.setVisibility(View.VISIBLE);
+                TweetUtils.loadTweet(Long.valueOf(postMessage2), new Callback<Tweet>() {
+                    @Override
+                    public void success(Result<Tweet> result) {
+                        holder.optionalLayout.addView(new TweetView(getActivity(), result.data));
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        // Toast.makeText(...).show();
+                    }
+                });
             }else {
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(holder.briefConstraintL);

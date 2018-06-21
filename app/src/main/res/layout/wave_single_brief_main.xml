@@ -201,6 +201,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_launch_main" />
 
+    <LinearLayout
+        android:id="@+id/wave_single_bried_optional_layout"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:maxHeight="350dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_launch_main" />
+
     <TextView
         android:id="@+id/wave_single_brief_message_main"
         android:layout_width="0dp"

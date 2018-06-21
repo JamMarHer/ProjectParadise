@@ -51,7 +51,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="left|center_vertical|start"
                 android:foregroundGravity="left"
-                app:srcCompat="@drawable/baseline_lens_black_24" />
+                android:src="@drawable/baseline_lens_black_24" />
 
             <TextView
                 android:id="@+id/wave_post_num_echos"
@@ -75,7 +75,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="21dp"
-                app:srcCompat="@drawable/baseline_comment_black_24" />
+                android:src="@drawable/baseline_comment_black_24" />
 
             <TextView
                 android:id="@+id/wave_post_num_comments"
@@ -209,6 +209,20 @@
 
         <ImageView
             android:id="@+id/wave_post_image_main"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:elevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <view
+            android:id="@+id/wave_post_youtube"
+            class="com.google.android.youtube.player.YouTubePlayerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="3dp"

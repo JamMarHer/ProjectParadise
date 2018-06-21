@@ -50,9 +50,9 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/circle_holder_second_main_color"
         android:clickable="true"
+        android:src="@drawable/baseline_add_circle_outline_white_36"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/wave_add_post_insert_image"
@@ -63,9 +63,22 @@
         android:background="@drawable/circle"
         android:clickable="true"
         android:elevation="1dp"
+        android:src="@drawable/baseline_add_photo_alternate_black_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
-        app:srcCompat="@drawable/baseline_add_photo_alternate_black_24" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
+
+    <ImageView
+        android:id="@+id/wave_add_post_insert_youtube_twitter"
+        android:layout_width="45dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:clickable="true"
+        android:elevation="1dp"
+        android:src="@drawable/twitter_icon"
+        app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_youtube_video"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
     <ImageView
         android:id="@+id/wave_add_post_insert_youtube_video"
@@ -76,22 +89,9 @@
         android:background="@drawable/circle"
         android:clickable="true"
         android:elevation="1dp"
-        app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_youtube_video2"
-        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
-        app:srcCompat="@drawable/twitter_icon" />
-
-    <ImageView
-        android:id="@+id/wave_add_post_insert_youtube_video2"
-        android:layout_width="45dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:clickable="true"
-        android:elevation="1dp"
+        android:src="@drawable/youtube_icon"
         app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_link"
-        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
-        app:srcCompat="@drawable/youtube_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
     <ImageView
         android:id="@+id/wave_add_post_insert_link"
@@ -102,9 +102,9 @@
         android:background="@drawable/circle"
         android:clickable="true"
         android:elevation="1dp"
+        android:src="@drawable/baseline_link_black_24"
         app:layout_constraintStart_toEndOf="@+id/wave_add_post_insert_image"
-        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message"
-        app:srcCompat="@drawable/baseline_link_black_24" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
     <View
         android:id="@+id/view"
@@ -163,5 +163,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_add_post_insert_image" />
+
+    <view
+        android:id="@+id/create_post_youtube_view"
+        class="com.google.android.youtube.player.YouTubePlayerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:elevation="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/wave_add_post_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_add_post_insert_youtube_video"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

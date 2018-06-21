@@ -39,7 +39,7 @@
             android:layout_marginBottom="3dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="3dp"
-            android:fontFamily="@font/comfortaa"
+            android:fontFamily="@font/comfortaa_regular"
             android:gravity="top|center_vertical|center_horizontal"
             android:text="Paradise"
             android:textColor="@android:color/background_light"

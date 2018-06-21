@@ -399,7 +399,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
 
-            holder.postLaunch.setOnClickListener(new View.OnClickListener() {
+
+
+            View.OnClickListener launchPostListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), WavePostActivity.class);
@@ -417,7 +419,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     intent.putExtras(bundle);
                     getActivity().startActivity(intent);
                 }
-            });
+            };
+
+
+            holder.postLaunch.setOnClickListener(launchPostListener);
+            holder.postImage.setOnClickListener(launchPostListener);
 
 
             holder.postEcho.setOnClickListener(new View.OnClickListener(){

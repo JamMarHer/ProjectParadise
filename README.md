@@ -2,7 +2,7 @@
 
 <img src="design/paradise_font.png" width="180"/>
 
-foli transforms the current social media model into a more filtered and controllable environment. foli is a mobile application that is currently in development.
+Paradise is an initiative to change the current layout of social media in how content is being delivered and how the content is being consumed. We want to transform the content delivery from one-to-all to all-to-one. The One-to-all style of delivery is when a user’s shares/posts is by sent to all its followers. What we propose is the All-to-one style, this being that all the content is meant for specific type of users. 
 
 A good analogy to put into perspective our vision is to picture the internet as a sea of ideas and trends. Sometimes when you search the web, you get hit by content that you don't want to deal with.
 Instead of tolerating irrelevant/offensive/random content, what if you could select the kind of content you want to ride. Hence the concept of **waves**, a form of a profile that contained content that interests you.

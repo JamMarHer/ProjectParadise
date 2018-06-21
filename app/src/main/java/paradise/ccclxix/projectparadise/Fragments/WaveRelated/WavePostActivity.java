@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +35,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Defaults;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Transformations;
 
@@ -50,6 +54,8 @@ public class WavePostActivity extends YouTubeBaseActivity {
     ImageView wavePostImage;
     ImageView wavePostEcho;
     ImageView wavePostViewComments;
+
+    YouTubePlayerView youTubePlayerView;
 
 
     String waveID;
@@ -105,6 +111,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
         wavePostEcho = findViewById(R.id.wave_post_echo);
         wavePostOpenComments = findViewById(R.id.wave_post_open_comments);
         wavePostViewComments = findViewById(R.id.wave_post_view_comments);
+        youTubePlayerView = findViewById(R.id.wave_post_youtube);
 
 
         Bundle postInfo = getIntent().getExtras();
@@ -123,6 +130,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
 
 
         wavePostMessage.setText(message);
+        youTubePlayerView.setVisibility(View.INVISIBLE);
 
 
         SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");
@@ -139,6 +147,26 @@ public class WavePostActivity extends YouTubeBaseActivity {
                     .fit()
                     .centerInside()
                     .placeholder(R.drawable.ic_import_export).into(wavePostImage);
+        }
+
+        if (type.equals("youtube")){
+
+            YouTubePlayer.OnInitializedListener onInitializedListener = new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                    youTubePlayerView.setVisibility(View.VISIBLE);
+                    youTubePlayer.loadVideo(message2);
+                    youTubePlayer.pause();
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+                }
+            };
+
+            youTubePlayerView.initialize(Defaults.YOUTUBE_TOKEN, onInitializedListener);
+
         }
 
 

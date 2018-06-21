@@ -51,7 +51,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="left|center_vertical|start"
                 android:foregroundGravity="left"
-                app:srcCompat="@drawable/baseline_lens_black_24" />
+                android:src="@drawable/baseline_lens_black_24" />
 
             <TextView
                 android:id="@+id/wave_post_num_echos"
@@ -75,7 +75,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="21dp"
-                app:srcCompat="@drawable/baseline_comment_black_24" />
+                android:src="@drawable/baseline_comment_black_24" />
 
             <TextView
                 android:id="@+id/wave_post_num_comments"

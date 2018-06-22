@@ -86,6 +86,8 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     private ImageView waveAddTweet;
     private ImageView waveAddLink;
 
+    private TextView websiteTitle; //Generated dynamically.
+
     private String youtubeLink  = "";
     private String linkUri = "";
     private String linkImage = "";
@@ -150,6 +152,10 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayerView.setVisibility(View.VISIBLE);
                 waveAddPostImage.setVisibility(View.INVISIBLE);
+                linkUri = "";
+                if(websiteTitle  !=null){
+                    mainConstraintLayout.removeView(websiteTitle);
+                }
                 youTubePlayer.loadVideo(youtubeLink);
                 youTubePlayer.pause();
             }
@@ -197,6 +203,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                                     for (Element e : elements) {
                                         if (e.attr("property").equalsIgnoreCase("og:image")) {
                                             youtubeLink = "";
+                                            youTubePlayerView.setVisibility(View.INVISIBLE);
                                             imageUriGeneral = null;
 
                                             linkImage = e.attr("content");
@@ -209,23 +216,23 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                                                             .fit()
                                                             .centerInside()
                                                             .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostImage);
-                                                    TextView title = new TextView(mainConstraintLayout.getContext());
-                                                    title.setText(doc.title());
-                                                    title.setId(0);
-                                                    title.setTextColor(Color.WHITE);
+                                                    websiteTitle = new TextView(mainConstraintLayout.getContext());
+                                                    websiteTitle.setText(doc.title());
+                                                    websiteTitle.setId(0);
+                                                    websiteTitle.setTextColor(Color.WHITE);
                                                     final int sdk = android.os.Build.VERSION.SDK_INT;
                                                     if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                                                        title.setBackgroundDrawable(ContextCompat.getDrawable(title.getContext(), R.drawable.circle_holder_gray) );
+                                                        websiteTitle.setBackgroundDrawable(ContextCompat.getDrawable(websiteTitle.getContext(), R.drawable.circle_holder_gray) );
                                                     } else {
-                                                        title.setBackground(ContextCompat.getDrawable(title.getContext(), R.drawable.circle_holder_gray));
+                                                        websiteTitle.setBackground(ContextCompat.getDrawable(websiteTitle.getContext(), R.drawable.circle_holder_gray));
                                                     }
 
-                                                    mainConstraintLayout.addView(title);
+                                                    mainConstraintLayout.addView(websiteTitle);
                                                     ConstraintSet constraintSet = new ConstraintSet();
                                                     constraintSet.clone(mainConstraintLayout);
-                                                    constraintSet.connect(title.getId(),ConstraintSet.BOTTOM, waveAddPostImage.getId(),ConstraintSet.BOTTOM,3);
-                                                    constraintSet.connect(title.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 3);
-                                                    constraintSet.connect(title.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 3);
+                                                    constraintSet.connect(websiteTitle.getId(),ConstraintSet.BOTTOM, waveAddPostImage.getId(),ConstraintSet.BOTTOM,3);
+                                                    constraintSet.connect(websiteTitle.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 3);
+                                                    constraintSet.connect(websiteTitle.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 3);
 
                                                     constraintSet.applyTo(mainConstraintLayout);
                                                 }
@@ -303,6 +310,10 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             @Override
             public void onClick(View view) {
                 youtubeLink = "";
+                linkUri = "";
+                if (websiteTitle !=null){
+                    mainConstraintLayout.removeView(websiteTitle);
+                }
                 youTubePlayerView.setVisibility(View.INVISIBLE);
                 waveAddPostImage.setVisibility(View.VISIBLE);
                 Intent galleryIntent = new Intent();

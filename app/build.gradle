@@ -57,7 +57,15 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation 'org.jsoup:jsoup:1.11.3';
+    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    compile('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile('com.google.apis:google-api-services-youtube:v3-rev198-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

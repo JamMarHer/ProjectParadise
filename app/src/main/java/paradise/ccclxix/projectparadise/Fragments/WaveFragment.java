@@ -404,11 +404,17 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             personalTableGet.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot mainDataSnapshot) {
-                    if (mainDataSnapshot.hasChild(postID)) {
-                        holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
-                    }else {
-                        holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                    try{
+                        if (mainDataSnapshot.hasChild(postID)) {
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                        }else {
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                        }
+                    }catch (Exception e){
+                        // TODO Is this bad for the long run?
+                        Log.d("For now..", e.getMessage());
                     }
+
                 }
 
                 @Override

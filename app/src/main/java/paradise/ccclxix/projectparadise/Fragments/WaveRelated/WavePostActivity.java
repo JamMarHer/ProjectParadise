@@ -254,16 +254,46 @@ public class WavePostActivity extends YouTubeBaseActivity {
                         public void onDataChange(DataSnapshot mainDataSnapshot) {
                             if (!mainDataSnapshot.hasChild(postID)) {
 
-                                DatabaseReference dbWave = dbPlainReference
-                                        .child("events_us")
-                                        .child(waveID)
-                                        .child("wall")
-                                        .child("posts")
-                                        .child(postID)
-                                        .child("echos")
-                                        .child(firebase.auth_id()).push();
-                                String chatUserRef = "events_us/" + waveID + "/wall/posts/" + postID + "/echos";
-                                final String pushID = dbWave.getKey();
+                                DatabaseReference dbWavePostEchos = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                        "wall", "posts", postID, "echos", firebase.auth_id()).push();
+                                String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
+
+                                final DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID());
+                                final DatabaseReference dbWaveb = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                        "wall", "posts", postID);
+
+                                dbWave.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.hasChild("attending")){
+                                            final long countEchos = dataSnapshot.child("attending").getChildrenCount();
+                                            dbWaveb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                    if (dataSnapshot2.hasChild("echos")){
+                                                        if (dataSnapshot2.child("echos").getChildrenCount()/3 <= countEchos+1){
+                                                            if (!dataSnapshot2.hasChild("permanent")){
+                                                                dbWaveb.child("permanent").setValue("true");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                final String pushID = dbWavePostEchos.getKey();
                                 Map postMap = new HashMap();
                                 postMap.put("from", firebase.auth_id());
                                 postMap.put("pushID", pushID);
@@ -272,16 +302,12 @@ public class WavePostActivity extends YouTubeBaseActivity {
 
                                 Map postUserMap = new HashMap();
                                 postUserMap.put(chatUserRef + "/" + pushID, postMap);
-                                dbPlainReference.updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
+                                firebase.getDatabase().updateChildren(postUserMap, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError == null) {
-                                            DatabaseReference personalTable = dbPlainReference
-                                                    .child("users")
-                                                    .child(firebase.auth_id())
-                                                    .child("echos")
-                                                    .child(waveID)
-                                                    .child(postID);
+                                            DatabaseReference personalTable = firebase.get_user_authId("echos",
+                                                    appManager.getWaveM().getEventID(), postID);
                                             Map input = new HashMap<>();
                                             input.put("pushID", pushID);
                                             input.put("time", ServerValue.TIMESTAMP);

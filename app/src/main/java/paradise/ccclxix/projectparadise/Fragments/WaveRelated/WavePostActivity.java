@@ -300,47 +300,6 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                         }
                                     }
                                 });
-                            } else {
-
-                                final String postPushId = mainDataSnapshot
-                                        .child(postID).child("pushID").getValue().toString();
-                                final DatabaseReference deleteFromUserEcho = dbPlainReference
-                                        .child("users")
-                                        .child(firebase.auth_id())
-                                        .child("echos")
-                                        .child(waveID)
-                                        .child(postID);
-                                deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-
-                                            DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
-                                                    .child("events_us")
-                                                    .child(waveID)
-                                                    .child("wall")
-                                                    .child("posts")
-                                                    .child(postID)
-                                                    .child("echos")
-                                                    .child(postPushId);
-
-
-                                            deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (!task.isSuccessful()) {
-                                                        Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
-                                                    } else {
-                                                        working = false;
-                                                        wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
-                                        }
-                                    }
-                                });
                             }
                         }
 

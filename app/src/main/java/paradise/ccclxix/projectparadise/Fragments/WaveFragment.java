@@ -84,6 +84,14 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+   }
+
+    @Nullable
+    @Override
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_wave, null);
+
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .cache(new Cache(getActivity().getCacheDir(), 250000000))
                 .build();
@@ -97,13 +105,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
         firebase = new FirebaseBuilder();
-   }
-
-    @Nullable
-    @Override
-    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_wave, null);
-
         generalView = view;
         waveName = view.findViewById(R.id.main_wave_name);
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
@@ -510,43 +511,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                                         }
                                                     }
                                                 });
-                                            }
-                                        }
-                                    });
-                                } else {
-
-                                    final String postPushId = mainDataSnapshot
-                                            .child(postID).child("pushID").getValue().toString();
-                                    final DatabaseReference deleteFromUserEcho = firebase.get_user_authId("echos",
-                                            appManager.getWaveM().getEventID(), postID);
-                                    deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-
-                                                DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
-                                                        .child("events_us")
-                                                        .child(appManager.getWaveM().getEventID())
-                                                        .child("wall")
-                                                        .child("posts")
-                                                        .child(postID)
-                                                        .child("echos")
-                                                        .child(postPushId);
-
-
-                                                deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (!task.isSuccessful()) {
-                                                            Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
-                                                        } else {
-                                                            working = false;
-                                                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
-                                                        }
-                                                    }
-                                                });
-                                            } else {
-                                                Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
                                             }
                                         }
                                     });

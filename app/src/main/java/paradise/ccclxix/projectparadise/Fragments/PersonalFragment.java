@@ -547,6 +547,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     bundle.putString("message", postMessage);
                     bundle.putString("message2", postMessage2);
                     bundle.putString("numEchos", postNumEchos);
+                    bundle.putString("permanent", permanent);
                     bundle.putString("numComments", postNumComments);
                     bundle.putString("time", postTime);
                     bundle.putString("type", postType);

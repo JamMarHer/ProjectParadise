@@ -557,6 +557,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     bundle.putString("message2", postMessage2);
                     bundle.putString("numEchos", postNumEchos);
                     bundle.putString("numComments", postNumComments);
+                    bundle.putString("permanent", permanent);
                     bundle.putString("time", postTime);
                     bundle.putString("type", postType);
                     bundle.putString("from", postFrom);

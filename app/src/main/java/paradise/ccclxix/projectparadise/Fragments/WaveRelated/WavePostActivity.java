@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,6 +55,8 @@ public class WavePostActivity extends YouTubeBaseActivity {
     ImageView wavePostImage;
     ImageView wavePostEcho;
     ImageView wavePostViewComments;
+
+    WebView webView;
 
     YouTubePlayerView youTubePlayerView;
 
@@ -112,7 +115,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
         wavePostOpenComments = findViewById(R.id.wave_post_open_comments);
         wavePostViewComments = findViewById(R.id.wave_post_view_comments);
         youTubePlayerView = findViewById(R.id.wave_post_youtube);
-
+        webView = findViewById(R.id.wave_post_website);
 
         Bundle postInfo = getIntent().getExtras();
 
@@ -131,7 +134,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
 
         wavePostMessage.setText(message);
         youTubePlayerView.setVisibility(View.INVISIBLE);
-
+        webView.setVisibility(View.INVISIBLE);
 
         SimpleDateFormat formatedDate = new SimpleDateFormat("EEE, d MMM. hh:mm a");
         java.sql.Timestamp timestamp = new java.sql.Timestamp(Long.valueOf(this.time));
@@ -169,7 +172,12 @@ public class WavePostActivity extends YouTubeBaseActivity {
 
         }
 
-
+        if (type.equals("link")){
+            webView.setVisibility(View.VISIBLE);
+            String link = message2.split("@@@@@@")[0];
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.loadUrl(link);
+        }
 
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference dbPlainReference = firebaseDatabase.getReference();

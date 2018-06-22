@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +53,7 @@ import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostCommentsAc
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
@@ -178,6 +183,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         ImageView postLaunch;
         ImageView postWaveThumbnail;
         ImageView postFromThumbnail;
+        ImageView source;
 
         ConstraintLayout briefConstraintL;
 
@@ -194,6 +200,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail_main);
             postEcho = itemView.findViewById(R.id.main_echo_post);
             postComment = itemView.findViewById(R.id.main_comment_post);
+            source = itemView.findViewById(R.id.wave_single_brief_source);
         }
 
     }
@@ -298,6 +305,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             holder.postMessage.setText(postMessage);
             holder.postEchos.setText(postNumEchos);
             holder.postComments.setText(postNumComments);
+            holder.source.setVisibility(View.INVISIBLE);
+
 
             if (postType.equals("image")) {
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
@@ -313,6 +322,22 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
 
+            }
+
+            if (postType.equals("youtube")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int width = displayMetrics.widthPixels;
+                int height = (int) convertPixelsToDp(displayMetrics.heightPixels, getContext());
+                params.width = width;
+                holder.postImage.setLayoutParams(params);
+                picasso.load(YoutubeHelpers.getVideoThumbnail(postMessage2))
+                        .fit()
+                        .centerInside()
+                        .placeholder(R.drawable.ic_import_export)
+                        .into(holder.postImage);
+                holder.source.setVisibility(View.VISIBLE);
             }
 
 
@@ -374,7 +399,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
 
-            holder.postLaunch.setOnClickListener(new View.OnClickListener() {
+
+
+            View.OnClickListener launchPostListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), WavePostActivity.class);
@@ -392,7 +419,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     intent.putExtras(bundle);
                     getActivity().startActivity(intent);
                 }
-            });
+            };
+
+
+            holder.postLaunch.setOnClickListener(launchPostListener);
+            holder.postImage.setOnClickListener(launchPostListener);
 
 
             holder.postEcho.setOnClickListener(new View.OnClickListener(){

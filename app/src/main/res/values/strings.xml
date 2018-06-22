@@ -118,10 +118,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_joining_event">JoiningEventActivity</string>
     <string name="title_activity_create_event">CreateEventActivity</string>
-
-    <string name="facebook_app_id">1844709092252376</string>
-    <string name="fb_login_protocol_scheme">fb1844709092252376</string>
-
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

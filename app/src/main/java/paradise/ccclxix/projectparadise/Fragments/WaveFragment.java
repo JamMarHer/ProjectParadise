@@ -39,11 +39,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -197,6 +199,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         ImageView postLaunch;
         ImageView postWaveThumbnail;
         ImageView postFromThumbnail;
+        ImageView postTimeToLiveIcon;
         ImageView source;
 
         ConstraintLayout briefConstraintL;
@@ -214,7 +217,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail_main);
             postEcho = itemView.findViewById(R.id.main_echo_post);
             postComment = itemView.findViewById(R.id.main_comment_post);
+            postTimeToLiveIcon = itemView.findViewById(R.id.wave_post_time_to_live_icon);
             source = itemView.findViewById(R.id.wave_single_brief_source);
+
         }
 
     }
@@ -265,6 +270,12 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                         postInfo.put("postTime", String.valueOf(postSnapshot.child("time").getValue()));
                                         postInfo.put("postType", postSnapshot.child("type").getValue().toString());
 
+                                        if (postSnapshot.hasChild("permanent")){
+                                            postInfo.put("permanent", postSnapshot.child("permanent").getValue().toString());
+                                        }else {
+                                            postInfo.put("permanent", "");
+                                        }
+
                                         posts.add(postInfo);
                                     }
                                     Collections.reverse(posts);
@@ -314,6 +325,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             final String postFrom = posts.get(position).get("postFrom");
             final String postType = posts.get(position).get("postType");
             final String postTime = posts.get(position).get("postTime");
+            final String permanent = posts.get(position).get("permanent");
 
             holder.waveName.setText(postFromUsername);
             holder.postMessage.setText(postMessage);
@@ -335,6 +347,92 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
+
+            }
+
+            if (!TextUtils.isEmpty(permanent) && permanent.equals("true")){
+                holder.postTimeToLiveIcon.setImageDrawable(ContextCompat.getDrawable(holder.postTimeToLiveIcon.getContext(),R.drawable.circle_holder_main_colors));
+                holder.postTTL.setVisibility(View.INVISIBLE);
+            }else{
+                final DatabaseReference db = firebase.getEvents(waveID, "wall", "posts", postID);
+                db.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.hasChild("echos")){
+
+                            DatabaseReference db2 = firebase.getEvents(waveID, "wall", "posts", postID);
+                            Query lastQuery = db2.child("echos").orderByKey().limitToLast(1);
+                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    for (DataSnapshot child : dataSnapshot2.getChildren()){
+                                        if (child.hasChild("time")){
+
+                                            long timeDifference = System.currentTimeMillis() -  Long.valueOf(child.child("time").getValue().toString());
+                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+
+                                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts");
+                                                db3.child(postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        posts.remove(position);
+                                                        notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }else {
+                                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
+                                                }else {
+                                                    holder.postTTL.setText("< 1m");
+                                                }
+                                            }
+                                        }else {
+                                            Log.d("ECHO_TIME", "echo without time");
+                                        }
+                                        break;
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.d("READING_ECHOS", databaseError.getMessage());
+                                }
+                            });
+                        }else {
+                            long timeDifference = System.currentTimeMillis() -  Long.valueOf(postTime);
+                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts", postID);
+                                db3.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        posts.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                            }else {
+                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=0){
+                                    System.out.println(TimeUnit.MILLISECONDS.toHours(timeDifference));
+                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=0){
+                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
+                                }else {
+                                    holder.postTTL.setText("< 1m");
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("PROBLEM " + databaseError.getMessage());
+                    }
+                });
+
 
             }
 
@@ -414,11 +512,17 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             personalTableGet.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot mainDataSnapshot) {
-                    if (mainDataSnapshot.hasChild(postID)) {
-                        holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
-                    }else {
-                        holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                    try{
+                        if (mainDataSnapshot.hasChild(postID)) {
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                        }else {
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                        }
+                    }catch (Exception e){
+                        // TODO Is this bad for the long run?
+                        Log.d("For now..", e.getMessage());
                     }
+
                 }
 
                 @Override
@@ -463,6 +567,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     bundle.putString("message2", postMessage2);
                     bundle.putString("numEchos", postNumEchos);
                     bundle.putString("numComments", postNumComments);
+                    bundle.putString("permanent", permanent);
                     bundle.putString("time", postTime);
                     bundle.putString("type", postType);
                     bundle.putString("from", postFrom);
@@ -488,10 +593,46 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             public void onDataChange(DataSnapshot mainDataSnapshot) {
                                 if (!mainDataSnapshot.hasChild(postID)) {
 
-                                    DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                    DatabaseReference dbWavePostEchos = firebase.getEvents(appManager.getWaveM().getEventID(),
                                             "wall", "posts", postID, "echos", firebase.auth_id()).push();
                                     String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
-                                    final String pushID = dbWave.getKey();
+
+                                    final DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID());
+                                    final DatabaseReference dbWaveb = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                            "wall", "posts", postID);
+
+                                    dbWave.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.hasChild("attending")){
+                                                final long countEchos = dataSnapshot.child("attending").getChildrenCount();
+                                                dbWaveb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                        if (dataSnapshot2.hasChild("echos")){
+                                                            if (dataSnapshot2.child("echos").getChildrenCount()/3 <= countEchos+1){
+                                                                if (!dataSnapshot2.hasChild("permanent")){
+                                                                    dbWaveb.child("permanent").setValue("true");
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    final String pushID = dbWavePostEchos.getKey();
                                     Map postMap = new HashMap();
                                     postMap.put("from", firebase.auth_id());
                                     postMap.put("pushID", pushID);

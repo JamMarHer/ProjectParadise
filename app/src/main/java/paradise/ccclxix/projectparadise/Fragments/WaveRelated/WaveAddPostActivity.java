@@ -72,6 +72,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     private ImageView waveAddPostImage;
     private ImageView waveAddPostCreatePost;
     private ImageView waveAddYoutubeVideo;
+    private ImageView waveAddTweet;
 
     private String youtubeLink  = "";
 
@@ -121,6 +122,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
         waveAddYoutubeVideo = findViewById(R.id.wave_add_post_insert_youtube_video);
         youTubePlayerView = findViewById(R.id.create_post_youtube_view);
+        waveAddTweet = findViewById(R.id.wave_add_post_insert_tweet);
 
         youTubePlayerView.setVisibility(View.INVISIBLE);
 
@@ -143,6 +145,10 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             waveAddPostUsername.setText(appManager.getCredentialM().getUsername());
             waveAddPostWave.setText(appManager.getWaveM().getEventName());
         }
+
+        waveAddTweet.setOnClickListener(view -> {
+
+        });
 
         waveAddYoutubeVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +186,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                 builder.show();
             }
         });
+
 
         waveAddPostInsertImage.setOnClickListener(new View.OnClickListener() {
             @Override

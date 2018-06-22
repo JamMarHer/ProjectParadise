@@ -68,7 +68,7 @@
         app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
     <ImageView
-        android:id="@+id/wave_add_post_insert_youtube_twitter"
+        android:id="@+id/wave_add_post_insert_tweet"
         android:layout_width="45dp"
         android:layout_height="33dp"
         android:layout_marginStart="8dp"

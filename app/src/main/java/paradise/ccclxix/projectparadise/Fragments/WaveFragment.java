@@ -373,6 +373,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     constraintSet.connect(websiteTitle.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 3);
 
                     constraintSet.applyTo(holder.briefConstraintL);
+                    holder.source.setImageDrawable(ContextCompat.getDrawable(holder.source.getContext(), R.drawable.baseline_link_black_24));
+                    holder.source.setVisibility(View.VISIBLE);
 
                 }
             }

@@ -91,6 +91,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     private String youtubeLink  = "";
     private String linkUri = "";
     private String linkImage = "";
+    private String linkTitle = "";
 
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer.OnInitializedListener onInitializedListener;
@@ -217,7 +218,8 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                                                             .centerInside()
                                                             .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostImage);
                                                     websiteTitle = new TextView(mainConstraintLayout.getContext());
-                                                    websiteTitle.setText(doc.title());
+                                                    linkTitle = doc.title();
+                                                    websiteTitle.setText(linkTitle);
                                                     websiteTitle.setId(0);
                                                     websiteTitle.setTextColor(Color.WHITE);
                                                     final int sdk = android.os.Build.VERSION.SDK_INT;
@@ -386,7 +388,8 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                             message2 = youtubeLink;
                         }else if(!TextUtils.isEmpty(linkUri)){
                             messageType = "link";
-                            message2 = linkUri;
+                            // I understand how nasty this is...
+                            message2 = String.format("%s@@@@@@%s@@@@@@%s", linkUri, linkTitle, linkImage);
                         }
 
 

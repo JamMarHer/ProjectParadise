@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -23,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -226,6 +230,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         ImageView postLaunch;
         ImageView postWaveThumbnail;
         ImageView postFromThumbnail;
+        ImageView postTimeToLiveIcon;
         ImageView source;
 
         ConstraintLayout briefConstraintL;
@@ -241,6 +246,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
             briefConstraintL = itemView.findViewById(R.id.wave_single_brief);
             postWaveThumbnail = itemView.findViewById(R.id.wave_single_brief_wave_thumbnail);
+            postTimeToLiveIcon = itemView.findViewById(R.id.wave_post_time_to_live_icon);
+
             source = itemView.findViewById(R.id.wave_single_brief_source);
         }
 
@@ -345,8 +352,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(final HighlightPostViewHolder holder, int position) {
-            position = getItemViewType(position);
+        public void onBindViewHolder(final HighlightPostViewHolder holder, int pos) {
+            final int position = getItemViewType(pos);
             final String postID = highlightPosts.get(position).get("postID");
             final String postFromUsername = highlightPosts.get(position).get("postFromUsername");
             final String postMessage = highlightPosts.get(position).get("postMessage");
@@ -358,6 +365,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             final String postFrom = highlightPosts.get(position).get("postFrom");
             final String postType = highlightPosts.get(position).get("postType");
             final String postTime = highlightPosts.get(position).get("postTime");
+            final String permanent = highlightPosts.get(position).get("permanent");
+
 
             holder.waveName.setText(waveName);
             holder.postMessage.setText(postMessage);
@@ -427,6 +436,80 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 constraintSet.connect(holder.postMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,ConstraintSet.END, 0);
                 constraintSet.connect(holder.postLaunch.getId(), ConstraintSet.TOP, holder.postMessage.getId(), ConstraintSet.BOTTOM, 3);
                 constraintSet.applyTo(holder.briefConstraintL);
+
+            }
+
+
+            if (!TextUtils.isEmpty(permanent) && permanent.equals("true")){
+                holder.postTimeToLiveIcon.setImageDrawable(ContextCompat.getDrawable(holder.postTimeToLiveIcon.getContext(),R.drawable.circle_holder_main_colors));
+                holder.postTTL.setVisibility(View.INVISIBLE);
+            }else{
+                final DatabaseReference db = firebase.getEvents(waveID, "wall", "posts", postID);
+                db.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("echos")){
+                            Query lastQuery = db.child("echos").orderByKey().limitToLast(1);
+                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot child : dataSnapshot.getChildren()){
+                                        if (child.hasChild("time")){
+                                            long timeDifference = System.currentTimeMillis() -  Long.valueOf(child.child("time").getValue().toString());
+                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+                                                db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        highlightPosts.remove(position);
+                                                        notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }else {
+                                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
+                                                }else {
+                                                    holder.postTTL.setText("< 1m");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }else {
+                            long timeDifference = System.currentTimeMillis() -  Long.valueOf(postTime);
+                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+                                db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        highlightPosts.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                            }else {
+                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
+                                }else {
+                                    holder.postTTL.setText("< 1m");
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
 
             }
 

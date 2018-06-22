@@ -348,42 +348,56 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 db.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                         if (dataSnapshot.hasChild("echos")){
-                            Query lastQuery = db.child("echos").orderByKey().limitToLast(1);
+
+                            DatabaseReference db2 = firebase.getEvents(waveID, "wall", "posts", postID);
+                            Query lastQuery = db2.child("echos").orderByKey().limitToLast(1);
                             lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.hasChild("time")){
-                                        long timeDifference = System.currentTimeMillis() -  Long.valueOf(dataSnapshot.child("time").toString());
-                                        if (TimeUnit.MICROSECONDS.toHours(timeDifference) >= 24){
-                                            db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    posts.remove(position);
-                                                    notifyDataSetChanged();
-                                                }
-                                            });
-                                        }else {
-                                            if (24 - TimeUnit.MICROSECONDS.toHours(timeDifference) >=0){
-                                                holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MICROSECONDS.toHours(timeDifference)));
-                                            }else if(60 - TimeUnit.MICROSECONDS.toMinutes(timeDifference) >=0){
-                                                holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MICROSECONDS.toMinutes(timeDifference)));
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    for (DataSnapshot child : dataSnapshot2.getChildren()){
+                                        if (child.hasChild("time")){
+
+                                            long timeDifference = System.currentTimeMillis() -  Long.valueOf(child.child("time").getValue().toString());
+                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+
+                                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts");
+                                                db3.child(postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        posts.remove(position);
+                                                        notifyDataSetChanged();
+                                                    }
+                                                });
                                             }else {
-                                                holder.postTTL.setText("< 1m");
+                                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
+                                                }else {
+                                                    holder.postTTL.setText("< 1m");
+                                                }
                                             }
+                                        }else {
+                                            Log.d("ECHO_TIME", "echo without time");
                                         }
+                                        break;
+
                                     }
+
                                 }
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-
+                                    Log.d("READING_ECHOS", databaseError.getMessage());
                                 }
                             });
                         }else {
                             long timeDifference = System.currentTimeMillis() -  Long.valueOf(postTime);
-                            if (TimeUnit.MICROSECONDS.toHours(timeDifference) >= 24){
-                                db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts", postID);
+                                db3.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         posts.remove(position);
@@ -391,11 +405,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                     }
                                 });
                             }else {
-                                if (24 - TimeUnit.MICROSECONDS.toHours(timeDifference) >=0){
-                                    System.out.println(TimeUnit.MICROSECONDS.toHours(timeDifference));
-                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MICROSECONDS.toHours(timeDifference)));
-                                }else if(60 - TimeUnit.MICROSECONDS.toMinutes(timeDifference) >=0){
-                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MICROSECONDS.toMinutes(timeDifference)));
+                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=0){
+                                    System.out.println(TimeUnit.MILLISECONDS.toHours(timeDifference));
+                                    holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
+                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=0){
+                                    holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                 }else {
                                     holder.postTTL.setText("< 1m");
                                 }
@@ -405,7 +419,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        System.out.println("PROBLEM " + databaseError.getMessage());
                     }
                 });
 

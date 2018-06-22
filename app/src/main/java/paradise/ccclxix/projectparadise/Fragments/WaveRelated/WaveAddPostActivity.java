@@ -11,7 +11,9 @@ import android.os.AsyncTask;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -189,11 +191,10 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
 
                                 System.out.println(input.getText().toString());
                                 try {
-                                    Document doc = Jsoup.connect(input.getText().toString()).get();
+                                    final Document doc = Jsoup.connect(input.getText().toString()).get();
 
                                     Elements elements = doc.select("meta");
                                     for (Element e : elements) {
-                                        //OR more specifically you can check meta property.
                                         if (e.attr("property").equalsIgnoreCase("og:image")) {
                                             youtubeLink = "";
                                             imageUriGeneral = null;
@@ -208,9 +209,27 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                                                             .fit()
                                                             .centerInside()
                                                             .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostImage);
+                                                    TextView title = new TextView(mainConstraintLayout.getContext());
+                                                    title.setText(doc.title());
+                                                    title.setId(0);
+                                                    title.setTextColor(Color.WHITE);
+                                                    final int sdk = android.os.Build.VERSION.SDK_INT;
+                                                    if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                                        title.setBackgroundDrawable(ContextCompat.getDrawable(title.getContext(), R.drawable.circle_holder_gray) );
+                                                    } else {
+                                                        title.setBackground(ContextCompat.getDrawable(title.getContext(), R.drawable.circle_holder_gray));
+                                                    }
+
+                                                    mainConstraintLayout.addView(title);
+                                                    ConstraintSet constraintSet = new ConstraintSet();
+                                                    constraintSet.clone(mainConstraintLayout);
+                                                    constraintSet.connect(title.getId(),ConstraintSet.BOTTOM, waveAddPostImage.getId(),ConstraintSet.BOTTOM,3);
+                                                    constraintSet.connect(title.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 3);
+                                                    constraintSet.connect(title.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 3);
+
+                                                    constraintSet.applyTo(mainConstraintLayout);
                                                 }
                                             });
-                                            break;
                                         }
                                     }
                                 } catch (Exception e) {

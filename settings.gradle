@@ -1,1 +1,1 @@
-include ':app', ':idae_pre_alpha_api-0.1'
+include ':app', ':idae_pre_alpha_api-0.1', ':YouTubeAndroidPlayerApi'

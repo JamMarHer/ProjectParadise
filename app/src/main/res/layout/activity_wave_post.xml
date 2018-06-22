@@ -128,7 +128,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="3dp"
-            android:background="@android:color/darker_gray"
+            android:background="#63aaaaaa"
             app:layout_constraintEnd_toEndOf="@+id/wave_post_message"
             app:layout_constraintStart_toStartOf="@+id/wave_post_message"
             app:layout_constraintTop_toBottomOf="@+id/wave_post_message" />
@@ -138,7 +138,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/darker_gray"
+            android:background="#63aaaaaa"
             app:layout_constraintBottom_toTopOf="@+id/wave_post_open_comments"
             app:layout_constraintEnd_toEndOf="@+id/wave_post_message"
             app:layout_constraintStart_toStartOf="@+id/wave_post_message" />
@@ -188,8 +188,17 @@
             android:layout_marginTop="8dp"
             android:foregroundGravity="left"
             android:gravity="start"
-            android:text="TextView"
+            android:maxHeight="120dp"
+            android:elevation="3dp"
+            android:textIsSelectable="true"
+            android:textColorHighlight="@color/colorGray"
+            android:maxLines="6"
+            android:minLines="1"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:scrollbars="vertical"
+            android:text="lit"
             android:textColor="@color/common_google_signin_btn_text_light_pressed"
+            android:verticalScrollbarPosition="defaultPosition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/wave_post_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/wave_post_thumbnail" />
@@ -222,6 +231,20 @@
 
         <view
             android:id="@+id/wave_post_youtube"
+            class="com.google.android.youtube.player.YouTubePlayerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:elevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <WebView
+            android:id="@+id/wave_post_website"
             class="com.google.android.youtube.player.YouTubePlayerView"
             android:layout_width="0dp"
             android:layout_height="0dp"

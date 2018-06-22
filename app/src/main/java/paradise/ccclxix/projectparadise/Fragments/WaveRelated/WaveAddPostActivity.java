@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,7 @@ import paradise.ccclxix.projectparadise.utils.Transformations;
 import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
+
 public class WaveAddPostActivity extends YouTubeBaseActivity{
 
     private TextView waveAddPostUsername;
@@ -84,6 +86,9 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     SnackBar snackbar = new SnackBar();
 
     public static final int GALLERY_PICK = 1;
+
+    SnackBar snackBar = new SnackBar();
+    private ConstraintLayout mainConstraintLayout;
 
     AppManager appManager;
 
@@ -123,6 +128,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         waveAddYoutubeVideo = findViewById(R.id.wave_add_post_insert_youtube_video);
         youTubePlayerView = findViewById(R.id.create_post_youtube_view);
         waveAddTweet = findViewById(R.id.wave_add_post_insert_tweet);
+        mainConstraintLayout = findViewById(R.id.AddPostConstraitLayout);
 
         youTubePlayerView.setVisibility(View.INVISIBLE);
 
@@ -149,7 +155,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         waveAddTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                snackBar.showEmojiBar(mainConstraintLayout, " Not yet...", Icons.POOP);
             }
         });
 

@@ -146,9 +146,13 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             waveAddPostWave.setText(appManager.getWaveM().getEventName());
         }
 
-        waveAddTweet.setOnClickListener(view -> {
+        waveAddTweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
         });
+
 
         waveAddYoutubeVideo.setOnClickListener(new View.OnClickListener() {
             @Override

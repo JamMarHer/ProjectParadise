@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -17,6 +19,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,6 +44,10 @@ import com.squareup.picasso.Picasso;
 
 import net.glxn.qrgen.core.scheme.YouTube;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -75,8 +82,11 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     private ImageView waveAddPostCreatePost;
     private ImageView waveAddYoutubeVideo;
     private ImageView waveAddTweet;
+    private ImageView waveAddLink;
 
     private String youtubeLink  = "";
+    private String linkUri = "";
+    private String linkImage = "";
 
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer.OnInitializedListener onInitializedListener;
@@ -129,6 +139,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         youTubePlayerView = findViewById(R.id.create_post_youtube_view);
         waveAddTweet = findViewById(R.id.wave_add_post_insert_tweet);
         mainConstraintLayout = findViewById(R.id.AddPostConstraitLayout);
+        waveAddLink = findViewById(R.id.wave_add_post_insert_link);
 
         youTubePlayerView.setVisibility(View.INVISIBLE);
 
@@ -156,6 +167,77 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             @Override
             public void onClick(View view) {
                 snackBar.showEmojiBar(mainConstraintLayout, " Not yet...", Icons.POOP);
+            }
+        });
+
+        waveAddLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(WaveAddPostActivity.this, R.style.MyDialogTheme);
+                builder.setTitle("Website link");
+                final EditText input = new EditText(getApplicationContext());
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+                input.setHint("link");
+                builder.setView(input);
+                builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (!TextUtils.isEmpty(input.getText()) && URLUtil.isValidUrl(input.getText().toString())){
+                            Thread getWebsiteThumbnail = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                System.out.println(input.getText().toString());
+                                try {
+                                    Document doc = Jsoup.connect(input.getText().toString()).get();
+
+                                    Elements elements = doc.select("meta");
+                                    for (Element e : elements) {
+                                        //OR more specifically you can check meta property.
+                                        if (e.attr("property").equalsIgnoreCase("og:image")) {
+                                            youtubeLink = "";
+                                            imageUriGeneral = null;
+
+                                            linkImage = e.attr("content");
+                                            linkUri = input.getText().toString();
+                                            waveAddPostImage.setVisibility(View.VISIBLE);
+                                            WaveAddPostActivity.this.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    picasso.load(linkImage)
+                                                            .fit()
+                                                            .centerInside()
+                                                            .placeholder(R.drawable.baseline_person_black_24).into(waveAddPostImage);
+                                                }
+                                            });
+                                            break;
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println(e.toString());
+                                    snackBar.showEmojiBar(mainConstraintLayout, " Invalid link", Icons.POOP);
+                                }
+                                }
+                            });
+
+                            getWebsiteThumbnail.start();
+
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -272,7 +354,11 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                         if (!TextUtils.isEmpty(youtubeLink)){
                             messageType = "youtube";
                             message2 = youtubeLink;
+                        }else if(!TextUtils.isEmpty(linkUri)){
+                            messageType = "link";
+                            message2 = linkUri;
                         }
+
 
 
                         DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID(), "wall", "posts", firebase.auth_id()).push();

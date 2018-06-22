@@ -24,6 +24,8 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -65,11 +67,8 @@ public class WavesSubscribeActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wave_post_subscribe);
-        testingText = findViewById(R.id.facebook_email);
-        facebookLogout = findViewById(R.id.facebook_logout);
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
-
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -81,6 +80,17 @@ public class WavesSubscribeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void setupFacebook(){
+        testingText = findViewById(R.id.facebook_email);
+        facebookLogout = findViewById(R.id.facebook_logout);
         facebookLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,18 +100,39 @@ public class WavesSubscribeActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("email", "user_posts"));
+        loginButton.setReadPermissions(Arrays.asList("email", "user_posts", "user_likes"));
         login();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+    private void searchFb(AccessToken accessToken){
+        final String userId = Profile.getCurrentProfile().getId();
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                accessToken,
+                "/"+userId+"/likes?fields=name,id,created_time",
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        try {
+                            String foo = userId;
+                            testingText.setText(AccessToken.getCurrentAccessToken().getPermissions().toString());
+                            testingText.setText(response.getRawResponse());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            testingText.setText("We cannot access your Facebook likes. Please make sure you have enabled public access to your likes in your Facebook privacy settings.");
+                        }
+                    }
+
+                }
+
+        );
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,link");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     private void login(){
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         if(!isLoggedIn){
@@ -111,24 +142,7 @@ public class WavesSubscribeActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(LoginResult loginResult) {
                             Log.d("FB", "SUCCESS");
-                            GraphRequest request = GraphRequest.newMeRequest( AccessToken.getCurrentAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(JSONObject object,GraphResponse response) {
-                                        try {
-                                            String name = object.getString("name");
-                                            testingText.setText(AccessToken.getCurrentAccessToken().getPermissions().toString());
-                                            testingText.setText(object.getString("email"));
-                                        } catch (JSONException e) {
-                                            // TODO Auto-generated catch block
-                                            e.printStackTrace();
-                                            testingText.setText(e.getMessage());
-                                        }
-
-                                    }
-
-                                });
-                                request.executeAsync();
+                            searchFb(accessToken);
                         }
 
                         @Override
@@ -145,24 +159,7 @@ public class WavesSubscribeActivity extends AppCompatActivity {
         }
         else{
             testingText.setText("else");
-            GraphRequest request = GraphRequest.newMeRequest( accessToken,
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object,GraphResponse response) {
-                            try {
-                                String  name = object.getString("name");
-                                testingText.setText(AccessToken.getCurrentAccessToken().getPermissions().toString());
-                                testingText.setText(object.getString("email"));
-                            } catch (JSONException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                                testingText.setText(e.getMessage());
-                            }
-
-                        }
-
-                    });
-            request.executeAsync();
+            searchFb(accessToken);
         }
     }
 }

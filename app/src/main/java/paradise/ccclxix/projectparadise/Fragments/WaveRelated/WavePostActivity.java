@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -133,6 +134,8 @@ public class WavePostActivity extends YouTubeBaseActivity {
 
 
         wavePostMessage.setText(message);
+        wavePostMessage.setMovementMethod(new ScrollingMovementMethod());
+        wavePostMessage.setTextIsSelectable(true);
         youTubePlayerView.setVisibility(View.INVISIBLE);
         webView.setVisibility(View.INVISIBLE);
 
@@ -178,6 +181,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
             webView.getSettings().setJavaScriptEnabled(true);
             webView.loadUrl(link);
         }
+
 
         final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference dbPlainReference = firebaseDatabase.getReference();

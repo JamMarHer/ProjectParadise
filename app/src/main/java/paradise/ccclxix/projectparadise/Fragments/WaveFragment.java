@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,7 +49,6 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
-import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavesSubscribeActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
@@ -79,7 +77,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private ImageView waveThumbnail;
     private TextView waveName;
     private ImageView waveAddPost;
-    private Button addSourceBtn;
 
 
     private List<Map<String, String>> posts;
@@ -112,7 +109,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         waveName = view.findViewById(R.id.main_wave_name);
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
         waveAddPost = view.findViewById(R.id.main_add_post);
-        addSourceBtn = view.findViewById(R.id.integrate_source_btn);
+
 
         this.container = container;
         waveRecyclerView = view.findViewById(R.id.main_wave_recyclerView);
@@ -168,13 +165,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             @Override
             public void onClick(View view) {
                 Intent intent =  new Intent(getActivity(), WaveAddPostActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-        addSourceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent =  new Intent(getActivity(), WavesSubscribeActivity.class);
                 getActivity().startActivity(intent);
             }
         });

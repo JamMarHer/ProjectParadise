@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/AddPostConstraitLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.WaveRelated.WaveAddPostActivity">
@@ -68,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/wave_add_post_message" />
 
     <ImageView
-        android:id="@+id/wave_add_post_insert_youtube_twitter"
+        android:id="@+id/wave_add_post_insert_tweet"
         android:layout_width="45dp"
         android:layout_height="33dp"
         android:layout_marginStart="8dp"

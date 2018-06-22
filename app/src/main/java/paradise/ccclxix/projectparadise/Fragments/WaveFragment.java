@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -84,6 +87,14 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+   }
+
+    @Nullable
+    @Override
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_wave, null);
+
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .cache(new Cache(getActivity().getCacheDir(), 250000000))
                 .build();
@@ -97,13 +108,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
         firebase = new FirebaseBuilder();
-   }
-
-    @Nullable
-    @Override
-    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_wave, null);
-
         generalView = view;
         waveName = view.findViewById(R.id.main_wave_name);
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
@@ -350,6 +354,42 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 holder.source.setVisibility(View.VISIBLE);
             }
 
+            if (postType.equals("link")){
+                holder.postImage.setVisibility(View.VISIBLE);
+                if (postMessage2.contains("@@@@@@")){
+                    String[] linkValues = postMessage2.split("@@@@@@");
+                    String linkTitle = linkValues[1];
+
+                    String linkImage = linkValues[2];
+                    picasso.load(linkImage)
+                            .fit()
+                            .centerInside()
+                            .placeholder(R.drawable.baseline_person_black_24).into(holder.postImage);
+                    TextView websiteTitle = new TextView(holder.briefConstraintL.getContext());
+                    websiteTitle.setText(linkTitle);
+                    websiteTitle.setId(0);
+                    websiteTitle.setTextColor(Color.WHITE);
+                    final int sdk = android.os.Build.VERSION.SDK_INT;
+                    if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        websiteTitle.setBackgroundDrawable(ContextCompat.getDrawable(websiteTitle.getContext(), R.drawable.circle_holder_gray) );
+                    } else {
+                        websiteTitle.setBackground(ContextCompat.getDrawable(websiteTitle.getContext(), R.drawable.circle_holder_gray));
+                    }
+
+                    holder.briefConstraintL.addView(websiteTitle);
+                    ConstraintSet constraintSet = new ConstraintSet();
+                    constraintSet.clone(holder.briefConstraintL);
+                    constraintSet.connect(websiteTitle.getId(),ConstraintSet.BOTTOM, holder.postImage.getId(),ConstraintSet.BOTTOM,3);
+                    constraintSet.connect(websiteTitle.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 3);
+                    constraintSet.connect(websiteTitle.getId(), ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 3);
+
+                    constraintSet.applyTo(holder.briefConstraintL);
+                    holder.source.setImageDrawable(ContextCompat.getDrawable(holder.source.getContext(), R.drawable.baseline_link_black_24));
+                    holder.source.setVisibility(View.VISIBLE);
+
+                }
+            }
+
 
             DatabaseReference databaseReferenceWave = firebase.get_user(postFrom, "profile_picture");
             databaseReferenceWave.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -481,43 +521,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                                         }
                                                     }
                                                 });
-                                            }
-                                        }
-                                    });
-                                } else {
-
-                                    final String postPushId = mainDataSnapshot
-                                            .child(postID).child("pushID").getValue().toString();
-                                    final DatabaseReference deleteFromUserEcho = firebase.get_user_authId("echos",
-                                            appManager.getWaveM().getEventID(), postID);
-                                    deleteFromUserEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-
-                                                DatabaseReference deleteFromWaveEcho = FirebaseDatabase.getInstance().getReference()
-                                                        .child("events_us")
-                                                        .child(appManager.getWaveM().getEventID())
-                                                        .child("wall")
-                                                        .child("posts")
-                                                        .child(postID)
-                                                        .child("echos")
-                                                        .child(postPushId);
-
-
-                                                deleteFromWaveEcho.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (!task.isSuccessful()) {
-                                                            Log.d("REMOVING_ECHO_WAVE", task.getException().getMessage());
-                                                        } else {
-                                                            working = false;
-                                                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
-                                                        }
-                                                    }
-                                                });
-                                            } else {
-                                                Log.d("REMOVING_ECHO_USER", task.getException().getMessage());
                                             }
                                         }
                                     });

@@ -639,12 +639,12 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.hasChild("attending")){
-                                                final long countEchos = dataSnapshot.child("attending").getChildrenCount();
+                                                final long attending = dataSnapshot.child("attending").getChildrenCount();
                                                 dbWaveb.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                                         if (dataSnapshot2.hasChild("echos")){
-                                                            if (dataSnapshot2.child("echos").getChildrenCount()/3 <= countEchos+1){
+                                                            if (dataSnapshot2.child("echos").getChildrenCount() >=attending/3){
                                                                 if (!dataSnapshot2.hasChild("permanent")){
                                                                     dbWaveb.child("permanent").setValue("true");
                                                                 }

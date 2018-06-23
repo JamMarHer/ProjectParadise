@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +62,8 @@ import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostCommentsAc
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
@@ -82,6 +86,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private TextView waveName;
     private ImageView waveAddPost;
     private Button addSourceBtn;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar progressBar;
 
 
     private List<Map<String, String>> posts;
@@ -115,6 +121,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
         waveAddPost = view.findViewById(R.id.main_add_post);
         addSourceBtn = view.findViewById(R.id.integrate_source_btn);
+        swipeRefreshLayout = view.findViewById(R.id.wave_swipe_layout);
+        progressBar = view.findViewById(R.id.progressbarWave);
+
 
         this.container = container;
         waveRecyclerView = view.findViewById(R.id.main_wave_recyclerView);
@@ -165,6 +174,19 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             });
         }
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                UINotificationHelpers.showProgress(true,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                waveRecyclerView.removeAllViews();
+                adapter.reload();
+
+
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
 
         waveAddPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,11 +252,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private class PostsAdapter extends RecyclerView.Adapter<PostViewHolder>{
 
         private LayoutInflater inflater;
+        private Context context;
+        private String mWaveID;
 
+        public void reload (){
 
-
-        private HashMap<String, Integer> record;
-        public PostsAdapter(final Context context, final String mWaveID){
             posts = new ArrayList<>();
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -284,6 +306,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                     inflater = LayoutInflater.from(context);
 
                                 }
+                                UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+
                             }
 
                             @Override
@@ -292,6 +316,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             }
                         });
                     }
+
                 }
 
                 @Override
@@ -299,6 +324,15 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                 }
             });
+        }
+
+
+
+        private HashMap<String, Integer> record;
+        public PostsAdapter(final Context context, final String mWaveID){
+            this.context = context;
+            this.mWaveID = mWaveID;
+            reload();
         }
 
         @Override

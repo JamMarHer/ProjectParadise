@@ -301,7 +301,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                         String postID = dataSnapshot2.getChildren().iterator().next().getKey();
                                         dataSnapshot2 = dataSnapshot2.child(postID);
                                         postInfo.put("waveName", waveName);
-                                        System.out.println(waveID);
                                         postInfo.put("waveID", waveID);
                                         postInfo.put("postID", postID);
                                         postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());

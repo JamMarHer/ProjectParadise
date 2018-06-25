@@ -311,7 +311,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                         postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
                                         postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
                                         postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
-
+                                        if (dataSnapshot2.hasChild("permanent")){
+                                            postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
+                                        }else {
+                                            postInfo.put("permanent", "");
+                                        }
                                         highlightPosts.add(postInfo);
                                         highlightedPostsAdapter.notifyDataSetChanged();
                                         inflater = LayoutInflater.from(context);
@@ -457,7 +461,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                         if (child.hasChild("time")){
                                             long timeDifference = System.currentTimeMillis() -  Long.valueOf(child.child("time").getValue().toString());
                                             if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
-                                                db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts");
+                                                db3.child(postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         highlightPosts.remove(position);
@@ -465,15 +470,16 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                                     }
                                                 });
                                             }else {
-                                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                                     holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                                     holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                                 }else {
                                                     holder.postTTL.setText("< 1m");
                                                 }
                                             }
                                         }
+                                        break;
                                     }
                                 }
 
@@ -485,17 +491,19 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         }else {
                             long timeDifference = System.currentTimeMillis() -  Long.valueOf(postTime);
                             if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
-                                db.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts");
+                                db3.child(postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         highlightPosts.remove(position);
+
                                         notifyDataSetChanged();
                                     }
                                 });
                             }else {
-                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                     holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                     holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                 }else {
                                     holder.postTTL.setText("< 1m");

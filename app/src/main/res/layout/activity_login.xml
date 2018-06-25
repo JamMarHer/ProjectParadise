@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_list"
+    android:background="@drawable/gradient_2"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
@@ -44,7 +44,7 @@
                 android:layout_height="90dp"
                 android:layout_marginTop="15dp"
                 android:paddingTop="6dp"
-                android:src="@drawable/idaelogo6_full" />
+                android:src="@drawable/logo2" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

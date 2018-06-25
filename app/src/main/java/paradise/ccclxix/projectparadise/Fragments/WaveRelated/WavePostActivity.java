@@ -274,9 +274,9 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                                 }
                                             });
                                         }else {
-                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                            if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                                 wavePostTimeToLive.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                                            }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                            }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                                 wavePostTimeToLive.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                             }else {
                                                 wavePostTimeToLive.setText("< 1m");
@@ -306,10 +306,9 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                 }
                             });
                         }else {
-                            if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=0){
-                                System.out.println(TimeUnit.MILLISECONDS.toHours(timeDifference));
+                            if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                 wavePostTimeToLive.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                            }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=0){
+                            }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                 wavePostTimeToLive.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                             }else {
                                 wavePostTimeToLive.setText("< 1m");
@@ -328,7 +327,6 @@ public class WavePostActivity extends YouTubeBaseActivity {
         }
 
         wavePostEcho.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 if(!working) {
@@ -358,26 +356,24 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                 dbWave.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.hasChild("attending")){
-                                            final long countEchos = dataSnapshot.child("attending").getChildrenCount();
-                                            dbWaveb.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot2) {
-                                                    if (dataSnapshot2.hasChild("echos")){
-                                                        if (dataSnapshot2.child("echos").getChildrenCount()/3 <= countEchos+1){
-                                                            if (!dataSnapshot2.hasChild("permanent")){
-                                                                dbWaveb.child("permanent").setValue("true");
-                                                            }
+                                        final long attending = dataSnapshot.child("attending").getChildrenCount();
+                                        dbWaveb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                if (dataSnapshot2.hasChild("echos")){
+                                                    if (dataSnapshot2.child("echos").getChildrenCount() >=attending/3){
+                                                        if (!dataSnapshot2.hasChild("permanent")){
+                                                            dbWaveb.child("permanent").setValue("true");
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                                }
-                                            });
-                                        }
+                                            }
+                                        });
                                     }
 
                                     @Override

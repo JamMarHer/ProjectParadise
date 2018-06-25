@@ -415,9 +415,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                                     }
                                                 });
                                             }else {
-                                                if (TimeUnit.MILLISECONDS.toHours(timeDifference) < 24){
+                                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                                     holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                                                }else if(TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 60){
+                                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                                     holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                                 }else {
                                                     holder.postTTL.setText("< 1m");
@@ -449,16 +449,17 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                     }
                                 });
                             }else {
-                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=0){
-                                    System.out.println(TimeUnit.MILLISECONDS.toHours(timeDifference));
+                                if (24 - TimeUnit.MILLISECONDS.toHours(timeDifference) >=1){
                                     holder.postTTL.setText( String.format("%d h", 24 - TimeUnit.MILLISECONDS.toHours(timeDifference)));
-                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=0){
+                                }else if(60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference) >=1){
                                     holder.postTTL.setText( String.format("%d m", 60 - TimeUnit.MILLISECONDS.toMinutes(timeDifference)));
                                 }else {
                                     holder.postTTL.setText("< 1m");
                                 }
                             }
+
                         }
+
                     }
 
                     @Override

@@ -44,15 +44,15 @@ public class InitialAcitivity extends AppCompatActivity {
         final FirebaseUser currentUser = firebase.auth().getCurrentUser();
         logo_welcome = findViewById(R.id.welcome_logo);
         loginRegisterLayout.setVisibility(View.INVISIBLE);
-        ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 260);
-
+        ResizeAnimation resizeAnimation = new ResizeAnimation(logo_welcome, 450);
+/*
         ConstraintLayout constraintLayout = findViewById(R.id.initial_activity_constraint_layout);
         AnimationDrawable ad = (AnimationDrawable)constraintLayout.getBackground();
         ad.setEnterFadeDuration(2000);
         ad.setExitFadeDuration(4000);
         ad.start();
-
-        resizeAnimation.setDuration(999);
+*/
+        resizeAnimation.setDuration(1500);
         logo_welcome.startAnimation(resizeAnimation);
 
         if (currentUser == null){

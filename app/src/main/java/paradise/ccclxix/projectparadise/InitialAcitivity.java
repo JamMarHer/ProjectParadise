@@ -21,7 +21,6 @@ import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 public class InitialAcitivity extends AppCompatActivity {
 
     private ImageView logo_welcome;
-    private TextView idae_title;
     private LinearLayout loginRegisterLayout;
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
@@ -32,7 +31,6 @@ public class InitialAcitivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_initial_acitivity);
-        idae_title = findViewById(R.id.idae_title2);
         loginRegisterLayout = findViewById(R.id.registration_buttons);
         firebase = new FirebaseBuilder();
     }

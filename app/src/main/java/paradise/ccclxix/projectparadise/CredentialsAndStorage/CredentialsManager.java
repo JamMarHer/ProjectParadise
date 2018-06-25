@@ -91,6 +91,10 @@ public class CredentialsManager  implements Manager{
                     if (dataSnapshot.hasChild("waves") && dataSnapshot.child("waves").hasChild("in"))
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
 
+                    if (dataSnapshot.hasChild("permanent")){
+                        updateNumPermanents(String.valueOf(dataSnapshot.child("permanent").getChildrenCount()));
+                    }
+
                     if (dataSnapshot.hasChild("session_token")){
                         // TODO This will be used if we later decide to limit the number of devices
                         // an user can be sign in at the same time.
@@ -138,6 +142,10 @@ public class CredentialsManager  implements Manager{
         return sharedPreferences.getString("username","");
     }
 
+    public String getNumPermanents(){
+        return sharedPreferences.getString("permanents", "0");
+    }
+
     public String getName(){return  sharedPreferences.getString("name", "");}
 
     public String getStatus(){return  sharedPreferences.getString("bio", "");}
@@ -167,6 +175,11 @@ public class CredentialsManager  implements Manager{
         return sharedPreferences.getString("num_waves","");
     }
 
+    public void updateNumPermanents(String val){
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString("permanents", val);
+        editor.apply();
+    }
 
     public void updateSessionToken(String token){
         SharedPreferences.Editor editor = this.sharedPreferences.edit();

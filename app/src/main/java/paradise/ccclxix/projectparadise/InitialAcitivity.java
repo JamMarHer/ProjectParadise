@@ -21,6 +21,7 @@ import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 public class InitialAcitivity extends AppCompatActivity {
 
     private ImageView logo_welcome;
+    private TextView appVersion;
     private LinearLayout loginRegisterLayout;
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
@@ -32,7 +33,8 @@ public class InitialAcitivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_initial_acitivity);
         loginRegisterLayout = findViewById(R.id.registration_buttons);
-        firebase = new FirebaseBuilder();
+        appVersion = findViewById(R.id.app_version);
+        appVersion.setText("Ver. " + BuildConfig.VERSION_NAME);
     }
 
 

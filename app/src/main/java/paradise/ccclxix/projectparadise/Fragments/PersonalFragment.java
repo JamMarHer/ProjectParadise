@@ -71,6 +71,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView myNumWaves;
     private TextView myNumContacts;
     private TextView mStatus;
+    private TextView mNumVerified;
     private RecyclerView mPinnedWavesRecyclerV;
     private RecyclerView mHightlightedPostsRecyclerV;
     private LinearLayout pinnedAddButton;
@@ -123,6 +124,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
         pinnedAddButton = inflater1.findViewById(R.id.pinnedWaves);
+        mNumVerified = inflater1.findViewById(R.id.numberVerified);
 
         generalView = inflater1;
         setupUserCard();
@@ -182,6 +184,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     mStatus.setText(appManager.getCredentialM().getStatus());
                     myNumContacts.setText(appManager.getCredentialM().getNumContacts());
                     myNumWaves.setText(appManager.getCredentialM().getNumWaves());
+                    mNumVerified.setText(appManager.getCredentialM().getNumPermanents());
                     String thumbnailURL = appManager.getCredentialM().getProfilePic();
                     if (!TextUtils.isEmpty(thumbnailURL)) {
                         picasso.load(thumbnailURL)

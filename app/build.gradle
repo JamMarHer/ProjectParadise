@@ -66,6 +66,8 @@ dependencies {
     compile('com.google.apis:google-api-services-youtube:v3-rev198-1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+    compile 'com.google.apis:google-api-services-oauth2:v2-rev137-1.23.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

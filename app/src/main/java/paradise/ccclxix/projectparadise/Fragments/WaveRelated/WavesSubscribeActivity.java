@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -29,6 +30,13 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.YouTubeScopes;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +46,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,9 +56,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.YoutubeService;
 
 public class WavesSubscribeActivity extends AppCompatActivity {
 
@@ -55,6 +69,15 @@ public class WavesSubscribeActivity extends AppCompatActivity {
 
     private List<HashMap<String, String>> waves;
     private AppManager appManager;
+
+    // Youtube
+    @BindView(R.id.resultText) TextView resultText;
+    @BindView(R.id.searchBtn) Button searchBtn;
+    @BindView(R.id.searchField) EditText searchField;
+    private static final String[] SCOPES = { YouTubeScopes.YOUTUBE_READONLY };
+    private GoogleAccountCredential mCredential;
+
+    // Facebook
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private TextView testingText;
@@ -67,6 +90,7 @@ public class WavesSubscribeActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wave_post_subscribe);
+        ButterKnife.bind(this);
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
@@ -79,6 +103,11 @@ public class WavesSubscribeActivity extends AppCompatActivity {
                 finish();
             }
         });
+        try {
+            setupYoutube();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -87,6 +116,14 @@ public class WavesSubscribeActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+    private void setupYoutube() throws IOException {
+        YoutubeService youtube = new YoutubeService();
+        youtube.authorize();
+    }
+
+
 
     private void setupFacebook(){
         testingText = findViewById(R.id.facebook_email);

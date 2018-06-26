@@ -655,8 +655,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                                                                 dbto.addListenerForSingleValueEvent(new ValueEventListener() {
                                                                                     @Override
                                                                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                        if (!dataSnapshot.child("permanent").hasChild(postID)){
-                                                                                            dbto.child("permanent").child(postID).setValue(System.currentTimeMillis());
+                                                                                        if (!dataSnapshot.child("permanent").child(waveID).hasChild(postID)){
+                                                                                            dbto.child("permanent").child(waveID).child(postID).setValue(System.currentTimeMillis());
                                                                                         }
                                                                                     }
 

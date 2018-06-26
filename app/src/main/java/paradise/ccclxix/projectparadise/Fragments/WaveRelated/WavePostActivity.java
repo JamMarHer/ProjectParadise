@@ -363,7 +363,27 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                                 if (dataSnapshot2.hasChild("echos")){
                                                     if (dataSnapshot2.child("echos").getChildrenCount() >=attending/3){
                                                         if (!dataSnapshot2.hasChild("permanent")){
-                                                            dbWaveb.child("permanent").setValue("true");
+                                                            dbWaveb.child("permanent").setValue("true").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()){
+                                                                        final DatabaseReference dbto = firebase.get_user(from);
+                                                                        dbto.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                if (!dataSnapshot.child("permanent").child(waveID).hasChild(postID)){
+                                                                                    dbto.child("permanent").child(waveID).child(postID).setValue(System.currentTimeMillis());
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 }

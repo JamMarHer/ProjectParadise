@@ -92,7 +92,14 @@ public class CredentialsManager  implements Manager{
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
 
                     if (dataSnapshot.hasChild("permanent")){
-                        updateNumPermanents(String.valueOf(dataSnapshot.child("permanent").getChildrenCount()));
+                        long count = 0;
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.child("permanent").getChildren()){
+                            if (dataSnapshot1.hasChildren())
+                                count += dataSnapshot1.getChildrenCount();
+                            else
+                                count += 1;
+                        }
+                        updateNumPermanents(String.valueOf(count));
                     }
 
                     if (dataSnapshot.hasChild("session_token")){

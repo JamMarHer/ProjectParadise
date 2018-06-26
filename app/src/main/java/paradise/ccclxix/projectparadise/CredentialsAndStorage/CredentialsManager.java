@@ -175,11 +175,11 @@ public class CredentialsManager  implements Manager{
     }
 
     public String getNumContacts(){
-        return sharedPreferences.getString("num_contacts","");
+        return sharedPreferences.getString("num_contacts","0");
     }
 
     public String getNumWaves(){
-        return sharedPreferences.getString("num_waves","");
+        return sharedPreferences.getString("num_waves","0");
     }
 
     public void updateNumPermanents(String val){

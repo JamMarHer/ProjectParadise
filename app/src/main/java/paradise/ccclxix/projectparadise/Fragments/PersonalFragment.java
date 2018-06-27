@@ -68,6 +68,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView personalUsername;
     private ImageView settingsImageView;
     private ImageView profilePicture;
+    private ImageView nothingToShow;
     private TextView myNumWaves;
     private TextView myNumContacts;
     private TextView mStatus;
@@ -125,6 +126,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
         pinnedAddButton = inflater1.findViewById(R.id.pinnedWaves);
         mNumVerified = inflater1.findViewById(R.id.numberVerified);
+        nothingToShow = inflater1.findViewById(R.id.nothing_to_show_image);
 
         generalView = inflater1;
         setupUserCard();
@@ -270,6 +272,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     updateOnChange(dataSnapshot, context);
+
                 }
 
                 @Override
@@ -283,65 +286,72 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         private void updateOnChange(DataSnapshot dataSnapshot, final Context context){
             highlightPosts.clear();
             record = new HashMap<>();
+            if (dataSnapshot.hasChildren()){
+                mPinnedWavesRecyclerV.setVisibility(View.VISIBLE);
+                nothingToShow.setVisibility(View.INVISIBLE);
+                for (final  DataSnapshot wave: dataSnapshot.getChildren()){
+                    final String waveID = wave.getKey();
+                    DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
+                    waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChildren()){
 
-            for (final  DataSnapshot wave: dataSnapshot.getChildren()){
-                final String waveID = wave.getKey();
-                DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
-                waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChildren()){
+                                final String waveName = dataSnapshot.child("name_event").getValue().toString();
 
-                            final String waveName = dataSnapshot.child("name_event").getValue().toString();
+                                Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
+                                lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot2) {
+                                        HashMap<String, String> postInfo = new HashMap<>();
+                                        if (dataSnapshot2.hasChildren()){
 
-                            Query lastQuery = firebase.get("events_us", waveID, "wall", "posts").orderByKey().limitToLast(1);
-                            lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot2) {
-                                    HashMap<String, String> postInfo = new HashMap<>();
-                                    if (dataSnapshot2.hasChildren()){
-
-                                        String postID = dataSnapshot2.getChildren().iterator().next().getKey();
-                                        dataSnapshot2 = dataSnapshot2.child(postID);
-                                        postInfo.put("waveName", waveName);
-                                        postInfo.put("waveID", waveID);
-                                        postInfo.put("postID", postID);
-                                        postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
-                                        postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
-                                        postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
-                                        postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
-                                        postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
-                                        postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
-                                        postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
-                                        postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
-                                        if (dataSnapshot2.hasChild("permanent")){
-                                            postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
-                                        }else {
-                                            postInfo.put("permanent", "");
+                                            String postID = dataSnapshot2.getChildren().iterator().next().getKey();
+                                            dataSnapshot2 = dataSnapshot2.child(postID);
+                                            postInfo.put("waveName", waveName);
+                                            postInfo.put("waveID", waveID);
+                                            postInfo.put("postID", postID);
+                                            postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
+                                            postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
+                                            postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
+                                            postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
+                                            postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
+                                            postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
+                                            postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
+                                            postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
+                                            if (dataSnapshot2.hasChild("permanent")){
+                                                postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
+                                            }else {
+                                                postInfo.put("permanent", "");
+                                            }
+                                            highlightPosts.add(postInfo);
+                                            highlightedPostsAdapter.notifyDataSetChanged();
+                                            inflater = LayoutInflater.from(context);
                                         }
-                                        highlightPosts.add(postInfo);
-                                        highlightedPostsAdapter.notifyDataSetChanged();
-                                        inflater = LayoutInflater.from(context);
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Log.d("MY_WAVES", databaseError.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Log.d("MY_WAVES", databaseError.getMessage());
+                                    }
+                                });
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-
-
-
+                        }
+                    });
+                }
+            }else {
+                mPinnedWavesRecyclerV.removeAllViews();
+                mPinnedWavesRecyclerV.setVisibility(View.INVISIBLE);
+                mHightlightedPostsRecyclerV.removeAllViews();
+                nothingToShow.setVisibility(View.VISIBLE);
             }
+
+
         }
 
 

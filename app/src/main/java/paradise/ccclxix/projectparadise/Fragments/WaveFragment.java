@@ -55,6 +55,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.ModeManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavesSubscribeActivity;
+import paradise.ccclxix.projectparadise.utils.Defaults;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
@@ -188,6 +189,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             }
         });
 
+        if (waveID.equals(Defaults.TOM))
+            waveAddPost.setVisibility(View.INVISIBLE);
+
         waveAddPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,6 +199,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 getActivity().startActivity(intent);
             }
         });
+
+        addSourceBtn.setVisibility(View.INVISIBLE);
+        // TODO Button to add source. commented for realise.
+        /*
         addSourceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,6 +210,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 getActivity().startActivity(intent);
             }
         });
+        */
         return view;
     }
 

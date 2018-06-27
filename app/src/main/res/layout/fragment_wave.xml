@@ -53,13 +53,15 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout4"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_marginBottom="3dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="3dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/circle"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/integrate_source_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -76,11 +78,13 @@
             <TextView
                 android:id="@+id/main_wave_name"
                 android:layout_width="wrap_content"
-                android:layout_height="19dp"
+                android:layout_height="23dp"
                 android:layout_marginBottom="1dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="3dp"
                 android:elevation="2dp"
+                android:foregroundGravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text="TextView"
                 android:textColor="@color/common_google_signin_btn_text_light_default"
                 android:textStyle="bold"
@@ -93,30 +97,32 @@
         <Button
             android:id="@+id/integrate_source_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginStart="114dp"
-            android:layout_marginTop="1dp"
-            android:text="+ Source"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/circle_holder_main_color"
+            android:fontFamily="@font/comfortaa_regular"
+            android:foregroundGravity="center_vertical"
+            android:text="S+"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/main_add_post"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout4"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/main_add_post"
             android:layout_width="40dp"
             android:layout_height="33dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
             android:background="@drawable/circle_holder_second_main_color"
             android:clickable="true"
             android:elevation="3dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/integrate_source_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/integrate_source_btn"
             app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
 
     </android.support.constraint.ConstraintLayout>

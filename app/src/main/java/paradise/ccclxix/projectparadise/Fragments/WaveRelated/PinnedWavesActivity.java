@@ -154,9 +154,6 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                             eventInfo.put("pinnedName", masterDataSnapshot.child("name_event").getValue().toString());
                                             eventInfo.put("waveID", waveID);
 
-                                            System.out.println(waves.toString());
-                                            System.out.println(record.toString());
-                                            System.out.println("-----------------");
                                             if(!record.containsKey(waveID)) {
                                                 waves.add(eventInfo);
                                                 record.put(waveID, waves.size()-1);
@@ -164,8 +161,6 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                                 waves.set(record.get(waveID), eventInfo);
                                             }
 
-                                            System.out.println(waves.toString());
-                                            System.out.println(record.toString());
                                             pinnedOptionAdapter.notifyDataSetChanged();
                                             inflater = LayoutInflater.from(context1);
                                         }
@@ -362,8 +357,12 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                                         databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    System.out.println("life");
+                                                                if (!task.isSuccessful()) {
+                                                                    if (task.getException() != null)
+                                                                        Log.d("LEAVING_WAVE_PINNED", task.getException().getMessage());
+                                                                    else
+                                                                        Log.d("LEAVING_WAVE_PINNED", "No exception caught.");
+
                                                                 }
                                                             }
                                                         });

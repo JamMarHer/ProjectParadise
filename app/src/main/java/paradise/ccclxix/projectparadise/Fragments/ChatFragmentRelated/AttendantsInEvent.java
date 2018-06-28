@@ -88,6 +88,9 @@ public class AttendantsInEvent extends Fragment{
         private List<String> usernameList;
         private List<String> userThumbnail;
 
+
+        // TODO implement a reload method. This is a really bad idea, having the listeners inside
+        // TODO the constructor makes the adapter not flexible.
         public UsersAdapter(final Context context){
             userIdsList = new ArrayList<>();
             usernameList = new ArrayList<>();

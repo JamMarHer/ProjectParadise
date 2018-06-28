@@ -88,7 +88,8 @@ public class CredentialsManager  implements Manager{
                     if (dataSnapshot.hasChild("profile_picture"))
                         updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
 
-                    if (dataSnapshot.hasChild("waves") && dataSnapshot.child("waves").hasChild("in"))
+
+                    if (dataSnapshot.child("waves").hasChild("in"))
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
 
                     if (dataSnapshot.hasChild("permanent")){
@@ -126,6 +127,8 @@ public class CredentialsManager  implements Manager{
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChildren())
                         updateNumContacts(String.valueOf(dataSnapshot.getChildrenCount()));
+                    if (listener != null)
+                        listener.onDataChanged(true); // <---- fire listener here
                 }
 
                 @Override

@@ -1,22 +1,31 @@
 package paradise.ccclxix.projectparadise.Fragments.WaveRelated;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,19 +40,27 @@ import java.util.Map;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.HolderFragment;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
+import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.QRGenerator;
+import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 public class PinnedWavesActivity extends AppCompatActivity {
 
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
+    public LinearLayout generalLinearLayout;
+
     private PinnedOptionAdapter pinnedOptionAdapter;
+
     private List<HashMap<String, String>> waves;
     private AppManager appManager;
 
     private TextView pinnedTitle;
     private RecyclerView pinnedWavesView;
+    private SnackBar snackBar = new SnackBar();
 
     final int sdk = android.os.Build.VERSION.SDK_INT;
 
@@ -64,6 +81,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
 
         pinnedTitle = findViewById(R.id.pinned_title);
         pinnedWavesView = findViewById(R.id.pinned_wave_recycleView);
+        generalLinearLayout = findViewById(R.id.pinned_waves_linear_layout);
 
         pinnedOptionAdapter = new PinnedOptionAdapter(getApplicationContext());
         pinnedOptionAdapter.populate();
@@ -81,6 +99,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
     private class PinnedOptionHolder extends RecyclerView.ViewHolder{
 
         TextView pinnedName;
+        ImageView infoButton;
         ToggleButton pinnedSwitch;
         View mView;
         String waveID;
@@ -89,7 +108,9 @@ public class PinnedWavesActivity extends AppCompatActivity {
             super(itemView);
             pinnedName = itemView.findViewById(R.id.pinned_name);
             pinnedSwitch = itemView.findViewById(R.id.pinned_switch);
+            infoButton = itemView.findViewById(R.id.wave_info_pinned);
             mView = itemView;
+
 
             pinnedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
@@ -210,7 +231,8 @@ public class PinnedWavesActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final PinnedOptionHolder holder, int position) {
             final String waveName = waves.get(position).get("pinnedName");
-            holder.waveID = waves.get(position).get("waveID");
+            final String waveID = waves.get(position).get("waveID");
+            holder.waveID = waveID;
             holder.pinnedName.setText(waveName);
             // Does any presetting
             if(waves.get(position).get("pinned").equals("true")){
@@ -230,12 +252,143 @@ public class PinnedWavesActivity extends AppCompatActivity {
                 }
             }
 
+            View waveSettignsPopupView = inflater.inflate(R.layout.share_wave_popup, null);
+            ImageView qrCode = waveSettignsPopupView.findViewById(R.id.qrCode);
+            TextView eventname = waveSettignsPopupView.findViewById(R.id.waveName);
+            qrCode.setImageBitmap(QRGenerator.getEventQR(waveID));
+            eventname.setText(waveName);
+
+
+            int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            final PopupWindow waveSettingsPopupWindow = new PopupWindow(waveSettignsPopupView, width,height);
+            waveSettingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+
+
+
+            final TextView closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
+            final TextView leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
+            final TextView enterWave = waveSettignsPopupView.findViewById(R.id.enter_wave);
+
+
+            enterWave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (waveID.equals(appManager.getWaveM().getEventID())){
+                        snackBar.showEmojiBar(generalLinearLayout, "You are already riding this wave", Icons.POOP);
+                    }else {
+                        appManager.getWaveM().updateEventID(waveID);
+                        appManager.getWaveM().updateEventName(waveName);
+
+                        Intent intent = new Intent(PinnedWavesActivity.this, MainActivity.class);
+                        intent.putExtra("source", "joined_event");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        PinnedWavesActivity.this.finish();
+                    }
+
+                }
+            });
+
+            closeWaveSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    waveSettingsPopupWindow.dismiss();
+                }
+            });
+
+            leaveWave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    record.remove(waveID);
+                    leaveWave(waveID);
+                }
+            });
+
+            holder.infoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    waveSettingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                }
+            });
+
 
         }
 
         @Override
         public int getItemCount() {
             return waves.size();
+        }
+    }
+
+    private void leaveWave(final String waveID) {
+        if (firebase.getCurrentUser() != null) {
+            final DatabaseReference databaseReference = firebase.getEvents(waveID, "attending", firebase.auth_id());
+            // Gets the time the user logged into the wave.
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final long inTime = Long.valueOf(dataSnapshot.child("in").getValue().toString());
+                    final DatabaseReference userDatabaseReference = firebase.get_user_authId("waves", "in", waveID);
+                    // Removes the wave from personal waves
+                    userDatabaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                DatabaseReference dbFUsers = firebase.get_user_authId("waves", "out", waveID);
+                                final HashMap<String, Long> inoutInfo = new HashMap<>();
+                                inoutInfo.put("in", inTime);
+                                inoutInfo.put("out", System.currentTimeMillis());
+                                // Updates the attended record in user table.
+                                dbFUsers.setValue(inoutInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            DatabaseReference dbWaves = firebase.getEvents(waveID, "attended", firebase.auth_id());
+                                            // Updates the wave table of attended.
+                                            dbWaves.setValue(inoutInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // Removes the user from the wave table attending.
+                                                        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    appManager.getModeM().setModeToExplore();
+                                                                    appManager.getWaveM().updateEventID(null);
+                                                                    Intent intent = new Intent(PinnedWavesActivity.this, MainActivity.class);
+                                                                    intent.putExtra("source", "logged_in");
+                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                    startActivity(intent);
+                                                                    PinnedWavesActivity.this.finish();
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        Log.d("LEAVING_WAVE", task.getException().getMessage());
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            Log.d("LEAVING_WAVE", task.getException().getMessage());
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.d("LEAVING_WAVE", task.getException().getMessage());
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    snackBar.showEmojiBar(generalLinearLayout, "Something wen wrong.", Icons.FIRE);
+                }
+            });
         }
     }
 }

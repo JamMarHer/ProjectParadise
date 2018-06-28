@@ -89,8 +89,11 @@ public class CredentialsManager  implements Manager{
                         updateProfilePic(dataSnapshot.child("profile_picture").getValue().toString());
 
 
-                    if (dataSnapshot.child("waves").hasChild("in"))
+                    if (dataSnapshot.child("waves").hasChild("in") && dataSnapshot.child("waves").child("in").hasChildren()){
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
+                    }else {
+                        updateNumWaves("0");
+                    }
 
 
                     if (dataSnapshot.hasChild("permanent")){

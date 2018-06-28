@@ -56,6 +56,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
     private PinnedOptionAdapter pinnedOptionAdapter;
 
     private List<HashMap<String, String>> waves;
+    private HashMap<String, Integer> record;
     private AppManager appManager;
 
     private TextView pinnedTitle;
@@ -112,43 +113,14 @@ public class PinnedWavesActivity extends AppCompatActivity {
             mView = itemView;
 
 
-            pinnedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                    firebase.get_user_authId("waves", "pinned").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.hasChild(waveID) && !isChecked){
-                                firebase.get_user_authId("waves", "pinned", waveID).removeValue();
-                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                                    pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_gray) );
-                                } else {
-                                    pinnedSwitch.setBackground(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_gray));
-                                }
-                            }
-                            else if (!dataSnapshot.hasChild(waveID) && isChecked){
-                                firebase.get_user_authId("waves", "pinned", waveID)
-                                        .setValue(ServerValue.TIMESTAMP);
-                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                                    pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_main_color) );
-                                } else {
-                                    pinnedSwitch.setBackground(ContextCompat.getDrawable(pinnedSwitch.getContext(), R.drawable.circle_holder_main_color));
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
-                }
-            });
         }
     }
 
     private class PinnedOptionAdapter extends RecyclerView.Adapter<PinnedOptionHolder> {
         LayoutInflater inflater;
         Context context1;
-        private HashMap<String, Integer> record;
+
         private HashMap<String, String> allHolders = new HashMap<>();
 
         public PinnedOptionAdapter(final Context context){
@@ -166,7 +138,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
                     for (final DataSnapshot wave : dataSnapshot.getChildren()) {
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebase.getEvents(waveID);
-                        waveDBReference.addValueEventListener(new ValueEventListener() {
+                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(final DataSnapshot masterDataSnapshot) {
                                     firebase.get_user_authId("waves", "pinned").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,18 +153,19 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                             }
                                             eventInfo.put("pinnedName", masterDataSnapshot.child("name_event").getValue().toString());
                                             eventInfo.put("waveID", waveID);
+
+                                            System.out.println(waves.toString());
+                                            System.out.println(record.toString());
+                                            System.out.println("-----------------");
                                             if(!record.containsKey(waveID)) {
                                                 waves.add(eventInfo);
                                                 record.put(waveID, waves.size()-1);
-                                                if(waveID.equals(appManager.getWaveM().getEventID())){
-                                                    int toExchange = waves.size()-1;
-                                                    Collections.swap(waves,0, toExchange);
-                                                    record.put(waveID, 0);
-                                                    record.put(waves.get(toExchange).get("waveID"), waves.size()-1);
-                                                }
                                             }else {
                                                 waves.set(record.get(waveID), eventInfo);
                                             }
+
+                                            System.out.println(waves.toString());
+                                            System.out.println(record.toString());
                                             pinnedOptionAdapter.notifyDataSetChanged();
                                             inflater = LayoutInflater.from(context1);
                                         }
@@ -229,7 +202,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(final PinnedOptionHolder holder, int position) {
+        public void onBindViewHolder(final PinnedOptionHolder holder, final int position) {
             final String waveName = waves.get(position).get("pinnedName");
             final String waveID = waves.get(position).get("waveID");
             holder.waveID = waveID;
@@ -277,6 +250,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
                         snackBar.showEmojiBar(generalLinearLayout, "You are already riding this wave", Icons.POOP);
                     }else {
+                        // TODO add listener to update the wave fragment to display the correct information.
                         appManager.getWaveM().updateEventID(waveID);
                         appManager.getWaveM().updateEventName(waveName);
 
@@ -286,7 +260,6 @@ public class PinnedWavesActivity extends AppCompatActivity {
                         startActivity(intent);
                         PinnedWavesActivity.this.finish();
                     }
-
                 }
             });
 
@@ -300,8 +273,12 @@ public class PinnedWavesActivity extends AppCompatActivity {
             leaveWave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    record.remove(waveID);
-                    leaveWave(waveID);
+                    waves.remove(position);
+                    pinnedOptionAdapter.notifyItemRemoved(position);
+                    pinnedOptionAdapter.notifyItemRangeChanged(position, waves.size());
+
+                    leaveWave(waveID, position);
+                    waveSettingsPopupWindow.dismiss();
                 }
             });
 
@@ -310,6 +287,36 @@ public class PinnedWavesActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     waveSettingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
+                }
+            });
+            holder.pinnedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                    firebase.get_user_authId("waves", "pinned").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(waveID) && !isChecked){
+                                firebase.get_user_authId("waves", "pinned", waveID).removeValue();
+                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                    holder.pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_gray) );
+                                } else {
+                                    holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_gray));
+                                }
+                            }
+                            else if (!dataSnapshot.hasChild(waveID) && isChecked){
+                                firebase.get_user_authId("waves", "pinned", waveID)
+                                        .setValue(ServerValue.TIMESTAMP);
+                                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                    holder.pinnedSwitch.setBackgroundDrawable(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_main_color) );
+                                } else {
+                                    holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_main_color));
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             });
 
@@ -322,7 +329,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
         }
     }
 
-    private void leaveWave(final String waveID) {
+    private void leaveWave(final String waveID, final int position) {
         if (firebase.getCurrentUser() != null) {
             final DatabaseReference databaseReference = firebase.getEvents(waveID, "attending", firebase.auth_id());
             // Gets the time the user logged into the wave.
@@ -356,13 +363,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    appManager.getModeM().setModeToExplore();
-                                                                    appManager.getWaveM().updateEventID(null);
-                                                                    Intent intent = new Intent(PinnedWavesActivity.this, MainActivity.class);
-                                                                    intent.putExtra("source", "logged_in");
-                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                                    startActivity(intent);
-                                                                    PinnedWavesActivity.this.finish();
+                                                                    System.out.println("life");
                                                                 }
                                                             }
                                                         });

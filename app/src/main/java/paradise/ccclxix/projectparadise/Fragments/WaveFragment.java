@@ -645,8 +645,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             };
 
 
-            holder.postLaunch.setOnClickListener(launchPostListener);
-            holder.postImage.setOnClickListener(launchPostListener);
+            if (!postType.equals("error")){
+                holder.postLaunch.setOnClickListener(launchPostListener);
+                holder.postImage.setOnClickListener(launchPostListener);
+            }
 
 
             holder.postEcho.setOnClickListener(new View.OnClickListener(){

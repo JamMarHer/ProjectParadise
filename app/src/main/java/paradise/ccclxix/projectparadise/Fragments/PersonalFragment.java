@@ -602,8 +602,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 }
             };
 
-            holder.postLaunch.setOnClickListener(launchPostListener);
-            holder.postImage.setOnClickListener(launchPostListener);
+            if (!postType.equals("error")){
+                holder.postLaunch.setOnClickListener(launchPostListener);
+                holder.postImage.setOnClickListener(launchPostListener);
+            }
 
 
             DatabaseReference db =  firebase.getEvents(waveID,"wall", "posts", postID);

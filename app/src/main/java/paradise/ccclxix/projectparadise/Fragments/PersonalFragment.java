@@ -49,6 +49,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager
 import paradise.ccclxix.projectparadise.EnhancedFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.PinnedWavesActivity;
 import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WavePostActivity;
+import paradise.ccclxix.projectparadise.utils.ErrorMessageComposer;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
@@ -62,6 +63,7 @@ import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 public class PersonalFragment extends HolderFragment implements EnhancedFragment {
 
+    private static String TAG = "PERSONAL_FRAGMENT";
 
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
@@ -294,7 +296,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     DatabaseReference waveDBReference = FirebaseDatabase.getInstance().getReference().child("events_us").child(waveID);
                     waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChildren()){
 
                                 final String waveName = dataSnapshot.child("name_event").getValue().toString();
@@ -311,19 +313,36 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                             postInfo.put("waveName", waveName);
                                             postInfo.put("waveID", waveID);
                                             postInfo.put("postID", postID);
-                                            postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
-                                            postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
-                                            postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
-                                            postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
-                                            postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
-                                            postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
-                                            postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
-                                            postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
-                                            if (dataSnapshot2.hasChild("permanent")){
-                                                postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
+                                            if (dataSnapshot2.hasChild("from")){
+                                                postInfo.put("postFrom", dataSnapshot2.child("from").getValue().toString());
+                                                postInfo.put("postFromUsername", dataSnapshot2.child("fromUsername").getValue().toString());
+                                                postInfo.put("postMessage", dataSnapshot2.child("message").getValue().toString());
+                                                postInfo.put("postMessage2", dataSnapshot2.child("message2").getValue().toString());
+                                                postInfo.put("postEchos", String.valueOf(dataSnapshot2.child("echos").getChildrenCount()));
+                                                postInfo.put("postComments", String.valueOf(dataSnapshot2.child("comments").getChildrenCount()));
+                                                postInfo.put("postTime", String.valueOf(dataSnapshot2.child("time").getValue()));
+                                                postInfo.put("postType", dataSnapshot2.child("type").getValue().toString());
+                                                if (dataSnapshot2.hasChild("permanent")){
+                                                    postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
+                                                }else {
+                                                    postInfo.put("permanent", "");
+                                                }
                                             }else {
-                                                postInfo.put("permanent", "");
+                                                postInfo.put("postFrom", "Error.. My bad.");
+                                                postInfo.put("postFromUsername",  ":(");
+                                                postInfo.put("postMessage",  ":(");
+                                                postInfo.put("postMessage2",  ":(");
+                                                postInfo.put("postEchos",  ":(");
+                                                postInfo.put("postComments",  ":(");
+                                                postInfo.put("postTime",  ":(");
+                                                postInfo.put("postType",  "error");
+                                                if (dataSnapshot2.hasChild("permanent")){
+                                                    postInfo.put("permanent", dataSnapshot2.child("permanent").getValue().toString());
+                                                }else {
+                                                    postInfo.put("permanent", "");
+                                                }
                                             }
+
                                             highlightPosts.add(postInfo);
                                             highlightedPostsAdapter.notifyDataSetChanged();
                                             inflater = LayoutInflater.from(context);
@@ -447,7 +466,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     holder.source.setVisibility(View.VISIBLE);
 
                 }
-            }else {
+            }else  if(postType.equals("error")){
+                ErrorMessageComposer.loadingPost(TAG, waveID, postID);
+                holder.postImage.setVisibility(View.VISIBLE);
+                holder.postImage.setImageDrawable(ContextCompat.getDrawable(holder.postImage.getContext(), R.drawable.paradire_banner_error));
+            } else {
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(holder.briefConstraintL);
                 constraintSet.connect(holder.postMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,ConstraintSet.END, 0);

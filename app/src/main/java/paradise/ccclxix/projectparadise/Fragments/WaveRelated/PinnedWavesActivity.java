@@ -357,11 +357,17 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                                         databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                if (!task.isSuccessful()) {
-                                                                    if (task.getException() != null)
-                                                                        Log.d("LEAVING_WAVE_PINNED", task.getException().getMessage());
-                                                                    else
-                                                                        Log.d("LEAVING_WAVE_PINNED", "No exception caught.");
+                                                                if (task.isSuccessful()) {
+                                                                    firebase.get_user_authId("waves", "pinned", waveID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (!task.isSuccessful()){
+                                                                                System.out.println("Lige son");
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                } else{
+                                                                    Log.d("LEAVING_WAVE_PINNED", "No exception caught.");
 
                                                                 }
                                                             }

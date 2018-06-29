@@ -9,7 +9,7 @@
     android:background="@drawable/gradient_2">
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/wave_card_wScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/wave_card_members"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/wave_card_posts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/wave_name_single_layout"
+        android:id="@+id/wave_card_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -62,7 +62,7 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView15"
+        app:layout_constraintEnd_toStartOf="@+id/wave_card_posts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,7 +74,7 @@
         android:text="WScore"
         android:textColor="@android:color/white"
         android:textSize="9sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_name_single_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
@@ -85,7 +85,7 @@
         android:text="Members"
         android:textColor="@android:color/white"
         android:textSize="9sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_name_single_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
         app:layout_constraintEnd_toStartOf="@+id/textView10" />
 
     <TextView
@@ -96,7 +96,7 @@
         android:text="Posts"
         android:textColor="@android:color/white"
         android:textSize="9sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_name_single_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
         app:layout_constraintEnd_toStartOf="@+id/textView11" />
 
 </android.support.constraint.ConstraintLayout>

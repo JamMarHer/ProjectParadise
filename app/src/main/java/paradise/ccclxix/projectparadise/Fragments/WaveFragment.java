@@ -412,6 +412,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             }
             if(postType.equals("error")){
                 ErrorMessageComposer.loadingPost(TAG, waveID, postID);
+                holder.postLaunch.setVisibility(View.INVISIBLE);
                 holder.postImage.setVisibility(View.VISIBLE);
                 holder.postImage.setImageDrawable(ContextCompat.getDrawable(holder.postImage.getContext(), R.drawable.paradire_banner_error));
             }

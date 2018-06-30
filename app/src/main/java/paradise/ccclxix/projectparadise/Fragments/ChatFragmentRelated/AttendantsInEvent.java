@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
@@ -43,6 +44,18 @@ public class AttendantsInEvent extends Fragment{
     AppManager appManager;
 
     Picasso picasso;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getActivity().getClass().getSimpleName().equals("ChatFragment")) {
+            ChatFragment chatFragment = (ChatFragment) getActivity();
+            appManager = chatFragment.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
+        }
+    }
 
     @Nullable
     @Override

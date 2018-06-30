@@ -44,6 +44,7 @@ import paradise.ccclxix.projectparadise.Chat.MessageAdapter;
 import paradise.ccclxix.projectparadise.Chat.Messages;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
@@ -88,9 +89,12 @@ public class EventChat extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
-            MainActivity mainActivity = (MainActivity)getActivity();
-            appManager = mainActivity.getAppManager();
+        if (getActivity().getClass().getSimpleName().equals("ChatFragment")){
+            ChatFragment chatFragment = (ChatFragment) getActivity();
+            appManager = chatFragment.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
 
         eventListener = new ChildEventListener() {

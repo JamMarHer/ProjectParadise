@@ -55,6 +55,10 @@ public class ChatFragment extends AppCompatActivity {
         }
     }
 
+    public AppManager getAppManager() {
+        return appManager;
+    }
+
     private void setUpAttending(ViewPager viewPager) {
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());

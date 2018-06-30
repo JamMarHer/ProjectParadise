@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Chat.ChatActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
@@ -48,9 +49,12 @@ public class OnGoingChats extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
-            MainActivity mainActivity = (MainActivity)getActivity();
-            appManager = mainActivity.getAppManager();
+        if (getActivity().getClass().getSimpleName().equals("ChatFragment")) {
+            ChatFragment chatFragment = (ChatFragment) getActivity();
+            appManager = chatFragment.getAppManager();
+        }else {
+            appManager = new AppManager();
+            appManager.initialize(getContext());
         }
     }
 
@@ -58,7 +62,8 @@ public class OnGoingChats extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()
                 .build();
-
+        appManager = new AppManager();
+        appManager.initialize(getContext());
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
         View inflater1 = inflater.inflate(R.layout.consersations_fragments, null);
         listAttendingUsers = inflater1.findViewById(R.id.conversations_recyclerView);

@@ -47,182 +47,132 @@
         android:background="@android:color/background_light"
         android:elevation="1dp">
 
-        <LinearLayout
-            android:id="@+id/linearLayout42"
-            android:layout_width="75dp"
-            android:layout_height="27dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/circle"
-            android:elevation="1dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintTop_toTopOf="@+id/heats">
+        <TextView
+            android:id="@+id/numberWaves"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView14"
+            app:layout_constraintEnd_toEndOf="@+id/textView14"
+            app:layout_constraintStart_toStartOf="@+id/textView14" />
 
-            <ImageView
-                android:id="@+id/textView99"
-                android:layout_width="33dp"
-                android:layout_height="match_parent"
-                android:elevation="1dp"
-                android:src="@drawable/ic_people_black_24dp" />
+        <TextView
+            android:id="@+id/numberVerified"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView9"
+            app:layout_constraintEnd_toEndOf="@+id/textView9"
+            app:layout_constraintStart_toStartOf="@+id/textView9" />
 
-            <TextView
-                android:id="@+id/numberContacts"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical|end"
-                android:text="0"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:layout_marginEnd="6dp"
+            android:text="contacts"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:layout_marginEnd="9dp"
+            android:text="posts"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
+            app:layout_constraintEnd_toStartOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:layout_marginEnd="9dp"
+            android:text="waves"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
+            app:layout_constraintEnd_toStartOf="@+id/textView9" />
+
+        <TextView
+            android:id="@+id/numberContacts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="0"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView13"
+            app:layout_constraintEnd_toEndOf="@+id/textView13"
+            app:layout_constraintStart_toStartOf="@+id/textView13" />
+
+        <ImageView
             android:id="@+id/profile_picture_personal"
             android:layout_width="66dp"
             android:layout_height="66dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="3dp"
             android:src="@drawable/ic_face_black_48dp"
             app:civ_border_color="@color/common_google_signin_btn_text_light_default"
             app:civ_border_width="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/edit_profile"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/edit_profile"
-            android:layout_width="27dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/circle"
-            android:clickable="true"
-            android:elevation="2dp"
-            android:src="@drawable/baseline_edit_black_24"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/profile_picture_personal" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/personal_username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="3dp"
             android:layout_weight="1"
-            android:gravity="center_horizontal|end"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="left|center_horizontal"
             android:text="TextView"
             android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/pinnedWaves"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/numberWaves"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/profile_picture_personal"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/personal_status"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
-            android:gravity="center_horizontal|start"
+            android:gravity="start"
             android:maxLength="60"
             android:text="lacking status..."
             android:textColor="@color/common_google_signin_btn_text_light_default"
+            android:textSize="9sp"
             android:textStyle="normal"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
+            app:layout_constraintEnd_toStartOf="@+id/numberWaves"
             app:layout_constraintStart_toStartOf="@+id/personal_username"
             app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-
-        <LinearLayout
-            android:id="@+id/heats"
-            android:layout_width="75dp"
-            android:layout_height="27dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/circle"
-            android:elevation="1dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toStartOf="@+id/linearLayout42"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/pinnedWaves"
-            app:layout_constraintTop_toTopOf="@+id/pinnedWaves">
-
-            <ImageView
-                android:id="@+id/textView9"
-                android:layout_width="33dp"
-                android:layout_height="match_parent"
-                android:elevation="1dp"
-                android:src="@drawable/heart_like" />
-
-            <TextView
-                android:id="@+id/numberVerified"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical|end"
-                android:text="0"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/pinnedWaves"
-            android:layout_width="75dp"
-            android:layout_height="27dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/circle"
-            android:clickable="true"
-            android:elevation="1dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/profile_picture_personal"
-            app:layout_constraintTop_toBottomOf="@+id/personal_status">
-
-            <ImageView
-                android:id="@+id/textView2"
-                android:layout_width="33dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:elevation="1dp"
-                android:src="@drawable/baseline_waves_black_48" />
-
-            <TextView
-                android:id="@+id/numberWaves"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical|end"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_weight="1"
-                android:foregroundGravity="right|center_vertical"
-                android:gravity="center|end"
-                android:text="0"
-                android:textColor="@android:color/background_dark"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

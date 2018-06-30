@@ -64,7 +64,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private FirebaseBuilder firebase = new FirebaseBuilder();
 
     private TextView personalUsername;
-    private ImageView settingsImageView;
     private ImageView profilePicture;
     private ImageView nothingToShow;
     private TextView myNumWaves;
@@ -73,7 +72,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView mNumVerified;
     private RecyclerView mPinnedWavesRecyclerV;
     private RecyclerView mHightlightedPostsRecyclerV;
-    private LinearLayout pinnedAddButton;
 
     View generalView;
 
@@ -113,7 +111,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         final View inflater1 = inflater.inflate(R.layout.fragment_personal, null);
 
         wavePinned = new ArrayList<>();
-        settingsImageView = inflater1.findViewById(R.id.edit_profile);
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         myNumContacts = inflater1.findViewById(R.id.numberContacts);
@@ -122,7 +119,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         mStatus = inflater1.findViewById(R.id.personal_status);
         mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
-        pinnedAddButton = inflater1.findViewById(R.id.pinnedWaves);
         mNumVerified = inflater1.findViewById(R.id.numberVerified);
         nothingToShow = inflater1.findViewById(R.id.nothing_to_show_image);
 
@@ -137,7 +133,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-        settingsImageView.setOnClickListener(new View.OnClickListener() {
+        profilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
@@ -673,7 +669,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
         private void createAddButton(Context context){
-            pinnedAddButton.setOnClickListener(new View.OnClickListener(){
+            myNumWaves.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     Intent myIntent = new Intent(v.getContext(), PinnedWavesActivity.class);

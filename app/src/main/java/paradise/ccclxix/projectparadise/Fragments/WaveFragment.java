@@ -256,9 +256,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
     }
 
-
-
-
     private class PostsAdapter extends RecyclerView.Adapter<PostViewHolder>{
 
         private LayoutInflater inflater;

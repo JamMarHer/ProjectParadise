@@ -257,7 +257,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     }
 
 
-
     private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
 
         private LayoutInflater inflater;

@@ -17,10 +17,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:src="@drawable/youtube_icon"
         app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_launch_main"
         app:layout_constraintEnd_toStartOf="@+id/wave_single_brief_launch_main"
-        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch_main"
-        app:srcCompat="@drawable/youtube_icon" />
+        app:layout_constraintTop_toTopOf="@+id/wave_single_brief_launch_main" />
 
     <ImageView
         android:id="@+id/main_comment_post"
@@ -48,18 +48,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="6dp"
-        android:layout_height="39dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/circle_holder_main_colors"
-        app:layout_constraintBottom_toBottomOf="@+id/main_comment_post"
-        app:layout_constraintEnd_toStartOf="@+id/main_comment_post"
-        app:layout_constraintTop_toTopOf="@+id/main_comment_post" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/wave_single_brief_wave_thumbnail_main"

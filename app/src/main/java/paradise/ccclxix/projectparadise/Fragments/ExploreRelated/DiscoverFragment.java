@@ -194,7 +194,6 @@ public class DiscoverFragment extends Fragment {
         }
     }
 
-
     public class SearchViewHolder extends RecyclerView.ViewHolder{
 
         ImageView thumbnail;

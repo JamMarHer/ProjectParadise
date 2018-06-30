@@ -5,7 +5,112 @@
     android:id="@+id/wave_overview_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.WaveRelated.WaveOverview">
+    tools:context=".Fragments.ExploreRelated.WaveOverviewActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/wave_card_layout"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@drawable/gradient_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <TextView
+            android:id="@+id/wave_card_wScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="3.7"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView10"
+            app:layout_constraintEnd_toEndOf="@+id/textView10"
+            app:layout_constraintStart_toStartOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/wave_card_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="356"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView11"
+            app:layout_constraintEnd_toEndOf="@+id/textView11"
+            app:layout_constraintStart_toStartOf="@+id/textView11"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/wave_card_posts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="96"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView12"
+            app:layout_constraintEnd_toEndOf="@+id/textView12"
+            app:layout_constraintStart_toStartOf="@+id/textView12"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/wave_card_name"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center_vertical"
+            android:text="HipMemes4HipPeople"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/wave_card_posts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="WScore"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Members"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
+            app:layout_constraintEnd_toStartOf="@+id/textView10" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Posts"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
+            app:layout_constraintEnd_toStartOf="@+id/textView11" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/join_progress"
@@ -26,11 +131,8 @@
     <TextView
         android:id="@+id/wave_overview_join"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:background="@drawable/circle_holder_gray"
+        android:layout_height="45dp"
+        android:background="@drawable/gradient_3"
         android:fontFamily="@font/aleo_regular"
         android:gravity="center_vertical|center_horizontal"
         android:text="Join"
@@ -54,131 +156,15 @@
             layout="@layout/app_bar_layout" />
     </android.support.design.widget.AppBarLayout>
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
-        android:id="@+id/linearLayo"
-        android:layout_width="77dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:elevation="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout42">
-
-        <ImageView
-            android:id="@+id/textVie"
-            android:layout_width="33dp"
-            android:layout_height="match_parent"
-            android:elevation="1dp"
-            android:src="@drawable/baseline_view_day_black_24" />
-
-        <TextView
-            android:id="@+id/wave_overview_number_posts"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|end"
-            android:text="0"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-    </LinearLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/main_wave_thumbnail"
-            android:layout_width="45dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="1dp"
-            android:src="@drawable/waves_low"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/wave_overview_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="3dp"
-            android:text="TextView"
-            android:textColor="@color/common_google_signin_btn_text_light_default"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/main_wave_thumbnail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/main_wave_thumbnail"
-            app:layout_constraintTop_toTopOf="@+id/main_wave_thumbnail" />
-    </android.support.constraint.ConstraintLayout>
-
-    <View
-        android:id="@+id/view5"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/wave_overview_posts"
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="3dp"
-        android:background="#27000000"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/wave_overview_join"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayo" />
+        app:layout_constraintTop_toBottomOf="@+id/wave_card_layout" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout42"
-        android:layout_width="77dp"
-        android:layout_height="41dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:elevation="1dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
-
-        <ImageView
-            android:id="@+id/textView99"
-            android:layout_width="33dp"
-            android:layout_height="match_parent"
-            android:elevation="1dp"
-            android:src="@drawable/ic_people_black_24dp" />
-
-        <TextView
-            android:id="@+id/wave_overview_number_members"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|end"
-            android:text="0"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-    </LinearLayout>
+    <!-- TODO: Update blank fragment layout -->
 
 </android.support.constraint.ConstraintLayout>

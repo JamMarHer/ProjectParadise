@@ -256,9 +256,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
     }
 
-
-
-
     private class PostsAdapter extends RecyclerView.Adapter<PostViewHolder>{
 
         private LayoutInflater inflater;
@@ -411,10 +408,14 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
             }
             if(postType.equals("error")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                params.height = 350;
+                holder.postImage.setLayoutParams(params);
                 ErrorMessageComposer.loadingPost(TAG, waveID, postID);
                 holder.postLaunch.setVisibility(View.INVISIBLE);
                 holder.postImage.setVisibility(View.VISIBLE);
                 holder.postImage.setImageDrawable(ContextCompat.getDrawable(holder.postImage.getContext(), R.drawable.paradire_banner_error));
+                return;
             }
 
             if (!TextUtils.isEmpty(permanent) && permanent.equals("true")){

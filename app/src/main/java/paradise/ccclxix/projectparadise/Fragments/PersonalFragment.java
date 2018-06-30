@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
-import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.EnhancedFragment;
@@ -53,8 +51,6 @@ import paradise.ccclxix.projectparadise.utils.ErrorMessageComposer;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.HolderFragment;
-import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
-import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.Icons;
@@ -259,7 +255,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         }
 
     }
-
 
 
     private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
@@ -467,10 +462,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             }else  if(postType.equals("error")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                params.height = 350;
+                holder.postImage.setLayoutParams(params);
                 ErrorMessageComposer.loadingPost(TAG, waveID, postID);
                 holder.postLaunch.setVisibility(View.INVISIBLE);
                 holder.postImage.setVisibility(View.VISIBLE);
                 holder.postImage.setImageDrawable(ContextCompat.getDrawable(holder.postImage.getContext(), R.drawable.paradire_banner_error));
+                return;
             } else {
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(holder.briefConstraintL);
@@ -723,7 +722,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
         @Override
         public WaveCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_single_card, parent, false);
+            View view = inflater.inflate(R.layout.wave_single_card_pinned, parent, false);
             WaveCardViewHolder holder = new WaveCardViewHolder(view);
             return holder;
         }

@@ -71,16 +71,17 @@
     <EditText
         android:id="@+id/search_edit"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginEnd="1dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:background="@drawable/circle"
+        android:background="@android:color/white"
         android:ems="10"
-        android:hint="Search..."
+        android:hint=" Search waves..."
         android:inputType="textPersonName"
-        android:textColor="@android:color/black"
+        android:textColor="@color/cardview_dark_background"
+        android:textCursorDrawable="@null"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

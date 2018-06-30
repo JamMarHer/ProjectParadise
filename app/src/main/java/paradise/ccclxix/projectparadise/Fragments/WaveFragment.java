@@ -411,6 +411,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
             }
             if(postType.equals("error")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                params.height = 350;
+                holder.postImage.setLayoutParams(params);
                 ErrorMessageComposer.loadingPost(TAG, waveID, postID);
                 holder.postLaunch.setVisibility(View.INVISIBLE);
                 holder.postImage.setVisibility(View.VISIBLE);

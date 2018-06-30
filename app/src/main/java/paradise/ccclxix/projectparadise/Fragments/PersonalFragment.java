@@ -463,10 +463,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             }else  if(postType.equals("error")){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.postImage.getLayoutParams();
+                params.height = 350;
+                holder.postImage.setLayoutParams(params);
                 ErrorMessageComposer.loadingPost(TAG, waveID, postID);
                 holder.postLaunch.setVisibility(View.INVISIBLE);
                 holder.postImage.setVisibility(View.VISIBLE);
                 holder.postImage.setImageDrawable(ContextCompat.getDrawable(holder.postImage.getContext(), R.drawable.paradire_banner_error));
+                return;
             } else {
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(holder.briefConstraintL);

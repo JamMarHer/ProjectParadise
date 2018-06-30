@@ -207,6 +207,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         TextView waveName;
         ImageView waveThumbnail;
         ImageView waveActiveIndicator;
+        ConstraintLayout generalLayout;
         View mView;
 
         public WaveCardViewHolder(View itemView) {
@@ -214,6 +215,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             waveName = itemView.findViewById(R.id.wave_single_card_name);
             waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
             waveActiveIndicator = itemView.findViewById(R.id.active_indicator);
+            generalLayout = itemView.findViewById(R.id.wave_card_mini_layout);
             mView = itemView;
         }
     }
@@ -743,9 +745,10 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 holder.waveActiveIndicator.setVisibility(View.INVISIBLE);
             }
 
-            holder.waveThumbnail.setOnTouchListener(new View.OnTouchListener() {
-                                                        @Override
-                                                        public boolean onTouch(View view, MotionEvent motionEvent) {
+
+            holder.generalLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     if (waveID.equals(appManager.getWaveM().getEventID())){
                         snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
                     }else {
@@ -758,12 +761,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         startActivity(intent);
                         getActivity().finish();
                     }
-                    return true;
+                }
+            });
+
+
         }
-        });
-
-
-    }
 
 
     @Override

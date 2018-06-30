@@ -3,10 +3,12 @@ package paradise.ccclxix.projectparadise.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,45 +29,35 @@ import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
-public class ChatFragment extends HolderFragment implements EnhancedFragment {
+public class ChatFragment extends AppCompatActivity {
 
     RecyclerView listAttendingUsers;
 
     AppManager appManager;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
-            MainActivity mainActivity = (MainActivity)getActivity();
-            appManager = mainActivity.getAppManager();
-        }else {
-            appManager = new AppManager();
-            appManager.initialize(getContext());
-        }
-    }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shares,container, false);
-        ViewPager viewPager =  view.findViewById(R.id.viewpager);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_shares);
+
+        appManager = new AppManager();
+        appManager.initialize(getApplicationContext());
+        ViewPager viewPager =  findViewById(R.id.viewpager);
         if(appManager.getModeM().isHostingMode() || appManager.getModeM().isAttendantMode()) {
             setUpAttending(viewPager);
-            TabLayout tabs = view.findViewById(R.id.result_tabs);
+            TabLayout tabs = findViewById(R.id.result_tabs);
             tabs.setupWithViewPager(viewPager);
-            return view;
         }else{
             setUpExploring(viewPager);
-            TabLayout tabs = view.findViewById(R.id.result_tabs);
+            TabLayout tabs = findViewById(R.id.result_tabs);
             tabs.setupWithViewPager(viewPager);
-            return view;
         }
     }
 
     private void setUpAttending(ViewPager viewPager) {
 
-        FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.addFragment(new OnGoingChats(), "Contacts");
         adapter.addFragment(new AttendantsInEvent(), "Waving");
         adapter.addFragment(new EventChat(), "Wave Chat");
@@ -74,17 +66,11 @@ public class ChatFragment extends HolderFragment implements EnhancedFragment {
     }
 
     private void setUpExploring(ViewPager viewPager){
-        FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.addFragment(new OnGoingChats(), "Chats");
         viewPager.setAdapter(adapter);
 
     }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
 
 
     static class FragmentAdapter extends FragmentPagerAdapter {

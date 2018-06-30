@@ -80,6 +80,7 @@
         <activity android:name=".Fragments.ExploreRelated.WaveOverviewActivity"></activity>
         <activity android:name=".Fragments.WaveRelated.PinnedWavesActivity"></activity>
         <activity android:name=".Fragments.WaveRelated.WavesSubscribeActivity"></activity>
+        <activity android:name=".Fragments.ChatFragment"></activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>

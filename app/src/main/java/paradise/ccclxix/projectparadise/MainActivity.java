@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private HolderFragment personalFragment;
     private HolderFragment waveFragment;
     private HolderFragment exploreFragment;
-    private HolderFragment chatFragment;
 
 
     AppManager appManager;
@@ -116,11 +115,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(source.equals("postAdded")){
             loadFragments();
             loadAllFragments();
-            fragmentToShow(waveFragment, personalFragment, exploreFragment, chatFragment);
+            fragmentToShow(waveFragment, personalFragment, exploreFragment);
             navigation.setSelectedItemId(R.id.navigation_wave);
         }else {
             loadAllFragments();
-            fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
+            fragmentToShow(personalFragment, waveFragment, exploreFragment);
             navigation.setSelectedItemId(R.id.navigation_personal);
         }
 
@@ -152,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         personalFragment =  new PersonalFragment();
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();
-        chatFragment = new ChatFragment();
     }
 
     public void createEvent(View view){
@@ -173,18 +171,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .add(R.id.fragment_container, personalFragment)
                 .add(R.id.fragment_container, waveFragment)
                 .add(R.id.fragment_container, exploreFragment)
-                .add(R.id.fragment_container, chatFragment)
                 .commit();
     }
 
-    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2, Fragment toHide3){
+    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2){
         if (toShow != null & toHide != null & toHide2 != null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .show(toShow)
                     .hide(toHide)
                     .hide(toHide2)
-                    .hide(toHide3)
                     .commit();
             return true;
         }else{
@@ -198,13 +194,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()){
             case R.id.navigation_personal:
-                return fragmentToShow(personalFragment, waveFragment, exploreFragment, chatFragment);
+                return fragmentToShow(personalFragment, waveFragment, exploreFragment);
             case R.id.navigation_wave:
-                return fragmentToShow(waveFragment, personalFragment, exploreFragment, chatFragment);
+                return fragmentToShow(waveFragment, personalFragment, exploreFragment);
             case R.id.navigation_explore:
-                return fragmentToShow(exploreFragment, personalFragment, waveFragment, chatFragment);
-            case R.id.navigation_chat:
-                return fragmentToShow(chatFragment, personalFragment, waveFragment, exploreFragment);
+                return fragmentToShow(exploreFragment, personalFragment, waveFragment);
         }
         return false;
     }

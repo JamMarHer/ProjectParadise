@@ -2,44 +2,36 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wave_card_mini_layout"
     android:layout_width="wrap_content"
-    android:layout_height="45dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="3dp"
     android:layout_marginLeft="3dp"
     android:layout_marginTop="3dp"
-    android:background="@drawable/circle_less_alpha">
+    android:background="@drawable/circle_low_radius">
 
     <ImageView
         android:id="@+id/active_indicator"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginEnd="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/wave_single_card_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/wave_single_card_name"
         app:srcCompat="@drawable/circle_holder_main_colors" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/main_wave_thumbnail"
-        android:layout_width="33dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:src="@drawable/waves_low"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/wave_single_card_name"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginStart="3dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="3dp"
         android:text="TextView"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/active_indicator"
-        app:layout_constraintStart_toEndOf="@+id/main_wave_thumbnail"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

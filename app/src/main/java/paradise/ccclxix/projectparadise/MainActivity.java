@@ -62,68 +62,60 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
-        Intent  intent = getIntent();
+        Intent intent = getIntent();
         String source = intent.getStringExtra("source");
-        if (source.equals("registration")){
+        if (source.equals("registration")) {
             appManager.getModeM().setModeToExplore();
-            snackbar.showEmojiBar(findViewById(android.R.id.content),"Welcome fam :)", Icons.COOL);
+            snackbar.showEmojiBar(findViewById(android.R.id.content), "Welcome fam :)", Icons.COOL);
             loadFragments();
-        }else if (source.equals("event_created")) {
+        } else if (source.equals("event_created")) {
             appManager.getModeM().setModeToHost();
             invalidateOptionsMenu();
             loadFragments();
-        }else if (source.equals("qr_code_scanned")) {
+        } else if (source.equals("qr_code_scanned")) {
             appManager.getModeM().setModeToAttendant();
             loadFragments();
-        }else if (source.equals("joined_event")) {
+        } else if (source.equals("joined_event")) {
             appManager.getModeM().setModeToAttendant();
             loadFragments();
-            snackbar.showEmojiBar(findViewById(android.R.id.content)," You are now riding: "+ appManager.getWaveM().getEventName(), Icons.COOL);
-        }else if (source.equals("login")){
+            snackbar.showEmojiBar(findViewById(android.R.id.content), " You are now riding: " + appManager.getWaveM().getEventName(), Icons.COOL);
+        } else if (source.equals("login")) {
             appManager.getModeM().setModeToExplore();
             loadFragments();
-        }else if (source.equals("logged_in")){
-            if (appManager.getModeM().getMode().equals("host")){
+        } else if (source.equals("logged_in")) {
+            if (appManager.getModeM().getMode().equals("host")) {
                 loadFragments();
-            }else if (appManager.getModeM().getMode().equals("attendant")){
+            } else if (appManager.getModeM().getMode().equals("attendant")) {
                 loadFragments();
-            }else{
+            } else {
                 loadFragments();
             }
-        }else if (source.equals("logged_in_no_internet")){
+        } else if (source.equals("logged_in_no_internet")) {
             // TODO constant check to get internet going.
-            if (appManager.getModeM().getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")) {
                 loadFragments();
-            }else if (appManager.getModeM().getMode().equals("attendant")){
+            } else if (appManager.getModeM().getMode().equals("attendant")) {
                 loadFragments();
-            }else{
+            } else {
                 loadFragments();
             }
             snackbar.showEmojiBar(findViewById(android.R.id.content), "Working without internet. Trying to reconnect.", Icons.POOP);
-        } else if (source.equals("logged_in_server_problem")){
+        } else if (source.equals("logged_in_server_problem")) {
             // TODO constant check to get server going.
-            if (appManager.getModeM().getMode().equals("host")){
+            if (appManager.getModeM().getMode().equals("host")) {
                 loadFragments();
-            }else if (appManager.getModeM().getMode().equals("attendant")){
+            } else if (appManager.getModeM().getMode().equals("attendant")) {
                 loadFragments();
-            }else{
+            } else {
                 loadFragments();
             }
             snackbar.showEmojiBar(findViewById(android.R.id.content), "Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
-        if(source.equals("postAdded")){
-            loadFragments();
-            loadAllFragments();
-            fragmentToShow(waveFragment, personalFragment, exploreFragment);
-            navigation.setSelectedItemId(R.id.navigation_wave);
-        }else {
-            loadAllFragments();
-            fragmentToShow(personalFragment, waveFragment, exploreFragment);
-            navigation.setSelectedItemId(R.id.navigation_personal);
-        }
-
-
+        loadFragments();
+        addAllFragments();
+        fragmentToShow(waveFragment, personalFragment, exploreFragment);
+        navigation.setSelectedItemId(R.id.navigation_wave);
 
 
 
@@ -153,19 +145,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         exploreFragment = new ExploreFragment();
     }
 
-    public void createEvent(View view){
 
-        Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-        MainActivity.this.startActivity(intent);
-    }
-
-    public void joinEvent(View view){
-        Intent intent = new Intent(MainActivity.this, QRScannerActivity.class);
-        MainActivity.this.startActivity(intent);
-    }
-
-
-    private void loadAllFragments(){
+    private void addAllFragments(){
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, personalFragment)

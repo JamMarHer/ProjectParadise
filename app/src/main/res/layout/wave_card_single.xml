@@ -17,9 +17,9 @@
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView10"
-        app:layout_constraintEnd_toEndOf="@+id/textView10"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
+        app:layout_constraintBottom_toTopOf="@+id/wave_card_wScore_title"
+        app:layout_constraintEnd_toEndOf="@+id/wave_card_wScore_title"
+        app:layout_constraintStart_toStartOf="@+id/wave_card_wScore_title"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -31,9 +31,9 @@
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView11"
-        app:layout_constraintEnd_toEndOf="@+id/textView11"
-        app:layout_constraintStart_toStartOf="@+id/textView11"
+        app:layout_constraintBottom_toTopOf="@+id/wave_card_members_title"
+        app:layout_constraintEnd_toEndOf="@+id/wave_card_members_title"
+        app:layout_constraintStart_toStartOf="@+id/wave_card_members_title"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -45,9 +45,9 @@
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView12"
-        app:layout_constraintEnd_toEndOf="@+id/textView12"
-        app:layout_constraintStart_toStartOf="@+id/textView12"
+        app:layout_constraintBottom_toTopOf="@+id/wave_card_posts_title"
+        app:layout_constraintEnd_toEndOf="@+id/wave_card_posts_title"
+        app:layout_constraintStart_toStartOf="@+id/wave_card_posts_title"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/wave_card_wScore_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -81,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/wave_card_members_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -89,10 +89,10 @@
         android:textColor="@android:color/white"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
-        app:layout_constraintEnd_toStartOf="@+id/textView10" />
+        app:layout_constraintEnd_toStartOf="@+id/wave_card_wScore_title" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/wave_card_posts_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -100,6 +100,6 @@
         android:textColor="@android:color/white"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/wave_card_name"
-        app:layout_constraintEnd_toStartOf="@+id/textView11" />
+        app:layout_constraintEnd_toStartOf="@+id/wave_card_members_title" />
 
 </android.support.constraint.ConstraintLayout>

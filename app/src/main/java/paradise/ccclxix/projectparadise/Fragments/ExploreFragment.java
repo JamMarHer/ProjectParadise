@@ -33,8 +33,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import okhttp3.OkHttpClient;
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
@@ -70,7 +73,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     ArrayList<String> numMembers;
     ArrayList<String> wScore;
 
-    int MAX_SEARCH = 15;
+    private static final  int MAX_SEARCH = 10;
     Picasso picasso;
     SearchAdapter searchAdapter;
     SuggestionsAdapter suggestionsAdapter;
@@ -179,19 +182,23 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 results.removeAllViews();
+                Set<String> record = new HashSet<>();
                 if (dataSnapshot.hasChildren()){
                     int currentCount = 0;
                     long numChildren = dataSnapshot.getChildrenCount();
-                    for (DataSnapshot waves : dataSnapshot.getChildren()){
 
+                    while (currentCount < MAX_SEARCH){
+                        DataSnapshot waves = getRandomWave(dataSnapshot, numChildren);
                         String currentId = waves.getKey();
-                        if (waves.child("privacy").getValue().toString().equals("false")){
-                            String currentUsername = waves.child("name_event").getValue().toString();
-                            String currentThumbnail = "";
-                            if (waves.hasChild("thumbnail")){
-                                currentThumbnail = waves.child("thumbnail").getValue().toString();
-                            }
-                            if (getRandomTrue(currentCount, numChildren)){
+
+                        if (!record.contains(currentId)){
+
+                            if (waves.child("privacy").getValue().toString().equals("false")){
+                                String currentUsername = waves.child("name_event").getValue().toString();
+                                String currentThumbnail = "";
+                                if (waves.hasChild("thumbnail")){
+                                    currentThumbnail = waves.child("thumbnail").getValue().toString();
+                                }
                                 id.add(currentId);
                                 name.add(currentUsername);
                                 thumbnail.add(currentThumbnail);
@@ -211,6 +218,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                 type.add("WAVE");
                                 currentCount++;
                             }
+                            record.add(currentId);
+                            currentCount += 1;
                             if (currentCount == MAX_SEARCH)
                                 break;
                         }
@@ -218,9 +227,12 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                     UINotificationHelpers.showProgress(false,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
 
                 }
-
+                // Extra options.
+                name.add("CREATE");
+                name.add("SCAN");
                 suggestionsAdapter = new SuggestionsAdapter(getContext());
                 results.setAdapter(suggestionsAdapter);
+                suggestionsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -232,16 +244,20 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
     // This is a bit interesting if you think of it. The method does provide randomness but it also
     // treats with some degree of relevancy the newer waves.
-    private boolean getRandomTrue(int currentCount, long dataSnapshotCCount){
-        if (MAX_SEARCH - currentCount <= (int) dataSnapshotCCount){
-            return random.nextBoolean();
-        }else {
-            return true;
+
+    private DataSnapshot getRandomWave(DataSnapshot snapshot, long size){
+        long randomTarget = ThreadLocalRandom.current().nextLong(size);
+        long count = 0;
+        for(DataSnapshot snapshot1 : snapshot.getChildren()){
+            if (count == randomTarget){
+                return snapshot1;
+            }
+            count ++;
         }
+        return null;
     }
 
     private void setSearchAdapter(final String s){
-
 
         UINotificationHelpers.showProgress(true,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
         firebase.getEvents().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -315,6 +331,15 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
         @Override
         public void onBindViewHolder(@NonNull SuggestionViewHolder holder, final int position) {
+            if (name.get(position).equals("CREATE")){
+                holder.waveName.setText("Create");
+                setupButton(holder);
+                return;
+            }else if(name.get(position).equals("SCAN")){
+                holder.waveName.setText("Scan");
+                setupButton(holder);
+                return;
+            }
             holder.waveName.setText(name.get(position));
 
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
@@ -340,6 +365,21 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         }
     }
 
+    private void setupButton(SuggestionViewHolder holder){
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.gradient_3) );
+        } else {
+            holder.mainLayout.setBackground(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.gradient_3));
+        }
+        holder.membersTitle.setVisibility(View.INVISIBLE);
+        holder.wScoreTitle.setVisibility(View.INVISIBLE);
+        holder.postsTitle.setVisibility(View.INVISIBLE);
+        holder.numPosts.setVisibility(View.INVISIBLE);
+        holder.numMembers.setVisibility(View.INVISIBLE);
+        holder.wScore.setVisibility(View.INVISIBLE);
+    }
+
     public class SearchAdapter extends RecyclerView.Adapter<SuggestionViewHolder>{
         Context context;
 
@@ -356,12 +396,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         @Override
         public void onBindViewHolder(SuggestionViewHolder holder, final int position) {
             holder.waveName.setText(name.get(position));
-            final int sdk = android.os.Build.VERSION.SDK_INT;
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.gradient_2) );
-            } else {
-                holder.mainLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.gradient_2));
-            }
+
 
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -395,6 +430,9 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         TextView numPosts;
         TextView numMembers;
         TextView wScore;
+        TextView postsTitle;
+        TextView membersTitle;
+        TextView wScoreTitle;
 
         public SuggestionViewHolder(View itemView){
             super(itemView);
@@ -403,6 +441,9 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             numPosts = itemView.findViewById(R.id.wave_card_posts);
             numMembers = itemView.findViewById(R.id.wave_card_members);
             wScore = itemView.findViewById(R.id.wave_card_wScore);
+            postsTitle = itemView.findViewById(R.id.wave_card_posts_title);
+            membersTitle = itemView.findViewById(R.id.wave_card_members_title);
+            wScoreTitle = itemView.findViewById(R.id.wave_card_wScore_title);
         }
     }
 

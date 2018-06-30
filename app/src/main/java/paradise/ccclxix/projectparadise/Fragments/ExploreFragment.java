@@ -2,16 +2,20 @@ package paradise.ccclxix.projectparadise.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,32 +104,11 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         View inflater1 = inflater.inflate(R.layout.fragment_discover, null);
 
 
-
-        Button createWave = inflater1.findViewById(R.id.createWave);
-        Button joinWave = inflater1.findViewById(R.id.joinWave);
-
-
-        createWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        joinWave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                startActivity(intent);
-            }
-        });
-
         firebase = new FirebaseBuilder();
         searchText = inflater1.findViewById(R.id.search_edit);
         results = inflater1.findViewById(R.id.results_recycler_view);
         progressBar = inflater1.findViewById(R.id.search_progress);
-        results.setHasFixedSize(true);
+        results.setHasFixedSize(false);
         results.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
@@ -185,6 +168,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 Set<String> record = new HashSet<>();
                 if (dataSnapshot.hasChildren()){
                     int currentCount = 0;
+                    int invalidTry = 0;
                     long numChildren = dataSnapshot.getChildrenCount();
 
                     while (currentCount < MAX_SEARCH){
@@ -192,7 +176,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                         String currentId = waves.getKey();
 
                         if (!record.contains(currentId)){
-
                             if (waves.child("privacy").getValue().toString().equals("false")){
                                 String currentUsername = waves.child("name_event").getValue().toString();
                                 String currentThumbnail = "";
@@ -217,9 +200,16 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                                 type.add("WAVE");
                                 currentCount++;
+
+                                record.add(currentId);
+                            }else {
+                                // This works as some form of timeout.
+                                invalidTry++;
+                                if(invalidTry >= 15){
+                                    break;
+                                }
                             }
-                            record.add(currentId);
-                            currentCount += 1;
+
                             if (currentCount == MAX_SEARCH)
                                 break;
                         }
@@ -332,31 +322,42 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         @Override
         public void onBindViewHolder(@NonNull SuggestionViewHolder holder, final int position) {
             if (name.get(position).equals("CREATE")){
-                holder.waveName.setText("Create");
-                setupButton(holder);
-                return;
+                setupButton(holder, "Start a new wave");
+                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                        getActivity().startActivity(intent);
+                    }
+                });
             }else if(name.get(position).equals("SCAN")){
-                holder.waveName.setText("Scan");
-                setupButton(holder);
-                return;
-            }
-            holder.waveName.setText(name.get(position));
+                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), QRScannerActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                setupButton(holder, "Scan QR code");
+            }else {
+                holder.waveName.setText(name.get(position));
 
-            holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("ID", id.get(position));
-                    bundle.putString("thumbnail", thumbnail.get(position));
-                    bundle.putString("name", name.get(position));
-                    intent.putExtras(bundle);
-                    getActivity().startActivity(intent);
-                }
-            });
-            holder.wScore.setText(wScore.get(position));
-            holder.numMembers.setText(numMembers.get(position));
-            holder.numPosts.setText(numPosts.get(position));
+                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ID", id.get(position));
+                        bundle.putString("thumbnail", thumbnail.get(position));
+                        bundle.putString("name", name.get(position));
+                        intent.putExtras(bundle);
+                        getActivity().startActivity(intent);
+                    }
+                });
+                holder.wScore.setText(wScore.get(position));
+                holder.numMembers.setText(numMembers.get(position));
+                holder.numPosts.setText(numPosts.get(position));
+            }
         }
 
         @Override
@@ -365,12 +366,30 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         }
     }
 
-    private void setupButton(SuggestionViewHolder holder){
+    private void setupButton(SuggestionViewHolder holder, String name){
+
+        TextView buttonTitle = new TextView(holder.mainLayout.getContext());
+        buttonTitle.setText(name);
+        buttonTitle.setId(Integer.parseInt("9"));
+        buttonTitle.setTextColor(Color.BLACK);
+        buttonTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        holder.mainLayout.addView(buttonTitle);
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(holder.mainLayout);
+        constraintSet.clone(holder.mainLayout);
+        constraintSet.connect(buttonTitle.getId(), ConstraintSet.RIGHT, holder.mainLayout.getId() , ConstraintSet.RIGHT, 3);
+        constraintSet.connect(buttonTitle.getId(), ConstraintSet.LEFT, holder.mainLayout.getId() , ConstraintSet.LEFT, 3);
+        constraintSet.connect(buttonTitle.getId(), ConstraintSet.TOP, holder.mainLayout.getId() , ConstraintSet.TOP, 3);
+        constraintSet.connect(buttonTitle.getId(), ConstraintSet.BOTTOM, holder.mainLayout.getId() , ConstraintSet.BOTTOM, 3);
+        constraintSet.applyTo(holder.mainLayout);
+        holder.waveName.setVisibility(View.INVISIBLE);
+
         final int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.gradient_3) );
+            holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.circle_holder_white) );
         } else {
-            holder.mainLayout.setBackground(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.gradient_3));
+            holder.mainLayout.setBackground(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.circle_holder_white));
         }
         holder.membersTitle.setVisibility(View.INVISIBLE);
         holder.wScoreTitle.setVisibility(View.INVISIBLE);

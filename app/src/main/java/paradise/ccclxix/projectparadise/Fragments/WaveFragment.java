@@ -90,6 +90,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private PostsAdapter adapter;
     private RecyclerView waveRecyclerView;
     private ImageView waveThumbnail;
+    private ImageView arrowUpNoContent;
+    private TextView noContentMessage;
     private TextView waveName;
     private ImageView waveAddPost;
     private Button addSourceBtn;
@@ -130,6 +132,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         addSourceBtn = view.findViewById(R.id.integrate_source_btn);
         swipeRefreshLayout = view.findViewById(R.id.wave_swipe_layout);
         progressBar = view.findViewById(R.id.progressbarWave);
+        noContentMessage = view.findViewById(R.id.main_message_no_content);
+        arrowUpNoContent = view.findViewById(R.id.main_arrow_up_no_content);
 
 
         this.container = container;
@@ -168,6 +172,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         }
                         if (dataSnapshot.hasChild("points")){
                             points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
+                        }
+                        if (dataSnapshot.hasChild("wall") && dataSnapshot.child("wall").hasChild("posts")){
+                            arrowUpNoContent.setVisibility(View.INVISIBLE);
+                            noContentMessage.setVisibility(View.INVISIBLE);
                         }
 
                         waveName.setText(name);

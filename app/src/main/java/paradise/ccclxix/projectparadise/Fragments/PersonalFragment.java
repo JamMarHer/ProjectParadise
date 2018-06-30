@@ -266,7 +266,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    updateOnChange(dataSnapshot, context);
+                    mHightlightedPostsRecyclerV.removeAllViews();
+                    updateOnChange(dataSnapshot, getContext());
 
                 }
 
@@ -644,14 +645,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     wavePinned.clear();
+                    mPinnedWavesRecyclerV.removeAllViews();
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
                         DatabaseReference waveDBReference = firebase.get("events_us", waveID);
-                        waveDBReference.addValueEventListener(new ValueEventListener() {
+                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 record.clear();
-                                updateAdapter(dataSnapshot, waveID, context);
+                                updateAdapter(dataSnapshot, waveID, getContext());
                             }
 
                             @Override
@@ -710,8 +712,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     record.put(waveID, 0);
                     record.put(wavePinned.get(toExchange).get("waveID"), wavePinned.size()-1);
                 }
-            }else {
-                    wavePinned.add(eventInfo);
             }
             pinnedWavesAdapter.notifyDataSetChanged();
             inflater = LayoutInflater.from(context);

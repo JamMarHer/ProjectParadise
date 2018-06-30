@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -60,7 +59,6 @@ public class DiscoverFragment extends Fragment {
         progressBar = inflater1.findViewById(R.id.search_progress);
         results.setHasFixedSize(true);
         results.setLayoutManager(new LinearLayoutManager(getContext()));
-        results.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
 
         OkHttpClient okHttpClient =  new OkHttpClient.Builder()

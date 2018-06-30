@@ -59,39 +59,29 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="3dp"
             android:layout_marginTop="3dp"
-            android:background="@drawable/circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/integrate_source_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/main_wave_thumbnail"
-                android:layout_width="33dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="1dp"
-                android:src="@drawable/waves_low"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/main_wave_name"
-                android:layout_width="wrap_content"
-                android:layout_height="23dp"
-                android:layout_marginBottom="1dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="3dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:elevation="2dp"
+                android:fontFamily="@font/comfortaa_regular"
                 android:foregroundGravity="center_vertical"
                 android:gravity="center_vertical"
-                android:text="TextView"
-                android:textColor="@color/common_google_signin_btn_text_light_default"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/main_wave_thumbnail"
+                android:text="HipAka"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/main_wave_thumbnail"
-                app:layout_constraintTop_toTopOf="@+id/main_wave_thumbnail" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <Button

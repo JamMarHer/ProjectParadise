@@ -69,6 +69,11 @@ import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 import paradise.ccclxix.projectparadise.utils.YoutubeHelpers;
 
 
+// TODO The concept of thumbnail is going to be removed. The current code takes into account the
+// TODO imageview for the thumbnail but it doesn't actually reference the image view for the layout.
+// TODO I plan to leave the code since it doesn't really affect the application and maybe.. just
+// TODO maybe later we decide to use it.
+
 public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
     public static final String TAG = "WAVE_FRAGMENT";

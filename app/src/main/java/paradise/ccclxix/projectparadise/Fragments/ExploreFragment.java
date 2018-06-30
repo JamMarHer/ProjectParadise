@@ -153,16 +153,18 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
             @Override
             public void afterTextChanged(Editable editable) {
+                name.clear();
+                thumbnail.clear();
+                id.clear();
+                type.clear();
+                numMembers.clear();
+                numPosts.clear();
+                wScore.clear();
+                results.removeAllViews();
                 if (!editable.toString().isEmpty()){
                     setSearchAdapter(editable.toString());
                 }else {
-                    name.clear();
-                    thumbnail.clear();
-                    id.clear();
-                    type.clear();
-                    results.removeAllViews();
                     setSuggestionsAdapter();
-
                 }
             }
         });
@@ -176,13 +178,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         firebase.getEvents().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                name.clear();
-                thumbnail.clear();
-                id.clear();
-                type.clear();
-                numMembers.clear();
-                numPosts.clear();
-                wScore.clear();
                 results.removeAllViews();
                 if (dataSnapshot.hasChildren()){
                     int currentCount = 0;
@@ -252,10 +247,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         firebase.getEvents().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                name.clear();
-                thumbnail.clear();
-                id.clear();
-                type.clear();
                 results.removeAllViews();
                 if (dataSnapshot.hasChildren()){
                     int currentCount = 0;
@@ -296,6 +287,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                 searchAdapter = new SearchAdapter(getContext());
                 results.setAdapter(searchAdapter);
+                searchAdapter.notifyDataSetChanged();
             }
 
             @Override

@@ -173,10 +173,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         if (dataSnapshot.hasChild("points")){
                             points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
                         }
-                        if (dataSnapshot.hasChild("wall") && dataSnapshot.child("wall").hasChild("posts")){
-                            arrowUpNoContent.setVisibility(View.INVISIBLE);
-                            noContentMessage.setVisibility(View.INVISIBLE);
-                        }
 
                         waveName.setText(name);
 
@@ -297,6 +293,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot2) {
                                 if (dataSnapshot2.hasChildren()){
+                                    arrowUpNoContent.setVisibility(View.INVISIBLE);
+                                    noContentMessage.setVisibility(View.INVISIBLE);
                                     for (DataSnapshot postSnapshot : dataSnapshot2.getChildren()){
                                         HashMap<String, String> postInfo = new HashMap<>();
                                         String postID = postSnapshot.getKey();
@@ -342,6 +340,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                                     inflater = LayoutInflater.from(context);
 
+                                }else {
+                                    arrowUpNoContent.setVisibility(View.VISIBLE);
+                                    noContentMessage.setVisibility(View.VISIBLE);
                                 }
                                 UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
 

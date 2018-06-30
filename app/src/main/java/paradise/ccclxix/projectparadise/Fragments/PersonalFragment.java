@@ -185,7 +185,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     if (!TextUtils.isEmpty(thumbnailURL)) {
                         picasso.load(thumbnailURL)
                                 .fit()
-                                .centerInside()
+                                .centerCrop()
                                 .placeholder(R.drawable.ic_import_export).into(profilePicture);
                     }
                 }

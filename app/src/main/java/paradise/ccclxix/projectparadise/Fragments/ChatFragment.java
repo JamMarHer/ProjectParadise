@@ -1,7 +1,10 @@
 package paradise.ccclxix.projectparadise.Fragments;
 
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -11,8 +14,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -28,6 +33,7 @@ import paradise.ccclxix.projectparadise.Fragments.ChatFragmentRelated.OnGoingCha
 import paradise.ccclxix.projectparadise.HolderFragment;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
+import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 
 public class ChatFragment extends AppCompatActivity {
 
@@ -41,7 +47,26 @@ public class ChatFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_shares);
 
-        appManager = new AppManager();
+        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
+        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
+        ImageView settingsButton = toolbar.getRootView().findViewById(R.id.main_settings);
+        chatButton.setVisibility(View.INVISIBLE);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ChatFragment.this, SettingsActivity.class);
+                ChatFragment.this.startActivity(intent1);
+            }
+        });
+
+                appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         ViewPager viewPager =  findViewById(R.id.viewpager);
         if(appManager.getModeM().isHostingMode() || appManager.getModeM().isAttendantMode()) {

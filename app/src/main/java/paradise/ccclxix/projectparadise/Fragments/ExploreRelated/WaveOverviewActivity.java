@@ -43,7 +43,7 @@ public class WaveOverviewActivity extends AppCompatActivity {
     private TextView mWaveName;
     private TextView mWaveMembers;
     private TextView mWavePosts;
-    private TextView mWavePoints;
+    private TextView mWaveScore;
     private TextView mWaveJoin;
 
     private ImageView mWaveThumbnail;
@@ -55,7 +55,7 @@ public class WaveOverviewActivity extends AppCompatActivity {
     private String waveName;
     private String waveMembers;
     private String wavePosts;
-    private String wavePoints;
+    private String wScore;
     private String waveThumbnail;
 
 
@@ -67,10 +67,11 @@ public class WaveOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_wave_overview);
-        mWaveName = findViewById(R.id.wave_overview_name);
-        mWaveMembers = findViewById(R.id.wave_overview_number_members);
-        mWavePosts = findViewById(R.id.wave_overview_number_posts);
+        mWaveName = findViewById(R.id.wave_card_name);
+        mWaveMembers = findViewById(R.id.wave_card_members);
+        mWavePosts = findViewById(R.id.wave_card_posts);
         mWaveJoin = findViewById(R.id.wave_overview_join);
+        mWaveScore = findViewById(R.id.wave_card_wScore);
         mprogressBar = findViewById(R.id.join_progress);
         constraintLayout = findViewById(R.id.wave_overview_constraintLayout);
 
@@ -130,8 +131,13 @@ public class WaveOverviewActivity extends AppCompatActivity {
                         }else {
                             wavePosts = "0";
                         }
+                        if (dataSnapshot.hasChild("wave_score"))
+                            wScore = dataSnapshot.child("wave_score").getValue().toString();
+                        else
+                            wScore = "?";
                         mWaveMembers.setText(waveMembers);
                         mWavePosts.setText(wavePosts);
+                        mWaveScore.setText(wScore);
                     }
                 }
 

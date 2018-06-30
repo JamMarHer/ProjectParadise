@@ -131,11 +131,8 @@
     <TextView
         android:id="@+id/wave_overview_join"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:background="@drawable/circle_holder_gray"
+        android:layout_height="45dp"
+        android:background="@drawable/gradient_3"
         android:fontFamily="@font/aleo_regular"
         android:gravity="center_vertical|center_horizontal"
         android:text="Join"
@@ -158,6 +155,15 @@
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout" />
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/wave_overview_posts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/wave_overview_join"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wave_card_layout" />
 
     <!-- TODO: Update blank fragment layout -->
 

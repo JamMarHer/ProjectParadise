@@ -206,8 +206,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                     numPosts.add(String.valueOf(waves.child("wall").child("posts").getChildrenCount()));
                                 else
                                     numPosts.add("0");
-                                if (waves.child("attending").hasChild("in"))
-                                    numMembers.add(String.valueOf(waves.child("attending").child("in").getChildrenCount()));
+                                if (waves.hasChild("attending"))
+                                    numMembers.add(String.valueOf(waves.child("attending").getChildrenCount()));
                                 else
                                     numMembers.add("0");
                                 if (waves.hasChild("wave_score"))
@@ -274,7 +274,18 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                                 id.add(currentId);
                                 name.add(currentUsername);
                                 thumbnail.add(currentThumbnail);
-                                type.add("WAVE");
+                                if (waves.child("wall").hasChild("posts"))
+                                    numPosts.add(String.valueOf(waves.child("wall").child("posts").getChildrenCount()));
+                                else
+                                    numPosts.add("0");
+                                if (waves.hasChild("attending"))
+                                    numMembers.add(String.valueOf(waves.child("attending").getChildrenCount()));
+                                else
+                                    numMembers.add("0");
+                                if (waves.hasChild("wave_score"))
+                                    wScore.add(waves.child("wave_score").getValue().toString());
+                                else
+                                    wScore.add("?");
                                 currentCount++;
                             }
                             if (currentCount == MAX_SEARCH)
@@ -339,7 +350,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         }
     }
 
-    public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder>{
+    public class SearchAdapter extends RecyclerView.Adapter<SuggestionViewHolder>{
         Context context;
 
         public SearchAdapter(Context context){
@@ -347,21 +358,22 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         }
 
         @Override
-        public SearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.single_wave_user_view, parent, false);
-            return new SearchViewHolder(view);
+        public SuggestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(context).inflate(R.layout.wave_card_single, parent, false);
+            return new SuggestionViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(SearchViewHolder holder, final int position) {
-            holder.name.setText(name.get(position));
-            if (!thumbnail.get(position).isEmpty()){
-                picasso.load(thumbnail.get(position))
-                        .fit()
-                        .centerInside()
-                        .placeholder(R.drawable.ic_import_export).into(holder.thumbnail);
+        public void onBindViewHolder(SuggestionViewHolder holder, final int position) {
+            holder.waveName.setText(name.get(position));
+            final int sdk = android.os.Build.VERSION.SDK_INT;
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.gradient_2) );
+            } else {
+                holder.mainLayout.setBackground(ContextCompat.getDrawable(context, R.drawable.gradient_2));
             }
-            holder.view.setOnClickListener(new View.OnClickListener() {
+
+            holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
@@ -371,9 +383,11 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                     bundle.putString("name", name.get(position));
                     intent.putExtras(bundle);
                     getActivity().startActivity(intent);
-
                 }
             });
+            holder.wScore.setText(wScore.get(position));
+            holder.numMembers.setText(numMembers.get(position));
+            holder.numPosts.setText(numPosts.get(position));
         }
 
         @Override
@@ -383,19 +397,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
     }
 
 
-    public class SearchViewHolder extends RecyclerView.ViewHolder{
-
-        ImageView thumbnail;
-        TextView name;
-        ConstraintLayout view;
-
-        public SearchViewHolder(View itemView) {
-            super(itemView);
-            name = itemView.findViewById(R.id.card_name);
-            thumbnail = itemView.findViewById(R.id.card_thumbnail);
-            view = itemView.findViewById(R.id.card_single_view);
-        }
-    }
 
     public class SuggestionViewHolder extends RecyclerView.ViewHolder{
 

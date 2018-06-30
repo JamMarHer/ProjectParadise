@@ -408,6 +408,9 @@ public class WaveOverviewActivity extends AppCompatActivity {
             holder.postEchos.setText(postNumEchos);
             holder.postComments.setText(postNumComments);
             holder.source.setVisibility(View.INVISIBLE);
+            holder.postEcho.setVisibility(View.INVISIBLE);
+            holder.postLaunch.setVisibility(View.INVISIBLE);
+            holder.postComment.setVisibility(View.INVISIBLE);
 
 
             if (postType.equals("image")) {

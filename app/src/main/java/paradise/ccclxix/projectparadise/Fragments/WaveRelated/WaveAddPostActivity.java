@@ -124,6 +124,8 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
+        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
+        chatButton.setVisibility(View.INVISIBLE);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

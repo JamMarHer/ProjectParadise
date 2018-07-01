@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="9dp"
             android:layout_marginEnd="9dp"
-            android:text="convs"
+            android:text="Chats"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="9dp"
             android:layout_marginEnd="9dp"
-            android:text="posts"
+            android:text="Posts"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
             app:layout_constraintEnd_toStartOf="@+id/textView13" />
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="9dp"
             android:layout_marginEnd="9dp"
-            android:text="waves"
+            android:text="Waves"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
             app:layout_constraintEnd_toStartOf="@+id/textView9" />

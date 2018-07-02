@@ -95,11 +95,10 @@ public class CredentialsManager  implements Manager{
                         updateNumWaves("0");
                     }
 
-
                     if (dataSnapshot.hasChild("permanent")){
                         long count = 0;
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.child("permanent").getChildren()){
-                            if (dataSnapshot1.hasChildren())
+                            if (1 < dataSnapshot1.getChildrenCount())
                                 count += dataSnapshot1.getChildrenCount();
                             else
                                 count += 1;
@@ -112,8 +111,6 @@ public class CredentialsManager  implements Manager{
                         // an user can be sign in at the same time.
                     }
 
-                    if (dataSnapshot.hasChild("echos"))
-                        updateNumPermanents(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
                     if (listener != null)
                         listener.onDataChanged(true); // <---- fire listener here
 

@@ -345,12 +345,12 @@ public class WavePostActivity extends YouTubeBaseActivity {
                         public void onDataChange(DataSnapshot mainDataSnapshot) {
                             if (!mainDataSnapshot.hasChild(postID)) {
 
-                                DatabaseReference dbWavePostEchos = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                DatabaseReference dbWavePostEchos = firebase.getEvents(waveID,
                                         "wall", "posts", postID, "echos", firebase.auth_id()).push();
-                                String chatUserRef = "events_us/" + appManager.getWaveM().getEventID() + "/wall/posts/" + postID + "/echos";
+                                String chatUserRef = "events_us/" + waveID + "/wall/posts/" + postID + "/echos";
 
-                                final DatabaseReference dbWave = firebase.getEvents(appManager.getWaveM().getEventID());
-                                final DatabaseReference dbWaveb = firebase.getEvents(appManager.getWaveM().getEventID(),
+                                final DatabaseReference dbWave = firebase.getEvents(waveID);
+                                final DatabaseReference dbWaveb = firebase.getEvents(waveID,
                                         "wall", "posts", postID);
 
                                 dbWave.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -416,7 +416,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError == null) {
                                             DatabaseReference personalTable = firebase.get_user_authId("echos",
-                                                    appManager.getWaveM().getEventID(), postID);
+                                                    waveID, postID);
                                             Map input = new HashMap<>();
                                             input.put("pushID", pushID);
                                             input.put("time", ServerValue.TIMESTAMP);

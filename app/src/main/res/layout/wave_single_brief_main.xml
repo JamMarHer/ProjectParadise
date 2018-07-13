@@ -8,7 +8,7 @@
     android:layout_marginLeft="1dp"
     android:layout_marginRight="1dp"
     android:layout_marginTop="6dp"
-    android:background="@drawable/circle">
+    android:background="@drawable/circle_holder_gray">
 
     <ImageView
         android:id="@+id/wave_single_brief_source"
@@ -174,7 +174,7 @@
         android:layout_marginTop="8dp"
         android:elevation="1dp"
         android:text="TextView"
-        android:textColor="@color/common_google_signin_btn_text_light_focused"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/wave_single_brief_wave_thumbnail_main"
         app:layout_constraintStart_toEndOf="@+id/wave_single_brief_wave_thumbnail_main"
@@ -199,6 +199,7 @@
         android:elevation="3dp"
         android:maxLines="6"
         android:text="TextView"
+        android:textColor="@android:color/white"
         android:textIsSelectable="true"
         android:verticalScrollbarPosition="defaultPosition"
         app:layout_constraintEnd_toEndOf="parent"

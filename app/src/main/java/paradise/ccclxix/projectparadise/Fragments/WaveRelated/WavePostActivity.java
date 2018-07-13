@@ -83,7 +83,6 @@ public class WavePostActivity extends YouTubeBaseActivity {
     boolean working = false;
     FirebaseBuilder firebase = new FirebaseBuilder();
     AppManager appManager;
-
     Picasso picasso;
 
 

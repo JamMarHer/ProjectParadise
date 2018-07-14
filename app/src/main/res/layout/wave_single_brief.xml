@@ -66,7 +66,7 @@
             android:layout_height="20dp"
             android:layout_gravity="left|center_vertical|start"
             android:foregroundGravity="left"
-            app:srcCompat="@drawable/baseline_lens_black_24" />
+            app:srcCompat="@drawable/baseline_lens_white_24" />
 
         <TextView
             android:id="@+id/wave_single_brief_echos"
@@ -90,7 +90,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="21dp"
-            app:srcCompat="@drawable/baseline_comment_black_24" />
+            app:srcCompat="@drawable/baseline_comment_white_2" />
 
         <TextView
             android:id="@+id/wave_single_brief_comments"
@@ -116,7 +116,7 @@
             android:layout_marginLeft="21dp"
             android:elevation="1dp"
             android:foregroundGravity="center_vertical"
-            android:src="@drawable/baseline_timelapse_black_24"
+            android:src="@drawable/baseline_timelapse_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch_main" />
 

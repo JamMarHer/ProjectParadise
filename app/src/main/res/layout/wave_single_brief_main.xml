@@ -28,10 +28,10 @@
         android:layout_height="39dp"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/circle"
+        android:background="@drawable/circle_holder_gray"
         android:elevation="1dp"
         android:foregroundGravity="center_vertical"
-        android:src="@drawable/baseline_add_comment_black_24"
+        android:src="@drawable/baseline_add_comment_white_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/main_echo_post" />
 
@@ -42,9 +42,9 @@
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
+        android:background="@drawable/circle_holder_gray"
         android:elevation="1dp"
-        android:src="@drawable/baseline_panorama_fish_eye_black_24"
+        android:src="@drawable/baseline_panorama_fish_eye_white_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wave_single_brief_message_main" />
@@ -93,7 +93,7 @@
             android:layout_height="20dp"
             android:layout_gravity="left|center_vertical|start"
             android:foregroundGravity="left"
-            android:src="@drawable/baseline_lens_black_24" />
+            android:src="@drawable/baseline_lens_white_24" />
 
         <TextView
             android:id="@+id/wave_single_brief_echos_main"
@@ -117,7 +117,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="21dp"
-            android:src="@drawable/baseline_comment_black_24" />
+            android:src="@drawable/baseline_comment_white_2" />
 
         <TextView
             android:id="@+id/wave_single_brief_comments_main"
@@ -143,7 +143,7 @@
             android:layout_marginLeft="21dp"
             android:elevation="1dp"
             android:foregroundGravity="center_vertical"
-            android:src="@drawable/baseline_timelapse_black_24"
+            android:src="@drawable/baseline_timelapse_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch_main" />
 

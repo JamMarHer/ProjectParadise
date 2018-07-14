@@ -452,7 +452,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                         if (child.hasChild("time")){
 
                                             long timeDifference = System.currentTimeMillis() -  Long.valueOf(child.child("time").getValue().toString());
-                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 24){
+                                            if (TimeUnit.MILLISECONDS.toHours(timeDifference) >= 2){
 
                                                 DatabaseReference db3 = firebase.getEvents(waveID, "wall", "posts");
                                                 db3.child(postID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -597,9 +597,9 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 public void onDataChange(DataSnapshot mainDataSnapshot) {
                     try{
                         if (mainDataSnapshot.hasChild(postID)) {
-                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_white_24));
                         }else {
-                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_white_24));
                         }
                     }catch (Exception e){
                         // TODO Is this bad for the long run?
@@ -762,7 +762,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                                             Log.d("ADING_ECHO", task.getException().getMessage());
                                                         } else {
                                                             working = false;
-                                                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                                                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_white_24));
 
                                                         }
                                                     }

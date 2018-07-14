@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp">
 
 
     <ImageView
@@ -44,7 +46,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
+        android:background="@drawable/gradient_2"
         android:elevation="1dp">
 
         <TextView
@@ -55,7 +57,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
             android:text="0"
-            android:textColor="@android:color/background_dark"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textView14"
@@ -70,7 +72,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
             android:text="0"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textView9"
@@ -118,20 +120,22 @@
             android:layout_weight="1"
             android:gravity="center_vertical|center_horizontal"
             android:text="0"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/textView13"
             app:layout_constraintEnd_toEndOf="@+id/textView13"
             app:layout_constraintStart_toStartOf="@+id/textView13" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_picture_personal"
             android:layout_width="66dp"
             android:layout_height="66dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
             android:src="@drawable/ic_face_black_48dp"
             app:civ_border_color="@color/common_google_signin_btn_text_light_default"
-            app:civ_border_width="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -148,7 +152,7 @@
             android:fontFamily="@font/comfortaa_regular"
             android:gravity="left|center_horizontal"
             android:text="TextView"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/numberWaves"
             app:layout_constraintHorizontal_bias="0.0"
@@ -166,7 +170,7 @@
             android:gravity="start"
             android:maxLength="60"
             android:text="lacking status..."
-            android:textColor="@color/common_google_signin_btn_text_light_default"
+            android:textColor="@android:color/white"
             android:textSize="9sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"

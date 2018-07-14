@@ -5,10 +5,7 @@
     android:id="@+id/wave_single_brief_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="1dp"
-    android:layout_marginRight="1dp"
-    android:layout_marginTop="6dp"
-    android:background="@drawable/circle_holder_gray">
+    android:layout_marginTop="6dp">
 
     <ImageView
         android:id="@+id/wave_single_brief_source"

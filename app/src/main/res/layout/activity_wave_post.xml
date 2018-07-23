@@ -23,7 +23,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/background_light"
+        android:background="@color/feedBackground"
         android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="left|center_vertical|start"
                 android:foregroundGravity="left"
-                android:src="@drawable/baseline_lens_black_24" />
+                android:src="@drawable/baseline_lens_white_24" />
 
             <TextView
                 android:id="@+id/wave_post_num_echos"
@@ -62,7 +62,7 @@
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:text="12"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="normal|bold"
                 app:layout_constraintBottom_toBottomOf="@+id/wave_post_echo"
@@ -75,7 +75,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="21dp"
-                android:src="@drawable/baseline_comment_black_24" />
+                android:src="@drawable/baseline_comment_white_2" />
 
             <TextView
                 android:id="@+id/wave_post_num_comments"
@@ -86,7 +86,7 @@
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:text="6"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="normal|bold"
                 app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
@@ -101,7 +101,7 @@
                 android:layout_marginLeft="21dp"
                 android:elevation="1dp"
                 android:foregroundGravity="center_vertical"
-                android:src="@drawable/baseline_timelapse_black_24"
+                android:src="@drawable/baseline_timelapse_white_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/wave_single_brief_launch_main" />
 
@@ -115,7 +115,7 @@
                 android:foregroundGravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:text="6"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="normal|bold"
                 app:layout_constraintBottom_toBottomOf="@+id/wave_post_open_comments"
@@ -161,9 +161,9 @@
             android:layout_height="39dp"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/circle"
+            android:background="@drawable/circle_holder_gray"
             android:elevation="1dp"
-            android:src="@drawable/baseline_panorama_fish_eye_black_24"
+            android:src="@drawable/baseline_panorama_fish_eye_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -173,10 +173,10 @@
             android:layout_height="39dp"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/circle"
+            android:background="@drawable/circle_holder_gray"
             android:elevation="1dp"
             android:foregroundGravity="center_vertical"
-            android:src="@drawable/baseline_add_comment_black_24"
+            android:src="@drawable/baseline_add_comment_white_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/wave_post_echo" />
 
@@ -186,18 +186,18 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:elevation="3dp"
             android:foregroundGravity="left"
             android:gravity="start"
             android:maxHeight="120dp"
-            android:elevation="3dp"
-            android:textIsSelectable="true"
-            android:textColorHighlight="@color/colorGray"
             android:maxLines="6"
             android:minLines="1"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
             android:scrollbars="vertical"
             android:text="lit"
-            android:textColor="@color/common_google_signin_btn_text_light_pressed"
+            android:textColor="@android:color/white"
+            android:textColorHighlight="@color/colorGray"
+            android:textIsSelectable="true"
             android:verticalScrollbarPosition="defaultPosition"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/wave_post_thumbnail"
@@ -209,7 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="TextView"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/white"
             android:textSize="11sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/wave_post_username"
@@ -276,7 +276,7 @@
             android:layout_height="18dp"
             android:layout_marginStart="8dp"
             android:text="TextView"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/wave_post_thumbnail"
             app:layout_constraintStart_toEndOf="@+id/wave_post_thumbnail"

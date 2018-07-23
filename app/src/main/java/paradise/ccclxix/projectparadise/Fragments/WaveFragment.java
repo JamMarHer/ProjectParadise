@@ -249,8 +249,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_brief_name_main);
             postMessage = itemView.findViewById(R.id.wave_single_brief_message_main);
-            postEchos = itemView.findViewById(R.id.wave_single_brief_echos_main);
-            postComments = itemView.findViewById(R.id.wave_single_brief_comments_main);
+            //postEchos = itemView.findViewById(R.id.wave_single_brief_echos_main);
+            //postComments = itemView.findViewById(R.id.wave_single_brief_comments_main);
             postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live_main);
             postImage = itemView.findViewById(R.id.wave_post_image_main);
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch_main);
@@ -401,8 +401,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
             holder.waveName.setText(postFromUsername);
             holder.postMessage.setText(postMessage);
-            holder.postEchos.setText(postNumEchos);
-            holder.postComments.setText(postNumComments);
+            //holder.postEchos.setText(postNumEchos); Experimental changes
+            //holder.postComments.setText(postNumComments); ^
             holder.source.setVisibility(View.INVISIBLE);
 
 
@@ -624,8 +624,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         posts.get(position).put("postEchos", numEchos);
                         posts.get(position).put("postComments", numComments);
 
-                        holder.postEchos.setText(numEchos);
-                        holder.postComments.setText(numComments);
+                        //holder.postEchos.setText(numEchos);
+                        //holder.postComments.setText(numComments);
 
                     }
                 }

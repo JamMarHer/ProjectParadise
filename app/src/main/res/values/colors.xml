@@ -2,9 +2,9 @@
 <resources>
     <color name="colorPrimary">#fe7f019b</color>
     <color name="colorPrimaryDark">#27000000</color>
-    <color name="colorAccent">#d50b0b0b</color>
+    <color name="colorAccent">#d52d2d2d</color>
     <color name="colorGray">#b9ffffff</color>
     <color name="colorWhite">#ddffffff</color>
     <color name="CommentSeparator">#27000000</color>
-    <color name="feedBackground">#96111111</color>
+    <color name="feedBackground">#e9000000</color>
 </resources>

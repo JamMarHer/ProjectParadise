@@ -99,7 +99,11 @@ public class WavePostActivity extends YouTubeBaseActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
+        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
+        backButton.setVisibility(View.VISIBLE);
+        chatButton.setVisibility(View.INVISIBLE);
         mainSettings.setVisibility(View.INVISIBLE);
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,9 +234,9 @@ public class WavePostActivity extends YouTubeBaseActivity {
             @Override
             public void onDataChange(DataSnapshot mainDataSnapshot) {
                 if (mainDataSnapshot.hasChild(postID)) {
-                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_white_24));
                 }else {
-                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                    wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_white_24));
                 }
             }
 
@@ -426,7 +430,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
                                                         Log.d("ADING_ECHO", task.getException().getMessage());
                                                     } else {
                                                         working = false;
-                                                        wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                                                        wavePostEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_white_24));
 
                                                     }
                                                 }

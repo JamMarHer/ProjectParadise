@@ -240,8 +240,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_brief_name);
             postMessage = itemView.findViewById(R.id.wave_single_brief_message);
-            postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
-            postComments = itemView.findViewById(R.id.wave_single_brief_comments);
+            //postEchos = itemView.findViewById(R.id.wave_single_brief_echos);
+            //postComments = itemView.findViewById(R.id.wave_single_brief_comments);
             postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live);
             postImage = itemView.findViewById(R.id.wave_post_image);
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch);
@@ -400,8 +400,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
             holder.waveName.setText(waveName);
             holder.postMessage.setText(postMessage);
-            holder.postEchos.setText(postNumEchos);
-            holder.postComments.setText(postNumComments);
+            //holder.postEchos.setText(postNumEchos);
+            //holder.postComments.setText(postNumComments);
             holder.postImage.setVisibility(View.INVISIBLE);
             holder.source.setVisibility(View.INVISIBLE);
 
@@ -610,8 +610,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             db.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    holder.postEchos.setText(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
-                    holder.postComments.setText(String.valueOf(dataSnapshot.child("comments").getChildrenCount()));
+                    //holder.postEchos.setText(String.valueOf(dataSnapshot.child("echos").getChildrenCount()));
+                    //holder.postComments.setText(String.valueOf(dataSnapshot.child("comments").getChildrenCount()));
                 }
 
                 @Override

@@ -256,8 +256,8 @@ public class WaveOverviewActivity extends AppCompatActivity {
             super(itemView);
             waveName = itemView.findViewById(R.id.wave_single_brief_name_main);
             postMessage = itemView.findViewById(R.id.wave_single_brief_message_main);
-            postEchos = itemView.findViewById(R.id.wave_single_brief_echos_main);
-            postComments = itemView.findViewById(R.id.wave_single_brief_comments_main);
+            //postEchos = itemView.findViewById(R.id.wave_single_brief_echos_main);
+            //postComments = itemView.findViewById(R.id.wave_single_brief_comments_main);
             postTTL = itemView.findViewById(R.id.wave_single_brief_time_to_live_main);
             postImage = itemView.findViewById(R.id.wave_post_image_main);
             postLaunch = itemView.findViewById(R.id.wave_single_brief_launch_main);
@@ -407,8 +407,8 @@ public class WaveOverviewActivity extends AppCompatActivity {
 
             holder.waveName.setText(postFromUsername);
             holder.postMessage.setText(postMessage);
-            holder.postEchos.setText(postNumEchos);
-            holder.postComments.setText(postNumComments);
+//            holder.postEchos.setText(postNumEchos);
+//            holder.postComments.setText(postNumComments);
             holder.source.setVisibility(View.INVISIBLE);
             holder.postEcho.setVisibility(View.INVISIBLE);
             holder.postLaunch.setVisibility(View.INVISIBLE);
@@ -606,9 +606,10 @@ public class WaveOverviewActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot mainDataSnapshot) {
                     try{
                         if (mainDataSnapshot.hasChild(postID)) {
-                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
+                            // TODO Commented becuase Trying something new............ .l.
+                            //holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_lens_black_24));
                         }else {
-                            holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
+                            //holder.postEcho.setImageDrawable(getResources().getDrawable(R.drawable.baseline_panorama_fish_eye_black_24));
                         }
                     }catch (Exception e){
                         // TODO Is this bad for the long run?
@@ -633,8 +634,10 @@ public class WaveOverviewActivity extends AppCompatActivity {
                         posts.get(position).put("postEchos", numEchos);
                         posts.get(position).put("postComments", numComments);
 
-                        holder.postEchos.setText(numEchos);
-                        holder.postComments.setText(numComments);
+                        // TODO Comment for the same reason.  Basically some properties of a post were
+                        // temporary removed.
+//                        holder.postEchos.setText(numEchos);
+ //                       holder.postComments.setText(numComments);
 
                     }
                 }

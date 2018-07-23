@@ -70,15 +70,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private TextView myNumContacts;
     private TextView mStatus;
     private TextView mNumVerified;
-    private RecyclerView mPinnedWavesRecyclerV;
     private RecyclerView mHightlightedPostsRecyclerV;
 
     View generalView;
 
 
-    List<HashMap<String, String >> wavePinned;
     List<HashMap<String, String>> highlightPosts;
-    WaveCardPinnedAdapter pinnedWavesAdapter;
     HighlightedPostsAdapter highlightedPostsAdapter;
 
 
@@ -110,14 +107,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflater1 = inflater.inflate(R.layout.fragment_personal, null);
 
-        wavePinned = new ArrayList<>();
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         myNumContacts = inflater1.findViewById(R.id.numberContacts);
         personalUsername = inflater1.findViewById(R.id.personal_username);
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         mStatus = inflater1.findViewById(R.id.personal_status);
-        mPinnedWavesRecyclerV = inflater1.findViewById(R.id.pinned_waves_recyclerView);
         mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
         mNumVerified = inflater1.findViewById(R.id.numberVerified);
         nothingToShow = inflater1.findViewById(R.id.nothing_to_show_image);
@@ -142,6 +137,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
         });
 
 
+        myNumWaves.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(v.getContext(), PinnedWavesActivity.class);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+
+
 
         // Views inside settings Popup window.
 
@@ -151,16 +155,9 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-        pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext());
         highlightedPostsAdapter = new HighlightedPostsAdapter(getContext());
-        mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
         mHightlightedPostsRecyclerV.setAdapter(highlightedPostsAdapter);
-        LinearLayoutManager layoutManager= new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false);
-        mPinnedWavesRecyclerV.setLayoutManager(layoutManager);
         mHightlightedPostsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mPinnedWavesRecyclerV.setItemViewCacheSize(20);
-        mPinnedWavesRecyclerV.setDrawingCacheEnabled(true);
-        mPinnedWavesRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         mHightlightedPostsRecyclerV.setItemViewCacheSize(20);
         mHightlightedPostsRecyclerV.setDrawingCacheEnabled(true);
         mHightlightedPostsRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
@@ -202,23 +199,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-    private class WaveCardViewHolder extends RecyclerView.ViewHolder{
-
-        TextView waveName;
-        ImageView waveThumbnail;
-        ImageView waveActiveIndicator;
-        ConstraintLayout generalLayout;
-        View mView;
-
-        public WaveCardViewHolder(View itemView) {
-            super(itemView);
-            waveName = itemView.findViewById(R.id.wave_single_card_name);
-            waveThumbnail = itemView.findViewById(R.id.main_wave_thumbnail);
-            waveActiveIndicator = itemView.findViewById(R.id.active_indicator);
-            generalLayout = itemView.findViewById(R.id.wave_card_mini_layout);
-            mView = itemView;
-        }
-    }
 
     private class HighlightPostViewHolder extends  RecyclerView.ViewHolder{
         TextView waveName;
@@ -283,7 +263,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
             highlightPosts.clear();
             record = new HashMap<>();
             if (dataSnapshot.hasChildren()){
-                mPinnedWavesRecyclerV.setVisibility(View.VISIBLE);
                 nothingToShow.setVisibility(View.INVISIBLE);
                 for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                     final String waveID = wave.getKey();
@@ -358,8 +337,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                     });
                 }
             }else {
-                mPinnedWavesRecyclerV.removeAllViews();
-                mPinnedWavesRecyclerV.setVisibility(View.INVISIBLE);
                 mHightlightedPostsRecyclerV.removeAllViews();
                 nothingToShow.setVisibility(View.VISIBLE);
             }
@@ -628,150 +605,4 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     }
 
 
-    private class WaveCardPinnedAdapter extends RecyclerView.Adapter<WaveCardViewHolder>{
-
-        private LayoutInflater inflater;
-        private HashMap<String, Integer> record = new HashMap<>();
-
-        public WaveCardPinnedAdapter(final Context context){
-            updatePinnedWaves(context);
-            createAddButton(context);
-        }
-
-        private void updatePinnedWaves(final Context context){
-            wavePinned = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    wavePinned.clear();
-                    mPinnedWavesRecyclerV.removeAllViews();
-                    for (final  DataSnapshot wave: dataSnapshot.getChildren()){
-                        final String waveID = wave.getKey();
-                        DatabaseReference waveDBReference = firebase.get("events_us", waveID);
-                        waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                record.clear();
-                                updateAdapter(dataSnapshot, waveID, getContext());
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("MY_WAVES", databaseError.getMessage());
-
-                }
-            });
-        }
-
-        private void createAddButton(Context context){
-            myNumWaves.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Intent myIntent = new Intent(v.getContext(), PinnedWavesActivity.class);
-                    startActivityForResult(myIntent, 0);
-                }
-            });
-        }
-
-        private List<HashMap<String, String >>  updateAdapter(DataSnapshot dataSnapshot, String waveID, Context context){
-            int waveAttending = (int)dataSnapshot.child("attending").getChildrenCount();
-            HashMap<String, String> eventInfo = new HashMap<>();
-
-            eventInfo.put("waveID", waveID);
-            eventInfo.put("waveName", dataSnapshot.child("name_event").getValue().toString());
-            // TODO add function (algo) for trending.
-
-            // Checks if wave has a logo
-            if (dataSnapshot.hasChild("image_url")){
-                eventInfo.put("waveImageURL", dataSnapshot.child("image_url").getValue().toString());
-            }else {
-                eventInfo.put("waveImageURL", null);
-            }
-
-            // Hydrating event
-            eventInfo.put("waveTrend", "trending");
-            eventInfo.put("wavePosts", String.valueOf(dataSnapshot.child("wall").child("posts").getChildrenCount()));
-            eventInfo.put("waveAttending", String.valueOf(waveAttending));
-
-            // Event is not in the record
-            if(!record.containsKey(waveID)) {
-                wavePinned.add(eventInfo);
-                record.put(waveID, wavePinned.size()-1);
-                if(waveID.equals(appManager.getWaveM().getEventID())){
-                    int toExchange = wavePinned.size()-1;
-                    Collections.swap(wavePinned,0, toExchange);
-                    record.put(waveID, 0);
-                    record.put(wavePinned.get(toExchange).get("waveID"), wavePinned.size()-1);
-                }
-            }
-            pinnedWavesAdapter.notifyDataSetChanged();
-            inflater = LayoutInflater.from(context);
-            return wavePinned;
-        }
-
-        @Override
-        public WaveCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.wave_single_card_pinned, parent, false);
-            WaveCardViewHolder holder = new WaveCardViewHolder(view);
-            return holder;
-        }
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public void onBindViewHolder(final WaveCardViewHolder holder, final int position) {
-            final String waveID = wavePinned.get(position).get("waveID");
-            final String waveName = wavePinned.get(position).get("waveName");
-            final String waveImageURL = wavePinned.get(position).get("waveImageURL");
-            final String waveAttending = wavePinned.get(position).get("waveAttending");
-            final String waveTrend = wavePinned.get(position).get("waveTrend");
-            final long currentWavePostsNum  = Long.valueOf(wavePinned.get(position).get("wavePosts"));
-            holder.waveName.setText(waveName);
-            if (waveImageURL != null){
-                picasso.load(waveImageURL)
-                        .fit()
-                        .centerInside()
-                        .placeholder(R.drawable.ic_import_export).into(holder.waveThumbnail);
-            }
-
-            if (position != 0) {
-                holder.waveActiveIndicator.setVisibility(View.INVISIBLE);
-            }
-
-
-            holder.generalLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (waveID.equals(appManager.getWaveM().getEventID())){
-                        snackbar.showEmojiBar(getView(), "You are already riding this wave", Icons.POOP);
-                    }else {
-                        appManager.getWaveM().updateEventID(waveID);
-                        appManager.getWaveM().updateEventName(waveName);
-
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.putExtra("source", "joined_event");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                }
-            });
-
-
-        }
-
-
-    @Override
-    public int getItemCount() {
-                            return wavePinned.size();
-                                                     }
-
-    }
 }

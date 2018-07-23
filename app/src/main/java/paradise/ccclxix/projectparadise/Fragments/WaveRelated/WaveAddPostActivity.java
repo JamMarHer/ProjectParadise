@@ -83,7 +83,6 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
     private ImageView waveAddPostImage;
     private ImageView waveAddPostCreatePost;
     private ImageView waveAddYoutubeVideo;
-    private ImageView waveAddTweet;
     private ImageView waveAddLink;
 
     private TextView websiteTitle; //Generated dynamically.
@@ -124,8 +123,6 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
-        chatButton.setVisibility(View.INVISIBLE);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,7 +141,6 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
         waveAddPostCreatePost = findViewById(R.id.wave_add_post_send);
         waveAddYoutubeVideo = findViewById(R.id.wave_add_post_insert_youtube_video);
         youTubePlayerView = findViewById(R.id.create_post_youtube_view);
-        waveAddTweet = findViewById(R.id.wave_add_post_insert_tweet);
         mainConstraintLayout = findViewById(R.id.AddPostConstraitLayout);
         waveAddLink = findViewById(R.id.wave_add_post_insert_link);
 
@@ -174,12 +170,7 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
             waveAddPostWave.setText(appManager.getWaveM().getEventName());
         }
 
-        waveAddTweet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackBar.showEmojiBar(mainConstraintLayout, " Not yet...", Icons.POOP);
-            }
-        });
+
 
         waveAddLink.setOnClickListener(new View.OnClickListener() {
             @Override

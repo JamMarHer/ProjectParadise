@@ -99,9 +99,7 @@ public class WavePostActivity extends YouTubeBaseActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
-        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
         backButton.setVisibility(View.VISIBLE);
-        chatButton.setVisibility(View.INVISIBLE);
         mainSettings.setVisibility(View.INVISIBLE);
 
 

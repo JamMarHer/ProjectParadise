@@ -114,8 +114,6 @@ public class WaveOverviewActivity extends AppCompatActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
-        ImageView chat = toolbar.getRootView().findViewById(R.id.toolbar_chat);
-        chat.setVisibility(View.INVISIBLE);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

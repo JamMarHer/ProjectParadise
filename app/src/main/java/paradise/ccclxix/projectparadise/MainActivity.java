@@ -58,16 +58,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
         backButton.setVisibility(View.INVISIBLE);
 
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ChatFragment.class);
-                MainActivity.this.startActivity(intent);
-            }
-        });
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

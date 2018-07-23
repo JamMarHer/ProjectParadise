@@ -86,8 +86,6 @@ public class SettingsActivity extends AppCompatActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
-        ImageView chatButton = toolbar.getRootView().findViewById(R.id.toolbar_chat);
-        chatButton.setVisibility(View.INVISIBLE);
 
         settingsList = new ArrayList<>();
         settingsAdapter = new SettingsAdapter(this);

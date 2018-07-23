@@ -21,6 +21,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -68,6 +69,8 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSmallIcon(getSmallIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                        getSmallIcon()))
                 .setAutoCancel(true);
     }
 

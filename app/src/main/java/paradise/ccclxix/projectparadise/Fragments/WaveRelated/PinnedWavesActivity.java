@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -296,6 +298,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                 } else {
                                     holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_gray));
                                 }
+                                FirebaseMessaging.getInstance().unsubscribeFromTopic(waveID);
                             }
                             else if (!dataSnapshot.hasChild(waveID) && isChecked){
                                 firebase.get_user_authId("waves", "pinned", waveID)
@@ -305,6 +308,8 @@ public class PinnedWavesActivity extends AppCompatActivity {
                                 } else {
                                     holder.pinnedSwitch.setBackground(ContextCompat.getDrawable(holder.pinnedSwitch.getContext(), R.drawable.circle_holder_main_color));
                                 }
+                                FirebaseMessaging.getInstance().subscribeToTopic(waveID);
+
                             }
                         }
                         @Override

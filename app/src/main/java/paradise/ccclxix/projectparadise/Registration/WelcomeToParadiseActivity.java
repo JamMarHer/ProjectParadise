@@ -17,8 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.animation.Animation;
 import android.widget.TextView;
 
+import paradise.ccclxix.projectparadise.Animations.ResizeAnimation;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -53,26 +55,7 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                finishOnBoarding();
-            }
-        });
 
-
-
-    }
-
-    private void finishOnBoarding(){
-        Intent mainIntent = new Intent(WelcomeToParadiseActivity.this, MainActivity.class);
-        mainIntent.putExtra("source", "registration");
-        startActivity(mainIntent);
-
-        finish();
     }
 
 
@@ -134,7 +117,41 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
                     rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_wave, container, false);
                     return rootView;
                 case 3:
+                    rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_echo, container, false);
+                    return rootView;
+                case 4:
                     rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_done, container, false);
+                    rootView.getRootView().findViewById(R.id.leaveOnBoarding).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView lit =  (TextView) view.findViewById(R.id.leaveOnBoarding);
+                            lit.setText("lit");
+                            ResizeAnimation resizeAnimation = new ResizeAnimation(view, 260);
+                            resizeAnimation.setRepeatMode(Animation.REVERSE);
+                            resizeAnimation.setDuration(369);
+                            view.startAnimation(resizeAnimation);
+                            view.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+                                    mainIntent.putExtra("source", "registration");
+                                    startActivity(mainIntent);
+
+                                    getActivity().finish();
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                        }
+                    });
                     return rootView;
 
             }
@@ -162,7 +179,7 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
     }
 }

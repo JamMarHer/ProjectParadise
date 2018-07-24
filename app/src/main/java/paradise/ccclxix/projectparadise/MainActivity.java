@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         backButton.setVisibility(View.INVISIBLE);
 
-        Intent testing = new Intent(MainActivity.this, WelcomeToParadiseActivity.class);
-        startActivity(testing);
-        finish();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

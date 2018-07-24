@@ -1,5 +1,6 @@
 package paradise.ccclxix.projectparadise.Registration;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
 
 public class WelcomeToParadiseActivity extends AppCompatActivity {
@@ -58,9 +61,21 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                finishOnBoarding();
+
             }
         });
 
+
+
+    }
+
+    private void finishOnBoarding(){
+        Intent mainIntent = new Intent(WelcomeToParadiseActivity.this, MainActivity.class);
+        mainIntent.putExtra("source", "registration");
+        startActivity(mainIntent);
+
+        finish();
     }
 
 
@@ -115,9 +130,18 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)){
+                case 0:
+                    return rootView;
+                case 1:
+                    rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_wave, container, false);
+                    return rootView;
+                case 2:
+                    rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_done, container, false);
+                    return rootView;
+
+            }
+            return  rootView;
         }
     }
 

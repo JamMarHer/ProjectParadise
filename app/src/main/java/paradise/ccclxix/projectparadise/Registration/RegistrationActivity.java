@@ -183,7 +183,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                                     }
                                                             );
                                                         }
-                                                        Intent mainIntent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                                        Intent mainIntent = new Intent(RegistrationActivity.this, WelcomeToParadiseActivity.class);
                                                         mainIntent.putExtra("source", "registration");
                                                         startActivity(mainIntent);
                                                         running = false;

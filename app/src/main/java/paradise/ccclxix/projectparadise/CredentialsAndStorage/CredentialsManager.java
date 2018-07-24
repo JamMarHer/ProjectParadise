@@ -1,5 +1,6 @@
 package paradise.ccclxix.projectparadise.CredentialsAndStorage;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Manager;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
@@ -93,6 +95,13 @@ public class CredentialsManager  implements Manager{
                         updateNumWaves(String.valueOf(dataSnapshot.child("waves").child("in").getChildrenCount()));
                     }else {
                         updateNumWaves("0");
+                    }
+
+                    if (dataSnapshot.child("waves").hasChild("pinned") && dataSnapshot.child("waves").child("pinned").hasChildren()){
+                        DataSnapshot currentPinnedWaves = dataSnapshot.child("waves").child("pinned");
+                        for (DataSnapshot currPinnedWave : currentPinnedWaves.getChildren()){
+                            FirebaseMessaging.getInstance().subscribeToTopic(currPinnedWave.getKey());
+                        }
                     }
 
                     if (dataSnapshot.hasChild("permanent")){

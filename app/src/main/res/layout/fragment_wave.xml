@@ -17,16 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
-    <ImageView
-        android:id="@+id/main_arrow_up_no_content"
-        android:layout_width="39dp"
-        android:layout_height="39dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        app:srcCompat="@drawable/baseline_arrow_upward_black_24" />
-
     <TextView
         android:id="@+id/main_message_no_content"
         android:layout_width="wrap_content"
@@ -38,6 +28,7 @@
         android:fontFamily="@font/comfortaa_regular"
         android:gravity="center"
         android:text="Nothing to see. \n Make your first post by tapping the ⊕ icon."
+        android:textColor="@android:color/white"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="@+id/wave_swipe_layout"
         app:layout_constraintEnd_toEndOf="parent"

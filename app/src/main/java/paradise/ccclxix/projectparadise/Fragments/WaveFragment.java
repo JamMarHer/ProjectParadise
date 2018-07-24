@@ -96,7 +96,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
     private PostsAdapter adapter;
     private RecyclerView waveRecyclerView;
     private ImageView waveThumbnail;
-    private ImageView arrowUpNoContent;
     private TextView noContentMessage;
     private TextView waveName;
     private ImageView waveAddPost;
@@ -145,7 +144,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         noContentMessage = view.findViewById(R.id.main_message_no_content);
         mPinnedWavesRecyclerV = view.findViewById(R.id.pinned_waves_recyclerView);
 
-        arrowUpNoContent = view.findViewById(R.id.main_arrow_up_no_content);
 
 
         this.container = container;
@@ -463,7 +461,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot2) {
                                 if (dataSnapshot2.hasChildren()){
-                                    arrowUpNoContent.setVisibility(View.INVISIBLE);
                                     noContentMessage.setVisibility(View.INVISIBLE);
                                     for (DataSnapshot postSnapshot : dataSnapshot2.getChildren()){
                                         HashMap<String, String> postInfo = new HashMap<>();
@@ -511,7 +508,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                                     inflater = LayoutInflater.from(context);
 
                                 }else {
-                                    arrowUpNoContent.setVisibility(View.VISIBLE);
                                     noContentMessage.setVisibility(View.VISIBLE);
                                 }
                                 UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));

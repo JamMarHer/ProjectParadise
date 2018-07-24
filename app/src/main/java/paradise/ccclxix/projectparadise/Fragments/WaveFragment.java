@@ -274,6 +274,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     wavePinned.clear();
+                    record.clear();
                     mPinnedWavesRecyclerV.removeAllViews();
                     for (final  DataSnapshot wave: dataSnapshot.getChildren()){
                         final String waveID = wave.getKey();
@@ -281,7 +282,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         waveDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                record.clear();
+                                mPinnedWavesRecyclerV.removeAllViews();
                                 updateAdapter(dataSnapshot, waveID, getContext());
                             }
 

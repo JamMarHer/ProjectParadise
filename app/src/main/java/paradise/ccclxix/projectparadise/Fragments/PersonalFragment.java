@@ -109,7 +109,8 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
-        myNumContacts = inflater1.findViewById(R.id.numberContacts);
+        // TODO we ignore num contacts since in this stage is irrelevant.
+        //myNumContacts = inflater1.findViewById(R.id.numberContacts);
         personalUsername = inflater1.findViewById(R.id.personal_username);
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         mStatus = inflater1.findViewById(R.id.personal_status);
@@ -175,7 +176,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 if (key){
                     personalUsername.setText(appManager.getCredentialM().getUsername());
                     mStatus.setText(appManager.getCredentialM().getStatus());
-                    myNumContacts.setText(appManager.getCredentialM().getNumContacts());
+                    //myNumContacts.setText(appManager.getCredentialM().getNumContacts());
                     myNumWaves.setText(appManager.getCredentialM().getNumWaves());
                     mNumVerified.setText(appManager.getCredentialM().getNumPermanents());
                     String thumbnailURL = appManager.getCredentialM().getProfilePic();

@@ -62,7 +62,6 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 finishOnBoarding();
-
             }
         });
 
@@ -131,12 +130,12 @@ public class WelcomeToParadiseActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise, container, false);
             switch (getArguments().getInt(ARG_SECTION_NUMBER)){
-                case 0:
-                    return rootView;
                 case 1:
-                    rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_wave, container, false);
                     return rootView;
                 case 2:
+                    rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_wave, container, false);
+                    return rootView;
+                case 3:
                     rootView = inflater.inflate(R.layout.fragment_welcome_to_paradise_done, container, false);
                     return rootView;
 

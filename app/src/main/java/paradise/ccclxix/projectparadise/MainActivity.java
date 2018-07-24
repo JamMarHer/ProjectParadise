@@ -23,6 +23,7 @@ import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
+import paradise.ccclxix.projectparadise.Registration.WelcomeToParadiseActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
         backButton.setVisibility(View.INVISIBLE);
 
+        Intent testing = new Intent(MainActivity.this, WelcomeToParadiseActivity.class);
+        startActivity(testing);
+        finish();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);

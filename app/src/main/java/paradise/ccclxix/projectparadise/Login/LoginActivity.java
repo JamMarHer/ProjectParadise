@@ -25,7 +25,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DatabaseReference;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
+import paradise.ccclxix.projectparadise.utils.Defaults;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
 import paradise.ccclxix.projectparadise.R;
@@ -173,6 +175,13 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(mainIntent);
                         running = false;
                         showProgress(false);
+                        AppManager appManager = new AppManager();
+                        appManager.initialize(getApplicationContext());
+                        try{
+                            appManager.getSettingsM().setNotificationsAll();
+                        }catch (Exception e){
+                            System.out.println(e.getMessage());
+                        }
 
                         finish();
                     }else {

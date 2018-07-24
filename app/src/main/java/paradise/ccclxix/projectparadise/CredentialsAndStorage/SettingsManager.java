@@ -97,6 +97,15 @@ public class SettingsManager implements Manager {
         return settings.containsKey(parent) && settings.get(parent).containsKey(child);
     }
 
+    public void setNotificationsAll() throws Exception{
+        if (!initialized){
+            throw new Exception("Setting Manager not initilized.");
+        }else {
+            BooleanSetting notificationAll = (BooleanSetting) settings.get("Notifications").get("Notifications_All");
+            notificationAll.setValue(true);
+        }
+
+    }
 
 
     public Map<String, Map<String, Setting>> getSettings(){

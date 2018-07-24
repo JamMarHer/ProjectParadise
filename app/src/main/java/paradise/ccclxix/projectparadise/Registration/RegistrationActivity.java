@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.MainActivity;
@@ -186,6 +187,13 @@ public class RegistrationActivity extends AppCompatActivity {
                                                         mainIntent.putExtra("source", "registration");
                                                         startActivity(mainIntent);
                                                         running = false;
+                                                        AppManager appManager = new AppManager();
+                                                        appManager.initialize(getApplicationContext());
+                                                        try{
+                                                            appManager.getSettingsM().setNotificationsAll();
+                                                        }catch (Exception e){
+                                                            System.out.println(e.getMessage());
+                                                        }
                                                         finish();
                                                     }
                                                 }

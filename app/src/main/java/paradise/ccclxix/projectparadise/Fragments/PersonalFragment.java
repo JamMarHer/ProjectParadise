@@ -319,7 +319,13 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                                             highlightPosts.add(postInfo);
                                             highlightedPostsAdapter.notifyDataSetChanged();
-                                            inflater = LayoutInflater.from(context);
+                                            // TODO Yikes.......
+                                            try {
+                                                inflater = LayoutInflater.from(context);
+
+                                            }catch (Exception e){
+
+                                            }
                                         }
                                     }
 

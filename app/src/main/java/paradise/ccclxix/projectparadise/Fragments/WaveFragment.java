@@ -333,7 +333,11 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 }
             }
             pinnedWavesAdapter.notifyDataSetChanged();
-            inflater = LayoutInflater.from(context);
+            try{
+                inflater = LayoutInflater.from(getContext());
+            }catch (Exception e){
+
+            }
             return wavePinned;
         }
 

@@ -30,7 +30,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
-        android:text="Every post comes with a 24 hour time to live, everytime an user echos a post, the 24h resets. \nThe post becomes permanent once a third of the members of the wave have echoed it."
+        android:text="Every post comes with a 24 hour time to live, when a user echos a post the time resets. \nThe post becomes permanent once a third of the members of the wave have echoed it."
         android:textColor="@android:color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -23,6 +23,7 @@ import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
+import paradise.ccclxix.projectparadise.Registration.WelcomeToParadiseActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;

@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         String source = intent.getStringExtra("source");
         if (source.equals("registration")) {
             appManager.getModeM().setModeToExplore();
-            snackbar.showEmojiBar(findViewById(android.R.id.content), "Welcome fam :)", Icons.COOL);
             loadFragments();
         } else if (source.equals("event_created")) {
             appManager.getModeM().setModeToHost();

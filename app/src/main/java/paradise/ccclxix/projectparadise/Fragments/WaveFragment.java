@@ -134,7 +134,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
 
-        pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext(), mPinnedWavesRecyclerV, appManager);
+
+        // TODO Removed for clean mode.
+        //pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext(), mPinnedWavesRecyclerV, appManager);
+        //
 
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 

@@ -107,25 +107,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflater1 = inflater.inflate(R.layout.fragment_personal, null);
 
-
+/*
         myNumWaves = inflater1.findViewById(R.id.numberWaves);
         // TODO we ignore num contacts since in this stage is irrelevant.
         //myNumContacts = inflater1.findViewById(R.id.numberContacts);
         personalUsername = inflater1.findViewById(R.id.personal_username);
         profilePicture = inflater1.findViewById(R.id.profile_picture_personal);
         mStatus = inflater1.findViewById(R.id.personal_status);
-        mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
         mNumVerified = inflater1.findViewById(R.id.numberVerified);
-        nothingToShow = inflater1.findViewById(R.id.nothing_to_show_image);
-
-        generalView = inflater1;
-        setupUserCard();
-
-
-        if (appManager.getCredentialM() !=null){
-            personalUsername.setText(appManager.getCredentialM().getUsername());
-
-        }
 
 
 
@@ -145,6 +134,14 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                 startActivityForResult(myIntent, 0);
             }
         });
+        */
+
+
+        mHightlightedPostsRecyclerV = inflater1.findViewById(R.id.highlighted_posts_recyclerView);
+        nothingToShow = inflater1.findViewById(R.id.nothing_to_show_image);
+
+        generalView = inflater1;
+
 
 
 
@@ -165,30 +162,6 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
     }
 
-
-    // TODO This can be highly optimized.
-    private void setupUserCard(){
-        appManager.getCredentialM().setDataChangedListener(new CredentialsManager.DataChangedListener() {
-            @Override
-            public void onDataChanged(boolean key) {
-                if (key){
-                    personalUsername.setText(appManager.getCredentialM().getUsername());
-                    mStatus.setText(appManager.getCredentialM().getStatus());
-                    //myNumContacts.setText(appManager.getCredentialM().getNumContacts());
-                    myNumWaves.setText(appManager.getCredentialM().getNumWaves());
-                    mNumVerified.setText(appManager.getCredentialM().getNumPermanents());
-                    String thumbnailURL = appManager.getCredentialM().getProfilePic();
-                    if (!TextUtils.isEmpty(thumbnailURL)) {
-                        picasso.load(thumbnailURL)
-                                .fit()
-                                .centerCrop()
-                                .placeholder(R.drawable.ic_import_export).into(profilePicture);
-                    }
-                }
-
-            }
-        });
-    }
 
 
     @Override

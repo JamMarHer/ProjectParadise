@@ -8,16 +8,21 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import paradise.ccclxix.projectparadise.Attending.QRScannerActivity;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.AppManager;
+import paradise.ccclxix.projectparadise.CredentialsAndStorage.CredentialsManager;
 import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
@@ -27,6 +32,7 @@ import paradise.ccclxix.projectparadise.Registration.WelcomeToParadiseActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.OkHttp3Helpers;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 
@@ -43,9 +49,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Toolbar mainToolbar;
     private FirebaseBuilder firebase = new FirebaseBuilder();
     private SnackBar snackbar = new SnackBar();
+    Picasso picasso;
 
+    private  AppBarLayout toolbar;
 
-
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +61,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
         snackbar = new SnackBar();
+        this.picasso =  new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(
+                OkHttp3Helpers.getOkHttpClient(this.TAG, getApplicationContext()))).build();
 
         appManager = (AppManager) new AppManager().initialize(getApplicationContext());
 
 
-        AppBarLayout toolbar = findViewById(R.id.appBarLayout);
-        ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        backButton.setVisibility(View.INVISIBLE);
+        this.toolbar = findViewById(R.id.appBarLayout);
+        ImageView settings = toolbar.getRootView().findViewById(R.id.main_app_bar_settings);
 
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -115,23 +124,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         loadFragments();
         addAllFragments();
-        fragmentToShow(waveFragment, personalFragment, exploreFragment);
+        fragmentToShow(waveFragment, exploreFragment);
         navigation.setSelectedItemId(R.id.navigation_wave);
 
-
-
-        toolbar.findViewById(R.id.main_settings).setOnTouchListener(new View.OnTouchListener() {
-
+        settings.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
-                    MainActivity.this.startActivity(intent1);
-                }
-                return true;
+            public void onClick(View view) {
+                Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
+                MainActivity.this.startActivity(intent1);
             }
-
         });
+
+        setupUserCard();
 
     }
 
@@ -141,28 +145,48 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void loadFragments(){
-        personalFragment =  new PersonalFragment();
         waveFragment = new WaveFragment();
         exploreFragment = new ExploreFragment();
     }
 
+    // TODO This can be highly optimized.
+    private void setupUserCard(){
+        appManager.getCredentialM().setDataChangedListener(new CredentialsManager.DataChangedListener() {
+            @Override
+            public void onDataChanged(boolean key) {
+                if (key){
+                    ((TextView)toolbar.getRootView().findViewById(R.id.main_app_bar_username)).setText(appManager.getCredentialM().getUsername());
+                    //myNumContacts.setText(appManager.getCredentialM().getNumContacts());
+                    //myNumWaves.setText(appManager.getCredentialM().getNumWaves());
+                    //mNumVerified.setText(appManager.getCredentialM().getNumPermanents());
+                    String thumbnailURL = appManager.getCredentialM().getProfilePic();
+                    if (!TextUtils.isEmpty(thumbnailURL)) {
+                        picasso.load(thumbnailURL)
+                                .fit()
+                                .centerCrop()
+                                .placeholder(R.drawable.ic_import_export).into(((ImageView)
+                                toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail)));
+                    }
+                }
+
+            }
+        });
+    }
 
     private void addAllFragments(){
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, personalFragment)
                 .add(R.id.fragment_container, waveFragment)
                 .add(R.id.fragment_container, exploreFragment)
                 .commit();
     }
 
-    private boolean fragmentToShow(Fragment toShow, Fragment toHide, Fragment toHide2){
-        if (toShow != null & toHide != null & toHide2 != null) {
+    private boolean fragmentToShow(Fragment toShow, Fragment toHide){
+        if (toShow != null & toHide != null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .show(toShow)
                     .hide(toHide)
-                    .hide(toHide2)
                     .commit();
             return true;
         }else{
@@ -175,12 +199,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.navigation_personal:
-                return fragmentToShow(personalFragment, waveFragment, exploreFragment);
             case R.id.navigation_wave:
-                return fragmentToShow(waveFragment, personalFragment, exploreFragment);
+                return fragmentToShow(waveFragment, exploreFragment);
             case R.id.navigation_explore:
-                return fragmentToShow(exploreFragment, personalFragment, waveFragment);
+                return fragmentToShow(exploreFragment, waveFragment);
         }
         return false;
     }

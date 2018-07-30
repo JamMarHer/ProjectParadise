@@ -4,6 +4,7 @@
     tools:context="paradise.ccclxix.projectparadise.Registration.WelcomeToParadiseActivity">
     <item
         android:id="@+id/action_settings"
+        android:menuCategory="container"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />

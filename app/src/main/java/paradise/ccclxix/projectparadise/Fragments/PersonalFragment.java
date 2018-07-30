@@ -153,14 +153,12 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
 
-
-
-
         highlightedPostsAdapter = new HighlightedPostsAdapter(getContext());
         mHightlightedPostsRecyclerV.setAdapter(highlightedPostsAdapter);
         mHightlightedPostsRecyclerV.setLayoutManager(new LinearLayoutManager(getContext()));
         mHightlightedPostsRecyclerV.setItemViewCacheSize(20);
         mHightlightedPostsRecyclerV.setDrawingCacheEnabled(true);
+
         mHightlightedPostsRecyclerV.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         return inflater1;
@@ -239,16 +237,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
     private class HighlightedPostsAdapter extends RecyclerView.Adapter<HighlightPostViewHolder>{
 
         private LayoutInflater inflater;
-        private HashMap<String, Integer> record;
 
         public HighlightedPostsAdapter(final Context context){
-            highlightPosts = new ArrayList<>();
-            final DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
+            DatabaseReference databaseReference = firebase.get_user_authId("waves", "pinned");
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    mHightlightedPostsRecyclerV.removeAllViews();
-                    updateOnChange(dataSnapshot, getContext());
+                    highlightPosts = new ArrayList<>();
+
+                    updateOnChange(dataSnapshot,  context);
 
                 }
 
@@ -258,11 +255,13 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
                 }
             });
+            setHasStableIds(true);
+
         }
 
         private void updateOnChange(DataSnapshot dataSnapshot, final Context context){
+            mHightlightedPostsRecyclerV.removeAllViewsInLayout();
             highlightPosts.clear();
-            record = new HashMap<>();
             if (dataSnapshot.hasChildren()){
                 nothingToShow.setVisibility(View.INVISIBLE);
                 for (final  DataSnapshot wave: dataSnapshot.getChildren()){
@@ -318,14 +317,7 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                                             }
 
                                             highlightPosts.add(postInfo);
-                                            highlightedPostsAdapter.notifyDataSetChanged();
-                                            // TODO Yikes.......
-                                            try {
-                                                inflater = LayoutInflater.from(context);
 
-                                            }catch (Exception e){
-
-                                            }
                                         }
                                     }
 
@@ -343,6 +335,15 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
                         }
                     });
                 }
+                // TODO Yikes.......
+                highlightedPostsAdapter.notifyDataSetChanged();
+
+                try {
+                    inflater = LayoutInflater.from(context);
+
+                }catch (Exception e){
+
+                }
             }else {
                 mHightlightedPostsRecyclerV.removeAllViews();
                 nothingToShow.setVisibility(View.VISIBLE);
@@ -350,6 +351,11 @@ public class PersonalFragment extends HolderFragment implements EnhancedFragment
 
 
         }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
 
 
         @Override

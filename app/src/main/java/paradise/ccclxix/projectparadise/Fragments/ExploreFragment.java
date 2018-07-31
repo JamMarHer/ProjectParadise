@@ -105,7 +105,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
 
         firebase = new FirebaseBuilder();
-        searchText = inflater1.findViewById(R.id.search_edit);
+        //searchText = inflater1.findViewById(R.id.search_edit);
         results = inflater1.findViewById(R.id.results_recycler_view);
         progressBar = inflater1.findViewById(R.id.search_progress);
         results.setHasFixedSize(false);
@@ -126,6 +126,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         thumbnail = new ArrayList<>();
         type = new ArrayList<>();
         setSuggestionsAdapter();
+        /*
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -154,6 +155,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 }
             }
         });
+        */
 
         return inflater1;
     }

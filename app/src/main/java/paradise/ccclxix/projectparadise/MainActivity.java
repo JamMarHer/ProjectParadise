@@ -12,6 +12,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private SnackBar snackbar = new SnackBar();
     Picasso picasso;
 
+    private int currentFragment;
     private  AppBarLayout toolbar;
 
     private static final String TAG = "MainActivity";
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        currentFragment = 0;
 
         snackbar = new SnackBar();
         this.picasso =  new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(
@@ -73,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+
+        this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text).setVisibility(View.INVISIBLE);
+
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")) {
@@ -203,11 +211,94 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+        final EditText searchText = (EditText) this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text);
+        final TextView wavename = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_waveName);
+        final TextView username = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_username);
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_0_1);
+        Animation fadeoutAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_1_0);
         switch (item.getItemId()){
             case R.id.navigation_wave:
+                currentFragment = 0;
+                searchText.startAnimation(fadeoutAnimation);
+                wavename.startAnimation(fadeInAnimation);
+                username.startAnimation(fadeInAnimation);
+
+                fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        searchText.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                fadeoutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        wavename.setVisibility(View.VISIBLE);
+                        username.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
                 return fragmentToShow(waveFragment, exploreFragment);
             case R.id.navigation_explore:
+                currentFragment = 1;
+
+                searchText.startAnimation(fadeInAnimation);
+                wavename.startAnimation(fadeoutAnimation);
+                username.startAnimation(fadeoutAnimation);
+
+                fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        searchText.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                fadeoutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        wavename.setVisibility(View.INVISIBLE);
+                        username.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+
                 return fragmentToShow(exploreFragment, waveFragment);
         }
         return false;

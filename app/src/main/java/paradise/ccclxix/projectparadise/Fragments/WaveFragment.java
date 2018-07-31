@@ -135,8 +135,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         }
 
 
-
-
         /* TODO Removed for clean mode.
         //pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext(), mPinnedWavesRecyclerV, appManager);
         RecyclerView mPinnedWavesRecyclerV = view.findViewById(R.id.pinned_waves_recyclerView);

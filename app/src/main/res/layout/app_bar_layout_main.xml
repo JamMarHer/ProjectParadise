@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_app_bar2"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
+    android:layout_height="50dp"
     android:layout_weight="1"
     android:background="@color/colorWhite"
     android:elevation="0dp"
@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/main_app_bar_settings"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
             android:layout_marginRight="6dp"
             android:foregroundGravity="center_horizontal"
             android:src="@drawable/waveprofile_settings_button_white"
@@ -34,8 +34,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/main_app_bar_user_thumbanail"
-            android:layout_width="39dp"
-            android:layout_height="39dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="3dp"
             android:foregroundGravity="center_horizontal"
             android:src="@drawable/baseline_radio_button_checked_white_36"
@@ -53,7 +53,7 @@
             android:text="TextView"
             android:textColor="@color/colorGray"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/main_app_bar_user_thumbanail"
             app:layout_constraintStart_toEndOf="@+id/main_app_bar_user_thumbanail" />
 
         <TextView
@@ -68,6 +68,23 @@
             app:layout_constraintBottom_toTopOf="@+id/main_app_bar_username"
             app:layout_constraintStart_toEndOf="@+id/main_app_bar_user_thumbanail"
             app:layout_constraintTop_toTopOf="@+id/main_app_bar_user_thumbanail" />
+
+        <EditText
+            android:id="@+id/main_app_bar_user_search_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Look up  🌊"
+            android:inputType="textPersonName"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_app_bar_settings"
+            app:layout_constraintStart_toEndOf="@+id/main_app_bar_user_thumbanail"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

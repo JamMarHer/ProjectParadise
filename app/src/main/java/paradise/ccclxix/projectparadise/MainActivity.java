@@ -156,6 +156,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             public void onDataChanged(boolean key) {
                 if (key){
                     ((TextView)toolbar.getRootView().findViewById(R.id.main_app_bar_username)).setText(appManager.getCredentialM().getUsername());
+                    if(appManager.getWaveM().inWave()){
+                        ((TextView)toolbar.getRootView().findViewById(R.id.main_app_bar_waveName)).setText(appManager.getWaveM().getEventName());
+                    }else {
+                        ((TextView)toolbar.getRootView().findViewById(R.id.main_app_bar_waveName)).setText("Waveless");
+
+                    }
                     //myNumContacts.setText(appManager.getCredentialM().getNumContacts());
                     //myNumWaves.setText(appManager.getCredentialM().getNumWaves());
                     //mNumVerified.setText(appManager.getCredentialM().getNumPermanents());

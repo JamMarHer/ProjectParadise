@@ -7,16 +7,6 @@
     app:layout_constraintBottom_toTopOf="@+id/navigation">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pinned_waves_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/gradient_3"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
-
     <TextView
         android:id="@+id/main_message_no_content"
         android:layout_width="wrap_content"
@@ -53,83 +43,20 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/wave_swipe_layout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pinned_waves_recyclerView">
+        app:layout_constraintStart_toStartOf="parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/main_wave_recyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/gradient_3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/main_wave_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:elevation="2dp"
-            android:fontFamily="@font/comfortaa_regular"
-            android:foregroundGravity="center_vertical"
-            android:gravity="center_vertical"
-            android:text="HipAka"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/integrate_source_btn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/integrate_source_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/circle_holder_main_color"
-            android:fontFamily="@font/comfortaa_regular"
-            android:foregroundGravity="center_vertical"
-            android:text="S+"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/main_add_post"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ImageView
-            android:id="@+id/main_add_post"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/circle_holder_second_main_color"
-            android:clickable="true"
-            android:elevation="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/integrate_source_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/integrate_source_btn"
-            app:srcCompat="@drawable/baseline_add_circle_outline_white_36" />
-
-    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

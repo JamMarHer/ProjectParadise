@@ -89,21 +89,25 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
 
 
-    private SnackBar snackBar = new SnackBar();
 
-    private ViewGroup container;
 
 
     private PostsAdapter adapter;
     private RecyclerView waveRecyclerView;
     private ImageView waveThumbnail;
     private TextView noContentMessage;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar progressBar;
+    /*
+    TODO Clean mode son.
     private TextView waveName;
     private ImageView waveAddPost;
     private Button addSourceBtn;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar progressBar;
     WaveCardPinnedAdapter pinnedWavesAdapter;
+    private SnackBar snackBar = new SnackBar();
+
+    private ViewGroup container;
+    */
 
 
     private List<Map<String, String>> posts;
@@ -130,30 +134,33 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             appManager.initialize(getContext());
         }
 
-        RecyclerView mPinnedWavesRecyclerV = view.findViewById(R.id.pinned_waves_recyclerView);
-
-        mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
 
 
-        // TODO Removed for clean mode.
+
+        /* TODO Removed for clean mode.
         //pinnedWavesAdapter = new WaveCardPinnedAdapter(getContext(), mPinnedWavesRecyclerV, appManager);
-        //
+        RecyclerView mPinnedWavesRecyclerV = view.findViewById(R.id.pinned_waves_recyclerView);
+        mPinnedWavesRecyclerV.setAdapter(pinnedWavesAdapter);
+        waveName = view.findViewById(R.id.main_wave_name);
+        waveAddPost = view.findViewById(R.id.main_add_post);
+        addSourceBtn = view.findViewById(R.id.integrate_source_btn);
+        */
 
         picasso = new Picasso.Builder(getActivity()).downloader(new OkHttp3Downloader(okHttpClient)).build();
 
         firebase = new FirebaseBuilder();
         generalView = view;
-        waveName = view.findViewById(R.id.main_wave_name);
+
+
+
+
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
-        waveAddPost = view.findViewById(R.id.main_add_post);
-        addSourceBtn = view.findViewById(R.id.integrate_source_btn);
         swipeRefreshLayout = view.findViewById(R.id.wave_swipe_layout);
         progressBar = view.findViewById(R.id.progressbarWave);
         noContentMessage = view.findViewById(R.id.main_message_no_content);
 
 
 
-        this.container = container;
 
         waveRecyclerView = view.findViewById(R.id.main_wave_recyclerView);
         waveRecyclerView.setHasFixedSize(false);
@@ -192,7 +199,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                             points = String.valueOf(dataSnapshot.child("points").getChildrenCount());
                         }
 
-                        waveName.setText(name);
 
                     }
                 }
@@ -217,8 +223,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             }
         });
 
-        if (waveID.equals(Defaults.TOM))
-            waveAddPost.setVisibility(View.INVISIBLE);
+        /*
+        TODO Clean mode son.
 
         waveAddPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,8 +235,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
         });
 
         addSourceBtn.setVisibility(View.INVISIBLE);
-        // TODO Button to add source. commented for realise.
-        /*
+
         addSourceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

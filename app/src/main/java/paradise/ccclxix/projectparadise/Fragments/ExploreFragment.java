@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -126,8 +127,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         thumbnail = new ArrayList<>();
         type = new ArrayList<>();
         setSuggestionsAdapter();
-        /*
-        searchText.addTextChangedListener(new TextWatcher() {
+
+        ((EditText)((MainActivity)getActivity()).getToolbar().getRootView().findViewById(R.id.main_app_bar_user_search_text)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -155,7 +156,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 }
             }
         });
-        */
+
 
         return inflater1;
     }

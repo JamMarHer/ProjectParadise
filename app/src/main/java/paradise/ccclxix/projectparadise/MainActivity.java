@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     }
 
+    public AppBarLayout getToolbar(){
+        return this.toolbar;
+    }
 
     public AppManager getAppManager() {
         return appManager;

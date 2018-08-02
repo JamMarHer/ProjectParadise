@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity{
                 username.startAnimation(fadeoutAnimation);
                 shareWave_scanQR.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_center_focus_weak_black_24));
                 switchFragments.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_view_day_black_24));
-                addPost_createWave.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_playlist_add_black_24));
+                addPost_createWave.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_playlist_add_black_24 ));
 
                 shareWave_scanQR.startAnimation(fadeInAnimation);
                 switchFragments.startAnimation(fadeInAnimation);

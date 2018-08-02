@@ -1,16 +1,19 @@
 package paradise.ccclxix.projectparadise;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.support.v7.widget.Toolbar;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,12 +36,15 @@ import paradise.ccclxix.projectparadise.Fragments.ExploreFragment;
 import paradise.ccclxix.projectparadise.Fragments.PersonalFragment;
 import paradise.ccclxix.projectparadise.Fragments.WaveFragment;
 import paradise.ccclxix.projectparadise.Fragments.ChatFragment;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.PinnedWavesActivity;
+import paradise.ccclxix.projectparadise.Fragments.WaveRelated.WaveAddPostActivity;
 import paradise.ccclxix.projectparadise.Hosting.CreateEventActivity;
 import paradise.ccclxix.projectparadise.Registration.WelcomeToParadiseActivity;
 import paradise.ccclxix.projectparadise.Settings.SettingsActivity;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
 import paradise.ccclxix.projectparadise.utils.OkHttp3Helpers;
+import paradise.ccclxix.projectparadise.utils.QRGenerator;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 
@@ -71,7 +78,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        currentFragment = 0;
 
         snackbar = new SnackBar();
         this.picasso =  new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(
@@ -137,9 +143,7 @@ public class MainActivity extends AppCompatActivity{
             snackbar.showEmojiBar(findViewById(android.R.id.content), "Server didn't respond. Trying to communicate.", Icons.POOP);
         }
 
-        loadFragments();
-        addAllFragments();
-        fragmentToShow(waveFragment, exploreFragment);
+
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +159,11 @@ public class MainActivity extends AppCompatActivity{
         shareWave_scanQR = findViewById(R.id.main_fab_share_wave_scan_qr);
         addPost_createWave = findViewById(R.id.main_fab_add_wave_post);
 
+
+        loadFragments();
+        addAllFragments();
+        currentFragment = 0;
+        changeFragment(); // Sets the initial fragment to wave.
         switchFragments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,6 +250,29 @@ public class MainActivity extends AppCompatActivity{
         final ImageView thumbnail = (ImageView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail);
 
 
+        View waveSettignsPopupView = getLayoutInflater().inflate(R.layout.share_wave_popup, null);
+        ImageView qrCode = waveSettignsPopupView.findViewById(R.id.qrCode);
+        TextView eventname = waveSettignsPopupView.findViewById(R.id.waveName);
+        qrCode.setImageBitmap(QRGenerator.getEventQR(appManager.getWaveM().getEventID()));
+        eventname.setText(appManager.getWaveM().getEventName());
+
+
+        int width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        int height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow waveSettingsPopupWindow = new PopupWindow(waveSettignsPopupView, width,height);
+        waveSettingsPopupWindow.setAnimationStyle(R.style.AnimationPopUpWindow);
+
+
+
+        final TextView closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
+
+        closeWaveSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                waveSettingsPopupWindow.dismiss();
+            }
+        });
+
         final Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_0_1);
         Animation fadeoutAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_1_0);
         switch (currentFragment){
@@ -262,6 +294,19 @@ public class MainActivity extends AppCompatActivity{
                 shareWave_scanQR.startAnimation(fadeInAnimation);
                 switchFragments.startAnimation(fadeInAnimation);
                 addPost_createWave.startAnimation(fadeInAnimation);
+                addPost_createWave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent =  new Intent(addPost_createWave.getContext(), WaveAddPostActivity.class);
+                        ((Activity)addPost_createWave.getContext()).startActivity(intent);
+                    }});
+                shareWave_scanQR.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        waveSettingsPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                    }
+                });
 
 
                 fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -307,10 +352,26 @@ public class MainActivity extends AppCompatActivity{
                 username.startAnimation(fadeoutAnimation);
                 shareWave_scanQR.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_center_focus_weak_black_24));
                 switchFragments.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_view_day_black_24));
+                addPost_createWave.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_playlist_add_black_24));
 
                 shareWave_scanQR.startAnimation(fadeInAnimation);
                 switchFragments.startAnimation(fadeInAnimation);
                 addPost_createWave.startAnimation(fadeInAnimation);
+                addPost_createWave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent =  new Intent(addPost_createWave.getContext(), CreateEventActivity.class);
+                        ((Activity)addPost_createWave.getContext()).startActivity(intent);
+                    }});
+
+                shareWave_scanQR.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent =  new Intent(addPost_createWave.getContext(), QRScannerActivity.class);
+                        ((Activity)addPost_createWave.getContext()).startActivity(intent);
+                    }});
+
+
 
                 fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override

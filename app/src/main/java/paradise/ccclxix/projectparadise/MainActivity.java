@@ -59,6 +59,12 @@ public class MainActivity extends AppCompatActivity{
     private int currentFragment;
     private  AppBarLayout toolbar;
 
+
+    private ImageView switchFragments;
+    private ImageView addPost_createWave;
+    private ImageView shareWave_scanQR;
+
+
     private static final String TAG = "MainActivity";
 
     @Override
@@ -145,7 +151,10 @@ public class MainActivity extends AppCompatActivity{
 
         setupUserCard();
 
-        FloatingActionButton switchFragments = findViewById(R.id.main_fab_switch_fragments);
+        switchFragments = findViewById(R.id.main_fab_switch_fragments);
+        shareWave_scanQR = findViewById(R.id.main_fab_share_wave_scan_qr);
+        addPost_createWave = findViewById(R.id.main_fab_add_wave_post);
+
         switchFragments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,9 +252,16 @@ public class MainActivity extends AppCompatActivity{
                         .centerCrop()
                         .placeholder(R.drawable.ic_import_export).into(((ImageView)
                         toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail)));
+                shareWave_scanQR.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_share_black_24dp));
+                switchFragments.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_explore_black_24));
+                addPost_createWave.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_add_black_24dp));
+
                 wavename.startAnimation(fadeInAnimation);
                 username.startAnimation(fadeInAnimation);
                 thumbnail.startAnimation(fadeInAnimation);
+                shareWave_scanQR.startAnimation(fadeInAnimation);
+                switchFragments.startAnimation(fadeInAnimation);
+                addPost_createWave.startAnimation(fadeInAnimation);
 
 
                 fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -289,6 +305,12 @@ public class MainActivity extends AppCompatActivity{
                 thumbnail.startAnimation(fadeInAnimation);
                 wavename.startAnimation(fadeoutAnimation);
                 username.startAnimation(fadeoutAnimation);
+                shareWave_scanQR.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_center_focus_weak_black_24));
+                switchFragments.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_view_day_black_24));
+
+                shareWave_scanQR.startAnimation(fadeInAnimation);
+                switchFragments.startAnimation(fadeInAnimation);
+                addPost_createWave.startAnimation(fadeInAnimation);
 
                 fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override

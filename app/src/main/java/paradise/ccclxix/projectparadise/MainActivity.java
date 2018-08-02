@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case 1:
                 fragmentToShow(exploreFragment, waveFragment);
-                thumbnail.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_search_white_24));
+                thumbnail.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_search_black_24_mini));
                 searchText.startAnimation(fadeInAnimation);
                 thumbnail.startAnimation(fadeInAnimation);
                 wavename.startAnimation(fadeoutAnimation);

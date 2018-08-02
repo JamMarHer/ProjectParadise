@@ -8,4 +8,5 @@
     <color name="CommentSeparator">#27000000</color>
     <color name="feedBackground">#e9000000</color>
     <color name="TabColor">#666666</color>
+    <color name="toolbar_white_background">#eeeeee</color>
 </resources>

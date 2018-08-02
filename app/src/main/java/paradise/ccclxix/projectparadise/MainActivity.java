@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -39,7 +40,7 @@ import paradise.ccclxix.projectparadise.utils.OkHttp3Helpers;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity{
 
     private static int SPLASH_TIME_OUT = 4000;
     private HolderFragment personalFragment;
@@ -76,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ImageView settings = toolbar.getRootView().findViewById(R.id.main_app_bar_settings);
 
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(this);
+
 
         this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text).setVisibility(View.INVISIBLE);
 
@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         loadFragments();
         addAllFragments();
         fragmentToShow(waveFragment, exploreFragment);
-        navigation.setSelectedItemId(R.id.navigation_wave);
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +143,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
 
         setupUserCard();
+
+        FloatingActionButton switchFragments = findViewById(R.id.main_fab_switch_fragments);
+        switchFragments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentFragment == 0)
+                    currentFragment = 1;
+                else
+                    currentFragment = 0;
+                changeFragment();
+            }
+        });
 
     }
 
@@ -202,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (toShow != null & toHide != null) {
             getSupportFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(R.anim.alpha_0_1,R.anim.alpha_1_0)
                     .show(toShow)
                     .hide(toHide)
                     .commit();
@@ -212,16 +224,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public void changeFragment() {
         final EditText searchText = (EditText) this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text);
         final TextView wavename = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_waveName);
         final TextView username = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_username);
         Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_0_1);
         Animation fadeoutAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_1_0);
-        switch (item.getItemId()){
-            case R.id.navigation_wave:
-                currentFragment = 0;
+        switch (currentFragment){
+            case 0:
+                fragmentToShow(waveFragment, exploreFragment);
                 searchText.startAnimation(fadeoutAnimation);
                 wavename.startAnimation(fadeInAnimation);
                 username.startAnimation(fadeInAnimation);
@@ -259,10 +270,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                     }
                 });
-                return fragmentToShow(waveFragment, exploreFragment);
-            case R.id.navigation_explore:
-                currentFragment = 1;
-
+                break;
+            case 1:
+                fragmentToShow(exploreFragment, waveFragment);
                 searchText.startAnimation(fadeInAnimation);
                 wavename.startAnimation(fadeoutAnimation);
                 username.startAnimation(fadeoutAnimation);
@@ -300,13 +310,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                     }
                 });
+                break;
 
 
-                return fragmentToShow(exploreFragment, waveFragment);
         }
-        return false;
     }
-
-
 
 }

@@ -32,11 +32,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/main_app_bar_user_thumbanail"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="3dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:foregroundGravity="center_horizontal"
             android:src="@drawable/baseline_radio_button_checked_white_36"
             app:layout_constraintBottom_toBottomOf="parent"

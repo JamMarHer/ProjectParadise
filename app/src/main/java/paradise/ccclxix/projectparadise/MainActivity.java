@@ -1,6 +1,7 @@
 package paradise.ccclxix.projectparadise;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -228,14 +229,24 @@ public class MainActivity extends AppCompatActivity{
         final EditText searchText = (EditText) this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text);
         final TextView wavename = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_waveName);
         final TextView username = (TextView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_username);
-        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_0_1);
+        final ImageView thumbnail = (ImageView) this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail);
+
+
+        final Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_0_1);
         Animation fadeoutAnimation = AnimationUtils.loadAnimation(this, R.anim.alpha_1_0);
         switch (currentFragment){
             case 0:
                 fragmentToShow(waveFragment, exploreFragment);
                 searchText.startAnimation(fadeoutAnimation);
+                picasso.load(appManager.getCredentialM().getProfilePic())
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_import_export).into(((ImageView)
+                        toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail)));
                 wavename.startAnimation(fadeInAnimation);
                 username.startAnimation(fadeInAnimation);
+                thumbnail.startAnimation(fadeInAnimation);
+
 
                 fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -273,7 +284,9 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case 1:
                 fragmentToShow(exploreFragment, waveFragment);
+                thumbnail.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_search_white_24));
                 searchText.startAnimation(fadeInAnimation);
+                thumbnail.startAnimation(fadeInAnimation);
                 wavename.startAnimation(fadeoutAnimation);
                 username.startAnimation(fadeoutAnimation);
 

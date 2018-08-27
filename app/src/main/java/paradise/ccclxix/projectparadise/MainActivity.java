@@ -279,7 +279,9 @@ public class MainActivity extends AppCompatActivity{
             case 0:
                 fragmentToShow(waveFragment, exploreFragment);
                 searchText.startAnimation(fadeoutAnimation);
-                picasso.load(appManager.getCredentialM().getProfilePic())
+                String profilePic = appManager.getCredentialM().getProfilePic();
+                if (!profilePic.isEmpty())
+                    picasso.load(appManager.getCredentialM().getProfilePic())
                         .fit()
                         .centerCrop()
                         .placeholder(R.drawable.ic_import_export).into(((ImageView)

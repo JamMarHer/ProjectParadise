@@ -105,7 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         appVersion = findViewById(R.id.app_version);
-        appVersion.setText("Ver. " + BuildConfig.VERSION_NAME);
+        appVersion.setText(String.format("Ver. %s", BuildConfig.VERSION_NAME));
         logout = findViewById(R.id.settings_logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

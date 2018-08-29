@@ -51,6 +51,7 @@ import paradise.ccclxix.projectparadise.CredentialsAndStorage.Interfaces.Setting
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsManager;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.BooleanSetting;
 import paradise.ccclxix.projectparadise.CredentialsAndStorage.SettingsRelated.StringSetting;
+import paradise.ccclxix.projectparadise.Fragments.PersonalRelated.EditProfileActivity;
 import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
@@ -129,6 +130,14 @@ public class SettingsActivity extends AppCompatActivity {
                     .centerCrop()
                     .placeholder(R.drawable.ic_import_export).into(userProfilePic);
         }
+
+        userProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         settings.setVisibility(View.INVISIBLE);

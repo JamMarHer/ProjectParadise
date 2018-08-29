@@ -39,6 +39,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -53,6 +55,7 @@ import paradise.ccclxix.projectparadise.InitialAcitivity;
 import paradise.ccclxix.projectparadise.R;
 import paradise.ccclxix.projectparadise.utils.FirebaseBuilder;
 import paradise.ccclxix.projectparadise.utils.Icons;
+import paradise.ccclxix.projectparadise.utils.OkHttp3Helpers;
 import paradise.ccclxix.projectparadise.utils.SnackBar;
 import paradise.ccclxix.projectparadise.utils.UINotificationHelpers;
 
@@ -62,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView logout;
     private TextView appVersion;
 
+    public static final String TAG = "Settings";
 
     RecyclerView settingsRecyclerView;
     SettingsAdapter settingsAdapter;
@@ -75,6 +79,16 @@ public class SettingsActivity extends AppCompatActivity {
     View mProgressView;
     View mSettingsView;
 
+    Picasso picasso;
+
+    // User information
+    TextView username;
+    TextView userState;
+    TextView userNumWaves;
+    TextView userNumPosts;
+    ImageView userProfilePic;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +96,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
+        this.picasso =  new Picasso.Builder(getApplicationContext()).downloader(new OkHttp3Downloader(
+                OkHttp3Helpers.getOkHttpClient(this.TAG, getApplicationContext()))).build();
+
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
@@ -95,6 +112,23 @@ public class SettingsActivity extends AppCompatActivity {
 
         settingsRecyclerView.setAdapter(settingsAdapter);
         settingsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        username = findViewById(R.id.personal_username);
+        userState = findViewById(R.id.personal_status);
+        userNumWaves = findViewById(R.id.numberWaves);
+        userNumPosts = findViewById(R.id.numberVerified);
+        userProfilePic = findViewById(R.id.personal_profile_picture);
+
+        username.setText(appManager.getCredentialM().getUsername());
+        userNumWaves.setText(appManager.getCredentialM().getNumWaves());
+        userNumPosts.setText(appManager.getCredentialM().getNumPermanents());
+
+        if (!appManager.getCredentialM().getProfilePic().isEmpty()){
+            picasso.load(appManager.getCredentialM().getProfilePic())
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_import_export).into(userProfilePic);
+        }
 
 
         settings.setVisibility(View.INVISIBLE);

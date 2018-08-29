@@ -90,7 +90,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
 
 
-
+    private int numPostsLoaded = 0;
 
     private PostsAdapter adapter;
     private RecyclerView waveRecyclerView;
@@ -148,8 +148,6 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
         firebase = new FirebaseBuilder();
         generalView = view;
-
-
 
 
         waveThumbnail = view.findViewById(R.id.main_wave_thumbnail);
@@ -242,6 +240,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
             }
         });
         */
+        UINotificationHelpers.showProgress(true,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+
         return view;
     }
 
@@ -362,6 +362,8 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
                                 }else {
                                     noContentMessage.setVisibility(View.VISIBLE);
+                                    UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+
                                 }
                                 UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
 
@@ -433,11 +435,18 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                 int height = (int) convertPixelsToDp(displayMetrics.heightPixels, getContext());
                 params.width = width;
                 holder.postImage.setLayoutParams(params);
+                // Updates the number of posts that have been loaded
+
+
                 picasso.load(postMessage2)
                         .fit()
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
+                if (numPostsLoaded >= 1){
+                    UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                    numPostsLoaded += 1;
+                }
 
             }
             if(postType.equals("error")){
@@ -551,6 +560,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                         .centerInside()
                         .placeholder(R.drawable.ic_import_export)
                         .into(holder.postImage);
+                if (numPostsLoaded >= 1){
+                    UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                    numPostsLoaded += 1;
+                }
                 holder.source.setVisibility(View.VISIBLE);
             }
 
@@ -586,6 +599,10 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
                     constraintSet.applyTo(holder.briefConstraintL);
                     holder.source.setImageDrawable(ContextCompat.getDrawable(holder.source.getContext(), R.drawable.baseline_link_black_24));
                     holder.source.setVisibility(View.VISIBLE);
+                    if (numPostsLoaded >= 1){
+                        UINotificationHelpers.showProgress(false,waveRecyclerView, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                        numPostsLoaded += 1;
+                    }
 
                 }
             }

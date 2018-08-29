@@ -11,19 +11,17 @@
         android:id="@+id/main_message_no_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/comfortaa_regular"
         android:gravity="center"
         android:text="Nothing to see. \n Make your first post by tapping the ⊕ icon."
         android:textColor="@android:color/white"
         android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/wave_swipe_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/progressbarWave" />
 
 
     <ProgressBar

@@ -462,7 +462,7 @@ public class WaveFragment extends HolderFragment implements EnhancedFragment {
 
             if (!TextUtils.isEmpty(permanent) && permanent.equals("true")){
                 holder.postTimeToLiveIcon.setImageDrawable(ContextCompat.getDrawable(holder.postTimeToLiveIcon.getContext(),R.drawable.circle_holder_main_colors));
-                holder.postTTL.setVisibility(View.INVISIBLE);
+                holder.postTTL.setText(postNumEchos);
             }else{
                 final DatabaseReference db = firebase.getEvents(waveID, "wall", "posts", postID);
                 db.addListenerForSingleValueEvent(new ValueEventListener() {

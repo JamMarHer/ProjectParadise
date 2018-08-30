@@ -78,9 +78,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
 
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
-        ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        settings.setVisibility(View.INVISIBLE);
 
         pinnedTitle = findViewById(R.id.pinned_title);
         pinnedWavesView = findViewById(R.id.pinned_wave_recycleView);
@@ -237,7 +235,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
 
 
             final TextView closeWaveSettings = waveSettignsPopupView.findViewById(R.id.close_share);
-            final TextView leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
+         /*   final TextView leaveWave = waveSettignsPopupView.findViewById(R.id.leave_wave);
             final TextView enterWave = waveSettignsPopupView.findViewById(R.id.enter_wave);
 
 
@@ -278,6 +276,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
                     waveSettingsPopupWindow.dismiss();
                 }
             });
+            */
 
             holder.infoButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -15,131 +15,23 @@
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:elevation="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/nothing_to_show" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/highlighted_posts_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/gradient_2"
-        android:elevation="1dp">
-
-        <TextView
-            android:id="@+id/numberWaves"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="0"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textView14"
-            app:layout_constraintEnd_toEndOf="@+id/textView14"
-            app:layout_constraintStart_toStartOf="@+id/textView14" />
-
-        <TextView
-            android:id="@+id/numberVerified"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="0"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textView9"
-            app:layout_constraintEnd_toEndOf="@+id/textView9"
-            app:layout_constraintStart_toStartOf="@+id/textView9" />
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
-            android:layout_marginEnd="8dp"
-            android:text="Posts"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="9dp"
-            android:layout_marginEnd="9dp"
-            android:text="Waves"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
-            app:layout_constraintEnd_toStartOf="@+id/textView9" />
-
-        <ImageView
-            android:id="@+id/profile_picture_personal"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
-            android:src="@drawable/ic_face_black_48dp"
-            app:civ_border_color="@color/common_google_signin_btn_text_light_default"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/personal_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="3dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/comfortaa_regular"
-            android:gravity="left|center_horizontal"
-            android:text="TextView"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/numberWaves"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/profile_picture_personal"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/personal_status"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:maxLength="60"
-            android:text="lacking status..."
-            android:textColor="@android:color/white"
-            android:textSize="9sp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_picture_personal"
-            app:layout_constraintEnd_toStartOf="@+id/numberWaves"
-            app:layout_constraintStart_toStartOf="@+id/personal_username"
-            app:layout_constraintTop_toBottomOf="@+id/personal_username" />
-
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

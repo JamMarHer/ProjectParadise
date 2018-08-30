@@ -84,8 +84,6 @@ public class EditProfileActivity extends AppCompatActivity {
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
 
-        ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
-        mainSettings.setVisibility(View.INVISIBLE);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

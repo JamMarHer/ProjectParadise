@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -105,7 +106,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
 
         firebase = new FirebaseBuilder();
-        searchText = inflater1.findViewById(R.id.search_edit);
+        //searchText = inflater1.findViewById(R.id.search_edit);
         results = inflater1.findViewById(R.id.results_recycler_view);
         progressBar = inflater1.findViewById(R.id.search_progress);
         results.setHasFixedSize(false);
@@ -126,7 +127,8 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         thumbnail = new ArrayList<>();
         type = new ArrayList<>();
         setSuggestionsAdapter();
-        searchText.addTextChangedListener(new TextWatcher() {
+
+        ((EditText)((MainActivity)getActivity()).getToolbar().getRootView().findViewById(R.id.main_app_bar_user_search_text)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -154,6 +156,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 }
             }
         });
+
 
         return inflater1;
     }
@@ -217,9 +220,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                     UINotificationHelpers.showProgress(false,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
 
                 }
-                // Extra options.
-                name.add("CREATE");
-                name.add("SCAN");
                 suggestionsAdapter = new SuggestionsAdapter(getContext());
                 results.setAdapter(suggestionsAdapter);
                 suggestionsAdapter.notifyDataSetChanged();
@@ -321,43 +321,25 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
         @Override
         public void onBindViewHolder(@NonNull SuggestionViewHolder holder, final int position) {
-            if (name.get(position).equals("CREATE")){
-                setupButton(holder, "Start a new wave");
-                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                        getActivity().startActivity(intent);
-                    }
-                });
-            }else if(name.get(position).equals("SCAN")){
-                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                setupButton(holder, "Scan QR code");
-            }else {
-                holder.waveName.setText(name.get(position));
 
-                holder.mainLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("ID", id.get(position));
-                        bundle.putString("thumbnail", thumbnail.get(position));
-                        bundle.putString("name", name.get(position));
-                        intent.putExtras(bundle);
-                        getActivity().startActivity(intent);
-                    }
-                });
-                holder.wScore.setText(wScore.get(position));
-                holder.numMembers.setText(numMembers.get(position));
-                holder.numPosts.setText(numPosts.get(position));
-            }
+            holder.waveName.setText(name.get(position));
+
+            holder.mainLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent =  new Intent(getActivity(), WaveOverviewActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID", id.get(position));
+                    bundle.putString("thumbnail", thumbnail.get(position));
+                    bundle.putString("name", name.get(position));
+                    intent.putExtras(bundle);
+                    getActivity().startActivity(intent);
+                }
+            });
+            holder.wScore.setText(wScore.get(position));
+            holder.numMembers.setText(numMembers.get(position));
+            holder.numPosts.setText(numPosts.get(position));
+
         }
 
         @Override
@@ -366,38 +348,6 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
         }
     }
 
-    private void setupButton(SuggestionViewHolder holder, String name){
-
-        TextView buttonTitle = new TextView(holder.mainLayout.getContext());
-        buttonTitle.setText(name);
-        buttonTitle.setId(Integer.parseInt("9"));
-        buttonTitle.setTextColor(Color.BLACK);
-        buttonTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        holder.mainLayout.addView(buttonTitle);
-
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(holder.mainLayout);
-        constraintSet.clone(holder.mainLayout);
-        constraintSet.connect(buttonTitle.getId(), ConstraintSet.RIGHT, holder.mainLayout.getId() , ConstraintSet.RIGHT, 3);
-        constraintSet.connect(buttonTitle.getId(), ConstraintSet.LEFT, holder.mainLayout.getId() , ConstraintSet.LEFT, 3);
-        constraintSet.connect(buttonTitle.getId(), ConstraintSet.TOP, holder.mainLayout.getId() , ConstraintSet.TOP, 3);
-        constraintSet.connect(buttonTitle.getId(), ConstraintSet.BOTTOM, holder.mainLayout.getId() , ConstraintSet.BOTTOM, 3);
-        constraintSet.applyTo(holder.mainLayout);
-        holder.waveName.setVisibility(View.INVISIBLE);
-
-        final int sdk = android.os.Build.VERSION.SDK_INT;
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            holder.mainLayout.setBackgroundDrawable(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.circle_holder_white) );
-        } else {
-            holder.mainLayout.setBackground(ContextCompat.getDrawable(holder.mainLayout.getContext(), R.drawable.circle_holder_white));
-        }
-        holder.membersTitle.setVisibility(View.INVISIBLE);
-        holder.wScoreTitle.setVisibility(View.INVISIBLE);
-        holder.postsTitle.setVisibility(View.INVISIBLE);
-        holder.numPosts.setVisibility(View.INVISIBLE);
-        holder.numMembers.setVisibility(View.INVISIBLE);
-        holder.wScore.setVisibility(View.INVISIBLE);
-    }
 
     public class SearchAdapter extends RecyclerView.Adapter<SuggestionViewHolder>{
         Context context;

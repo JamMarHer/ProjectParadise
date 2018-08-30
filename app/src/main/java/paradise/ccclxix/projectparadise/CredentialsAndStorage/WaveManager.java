@@ -101,6 +101,9 @@ public class WaveManager implements Manager {
         return event;
     }
 
+    public boolean inWave(){
+        return !this.getEventID().equals(Defaults.TOM);
+    }
 
     @Override
     public String getType() {

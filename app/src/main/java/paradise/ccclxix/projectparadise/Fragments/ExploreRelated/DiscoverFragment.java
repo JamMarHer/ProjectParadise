@@ -54,7 +54,7 @@ public class DiscoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflater1 = inflater.inflate(R.layout.fragment_discover, null);
         firebase = new FirebaseBuilder();
-        searchText = inflater1.findViewById(R.id.search_edit);
+        //searchText = inflater1.findViewById(R.id.search_edit);
         results = inflater1.findViewById(R.id.results_recycler_view);
         progressBar = inflater1.findViewById(R.id.search_progress);
         results.setHasFixedSize(true);
@@ -70,6 +70,7 @@ public class DiscoverFragment extends Fragment {
         name = new ArrayList<>();
         thumbnail = new ArrayList<>();
         type = new ArrayList<>();
+        /*
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -95,7 +96,7 @@ public class DiscoverFragment extends Fragment {
                 }
             }
         });
-
+        */
         return inflater1;
     }
 

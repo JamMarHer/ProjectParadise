@@ -60,7 +60,7 @@ After installing, foli should be ready for testing and development.
 
 ## Running
 
-After clonning the project, give it a run in the emulator. foli is currently being tested with an emulated phone _running on Android P, on a Pixel 2 XL_.
+After clonning the project, give it a run in the emulator. Paradise is currently being tested with an emulated phone _running on Android P, on a Pixel 2 XL_.
 It is also being tested on a Samsung Galaxy S9+ running Android P.
 The Android emulator comes included with Android Studio but if you want more info, [here](https://developer.android.com/studio/run/emulator) is the link.
 

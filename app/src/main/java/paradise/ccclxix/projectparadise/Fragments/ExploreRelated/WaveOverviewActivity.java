@@ -113,18 +113,10 @@ public class WaveOverviewActivity extends AppCompatActivity {
         appManager.initialize(getApplicationContext());
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView back = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1 = new Intent(WaveOverviewActivity.this, SettingsActivity.class);
-                WaveOverviewActivity.this.startActivity(intent1);
             }
         });
 

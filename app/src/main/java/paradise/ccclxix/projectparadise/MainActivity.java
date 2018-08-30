@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity{
                 addPost_createWave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent =  new Intent(addPost_createWave.getContext(), WaveAddPostActivity.class);
+                        Intent intent =  new Intent(MainActivity.this, WaveAddPostActivity.class);
                         ((Activity)addPost_createWave.getContext()).startActivity(intent);
                     }});
                 shareWave_scanQR.setOnClickListener(new View.OnClickListener() {
@@ -362,14 +362,14 @@ public class MainActivity extends AppCompatActivity{
                 addPost_createWave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent =  new Intent(addPost_createWave.getContext(), CreateEventActivity.class);
+                        Intent intent =  new Intent(MainActivity.this, CreateEventActivity.class);
                         ((Activity)addPost_createWave.getContext()).startActivity(intent);
                     }});
 
                 shareWave_scanQR.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent =  new Intent(addPost_createWave.getContext(), QRScannerActivity.class);
+                        Intent intent =  new Intent(MainActivity.this, QRScannerActivity.class);
                         ((Activity)addPost_createWave.getContext()).startActivity(intent);
                     }});
 

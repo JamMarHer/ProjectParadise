@@ -129,8 +129,6 @@ public class WaveAddPostActivity extends YouTubeBaseActivity{
                 finish();
             }
         });
-        ImageView mainSettings = toolbar.getRootView().findViewById(R.id.main_settings);
-        mainSettings.setVisibility(View.INVISIBLE);
 
         waveAddPostUsername = findViewById(R.id.wave_add_post_username);
         waveAddPostWave = findViewById(R.id.wave_add_post_wave);

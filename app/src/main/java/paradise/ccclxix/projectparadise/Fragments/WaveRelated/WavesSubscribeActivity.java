@@ -70,9 +70,7 @@ public class WavesSubscribeActivity extends AppCompatActivity {
         appManager = new AppManager();
         appManager.initialize(getApplicationContext());
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
-        ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        settings.setVisibility(View.INVISIBLE);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

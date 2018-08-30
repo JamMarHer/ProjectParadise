@@ -49,20 +49,13 @@ public class ChatFragment extends AppCompatActivity {
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        ImageView settingsButton = toolbar.getRootView().findViewById(R.id.main_settings);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1 = new Intent(ChatFragment.this, SettingsActivity.class);
-                ChatFragment.this.startActivity(intent1);
-            }
-        });
+
 
                 appManager = new AppManager();
         appManager.initialize(getApplicationContext());

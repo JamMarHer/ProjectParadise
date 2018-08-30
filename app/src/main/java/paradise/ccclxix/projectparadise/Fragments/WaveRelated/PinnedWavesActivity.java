@@ -78,9 +78,7 @@ public class PinnedWavesActivity extends AppCompatActivity {
 
 
         AppBarLayout toolbar = findViewById(R.id.appBarLayout);
-        ImageView settings = toolbar.getRootView().findViewById(R.id.main_settings);
         ImageView backButton = toolbar.getRootView().findViewById(R.id.toolbar_back_button);
-        settings.setVisibility(View.INVISIBLE);
 
         pinnedTitle = findViewById(R.id.pinned_title);
         pinnedWavesView = findViewById(R.id.pinned_wave_recycleView);

@@ -34,14 +34,13 @@ There's no reason why a sloth and conspiracy theories should go together, unless
 
 ## Current State of the App:
 Currently the app layout is divided into four fragments:
-- **Me**: Displays username, numbers of waves, contacts and a list of the waves that the user is part of.
 - **Wave**: Is meant to hold the actual content of the wave. This being posts, etc.
 - **Explore**: Here is were the user is going to engage with new sources of content. Explore has a **_curated_** list of publi global and local waves available to join. 
-- **Chat**: Holds the chat rooms that the user has engaged in.
+
 
 ## Looking Forward:
 Idea currently being contemplated based on each fragment.
-- **Wave**: With the idea in mind of keeping the user engaged, I'll like to introduce the concept of sub-wave. When the user is inside a wave, it will allow it to swipe through the different sub-waves (topics). Such sub-waves can have temporary life or not. More to expand later. 
+- **Wave**: With the idea in mind of keeping the user engaged, I'll like to introduce the concept of sub-wave. When the user is inside a wave, it will allow it to swipe through the different sub-waves (topics). Such sub-waves can have temporary life or not. More to expand later. **Discarted**
 
 ## Getting Started
 Currently, paradise is only being developed for Android. So is doesn't matter what OS you are running, Android Studio should work fine.
@@ -61,7 +60,7 @@ After installing, foli should be ready for testing and development.
 
 ## Running
 
-After clonning the project, give it a run in the emulator. foli is currently being tested with an emulated phone _running on Android P, on a Pixel 2 XL_.
+After clonning the project, give it a run in the emulator. Paradise is currently being tested with an emulated phone _running on Android P, on a Pixel 2 XL_.
 It is also being tested on a Samsung Galaxy S9+ running Android P.
 The Android emulator comes included with Android Studio but if you want more info, [here](https://developer.android.com/studio/run/emulator) is the link.
 

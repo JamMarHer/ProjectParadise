@@ -136,6 +136,7 @@ public class CreateEventActivity extends AppCompatActivity {
             final long timeStamp = System.currentTimeMillis();
             final String eventID = String.format("%s_%s", userID, String.valueOf(timeStamp));
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            // TODO ************************************
             DatabaseReference eventDatabaseReference = firebase.getEvents(eventID);
             eventMap.put("host", firebase.auth_id());
             eventMap.put("name_event", eventCreateName.getText().toString());
@@ -150,6 +151,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 eventMap.put("longitude", "not set");
             }
             eventMap.put("active", "true");
+            // TODO ************************************
             eventDatabaseReference.setValue(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity{
 
         this.toolbar.getRootView().findViewById(R.id.main_app_bar_user_search_text).setVisibility(View.INVISIBLE);
 
+        // TODO Come up with a more dynamic approach to this.
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
         if (source.equals("registration")) {

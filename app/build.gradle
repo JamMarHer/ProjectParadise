@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "paradise.ccclxix.projectparadise"
         minSdkVersion 24
@@ -27,6 +26,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        mavenCentral()
     }
 }
 
@@ -41,7 +41,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.google.firebase:firebase-storage:11.8.0'
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
-    testImplementation 'junit:junit:4.12'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
@@ -54,16 +53,17 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.0.1'
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.jakewharton:butterknife:8.8.1'
-    compile('com.google.api-client:google-api-client-android:1.23.0') {
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    compile('com.google.apis:google-api-services-youtube:v3-rev198-1.23.0') {
+    implementation('com.google.apis:google-api-services-youtube:v3-rev198-1.23.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

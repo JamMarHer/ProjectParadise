@@ -287,6 +287,8 @@ public class MainActivity extends AppCompatActivity{
                         .centerCrop()
                         .placeholder(R.drawable.ic_import_export).into(((ImageView)
                         toolbar.getRootView().findViewById(R.id.main_app_bar_user_thumbanail)));
+                else
+                    thumbnail.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_panorama_fish_eye_black_24));
                 shareWave_scanQR.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_share_black_24dp));
                 switchFragments.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.baseline_explore_black_24));
                 addPost_createWave.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_add_black_24dp));

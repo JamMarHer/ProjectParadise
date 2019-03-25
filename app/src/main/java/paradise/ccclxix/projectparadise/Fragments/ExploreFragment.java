@@ -169,7 +169,7 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
             public void onDataChange(DataSnapshot dataSnapshot) {
                 results.removeAllViews();
                 Set<String> record = new HashSet<>();
-                if (dataSnapshot.hasChildren()){
+                if (dataSnapshot.getChildrenCount() >1){
                     int currentCount = 0;
                     int invalidTry = 0;
                     long numChildren = dataSnapshot.getChildrenCount();

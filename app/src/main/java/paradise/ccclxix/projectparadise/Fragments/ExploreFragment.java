@@ -172,11 +172,13 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
                 if (dataSnapshot.getChildrenCount() >1){
                     int currentCount = 0;
                     int invalidTry = 0;
+                    int failSafe = 0;
                     long numChildren = dataSnapshot.getChildrenCount();
 
                     while (currentCount < MAX_SEARCH){
                         DataSnapshot waves = getRandomWave(dataSnapshot, numChildren);
                         String currentId = waves.getKey();
+                        failSafe++; // Keeps track of how many times the loop has executed.
 
                         if (!record.contains(currentId)){
                             if (waves.child("privacy").getValue().toString().equals("false")){
@@ -215,6 +217,10 @@ public class ExploreFragment extends HolderFragment implements EnhancedFragment 
 
                             if (currentCount == MAX_SEARCH)
                                 break;
+                        }
+                        // TODO Magic number for time being. I'll add issue later.
+                        if (failSafe == 50){
+                            break;
                         }
                     }
                     UINotificationHelpers.showProgress(false,results, progressBar, getResources().getInteger(android.R.integer.config_shortAnimTime));
